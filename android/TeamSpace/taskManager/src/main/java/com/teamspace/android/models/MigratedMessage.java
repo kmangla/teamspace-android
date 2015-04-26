@@ -91,12 +91,15 @@ public class MigratedMessage {
 		message.taskID = object.getString(FOR_TASK);
 		message.messageID = object.getString(ID);
 		message.text = object.getString(TEXT);
-//		MigratedEmployee emp = MigratedEmployee.parseJSON(object.getJSONObject(SENDER));
-//		message.setEmployeeID(emp.getEmployeeID());
-		
-		message.setEmployeeID(Utils.getSignedInUserId());
-		
-		try {
+
+        try {
+            MigratedEmployee emp = MigratedEmployee.parseJSON(object.getJSONObject(SENDER));
+            message.setEmployeeID(emp.getEmployeeID());
+        } catch (Exception e) {
+            message.setEmployeeID(object.getString(SENDER));
+        }
+
+        try {
 			message.time = ((Date)ISO8601DateParser.parse(object.getString(UPDATED))).getTime();
 		} catch (JSONException e) {
 			message.time = System.currentTimeMillis(); 

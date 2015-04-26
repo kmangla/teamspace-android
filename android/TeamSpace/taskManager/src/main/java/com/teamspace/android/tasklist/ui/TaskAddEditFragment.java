@@ -350,7 +350,7 @@ public class TaskAddEditFragment extends Fragment implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		if (position == 1) {
+        if (parent == empSpinner && position == 1) {
             Intent i = new Intent(view.getContext(), EmployeeAddEditActivity.class);
             startActivityForResult(i, ADD_EMPLOYEE);
         }

@@ -380,7 +380,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                     } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
                         return -1;
                     } else {
-                        return 0;
+                        return lhs.getTitle().compareTo(rhs.getTitle());
                     }
                 case 1:
                     if (lhs.getFrequency() > rhs.getFrequency()) {
@@ -388,7 +388,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                     } else if (lhs.getFrequency() < rhs.getFrequency()) {
                         return -1;
                     } else {
-                        return 0;
+                        return lhs.getTitle().compareTo(rhs.getTitle());
                     }
                 case 2:
                     if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
@@ -396,12 +396,12 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                     } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
                         return -1;
                     } else {
-                        return 0;
+                        return lhs.getTitle().compareTo(rhs.getTitle());
                     }
                 case 3:
                     return lhs.getTitle().compareTo(rhs.getTitle());
                 default:
-                    return 0;
+                    return lhs.getTitle().compareTo(rhs.getTitle());
             }
         }
 
@@ -568,6 +568,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             final MigratedTask task = getItem(position);
             if (task.getTaskID().equalsIgnoreCase(taskId)) {
                 this.remove(task);
+                Utils.refreshListWithoutLosingScrollPosition(mSwipeListView, this);
             }
         }
 

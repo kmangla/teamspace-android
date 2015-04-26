@@ -131,7 +131,7 @@ public class MigratedEmployee {
 		employee.phone = object.getString(PHONE);				
 		employee.employeeID = object.getString("id");
 		employee.designation = object.optString("accountType", "Employee");
-		employee.taskCount = "0";
+        employee.taskCount = object.getString("taskCount");
 		
 		long time = System.currentTimeMillis();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd, HH:mm");

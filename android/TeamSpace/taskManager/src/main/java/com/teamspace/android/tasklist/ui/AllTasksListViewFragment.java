@@ -357,8 +357,32 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             // R.array.task_sort_options corresponds to the following cases.
             switch (indexInSortArray) {
                 case 0:
+                    if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
+                        return 1;
+                    } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
+                        return -1;
+                    } else {
+                        return lhs.getTitle().compareTo(rhs.getTitle());
+                    }
+                case 1:
+                    if (lhs.getLastUpdate() < rhs.getLastUpdate()) {
+                        return 1;
+                    } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
+                        return -1;
+                    } else {
+                        return lhs.getTitle().compareTo(rhs.getTitle());
+                    }
+                case 2:
+                    if (lhs.getFrequency() > rhs.getFrequency()) {
+                        return 1;
+                    } else if (lhs.getFrequency() < rhs.getFrequency()) {
+                        return -1;
+                    } else {
+                        return lhs.getTitle().compareTo(rhs.getTitle());
+                    }
+                case 3:
                     if (lhs.getEmployeeName() == rhs.getEmployeeName()) {
-                        return 0;
+                        return lhs.getTitle().compareTo(rhs.getTitle());
                     }
                     if (lhs.getEmployeeName() == null) {
                         return -1;
@@ -367,34 +391,10 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         return 1;
                     }
                     return lhs.getEmployeeName().compareTo(rhs.getEmployeeName());
-                case 1:
-                    if (lhs.getLastUpdate() < rhs.getLastUpdate()) {
-                        return 1;
-                    } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                case 2:
-                    if (lhs.getFrequency() > rhs.getFrequency()) {
-                        return 1;
-                    } else if (lhs.getFrequency() < rhs.getFrequency()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                case 3:
-                    if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
-                        return 1;
-                    } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
                 case 4:
                     return lhs.getTitle().compareTo(rhs.getTitle());
                 default:
-                    return 0;
+                    return lhs.getTitle().compareTo(rhs.getTitle());
             }
         }
 
@@ -561,6 +561,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             final MigratedTask task = getItem(position);
             if (task.getTaskID().equalsIgnoreCase(taskId)) {
                 this.remove(task);
+                Utils.refreshListWithoutLosingScrollPosition(mSwipeListView, this);
             }
         }
 

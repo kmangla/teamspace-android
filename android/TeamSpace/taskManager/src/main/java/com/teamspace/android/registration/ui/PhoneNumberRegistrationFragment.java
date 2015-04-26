@@ -92,8 +92,34 @@ public class PhoneNumberRegistrationFragment extends Fragment {
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                enterUserName(view, input.getText().toString());
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
+    private void enterUserName(final View view, final String phoneNumber) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        alert.setTitle("Enter Your Name");
+        alert.setMessage("Example: Akshay Kumar");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(getActivity());
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Utils.saveSelfPhoneNumber(phoneNumber);
                 String value = input.getText().toString();
-                Utils.saveSelfPhoneNumber(value);
+                Utils.saveSelfUserName(value);
                 continueWithPhone(view);
             }
         });
