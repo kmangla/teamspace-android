@@ -368,7 +368,9 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
 	            
 	            // Start a async task to load the employee pic if available.
 				ContactBadge badge = new ContactBadge(mContext, viewHolder.pic,
-						employee.getEmployeeID(), viewHolder.initials);
+						employee.getEmployeeID(),
+                        viewHolder.initials,
+                        Utils.extractInitialsFromName(employee.getName()));
 	            viewHolder.populateImageTask = new QuickContactHelperTask();
 	            viewHolder.populateImageTask.execute(badge);
 			}

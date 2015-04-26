@@ -276,7 +276,8 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 		employeeNumberEditText.setText(employee.getPhoneWithCountryCode());
 		
 		QuickContactHelperTask task = new QuickContactHelperTask();
-		ContactBadge badge = new ContactBadge(getActivity(), contact_pic, employee.getEmployeeID(), null);
+		ContactBadge badge = new ContactBadge(getActivity(), contact_pic, employee.getEmployeeID(),
+                null, Utils.extractInitialsFromName(employee.getName()));
 		task.execute(badge);
 	}
 

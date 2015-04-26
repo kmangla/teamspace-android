@@ -461,7 +461,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
                 // Start a async task to load the employee pic if available.
                 ContactBadge badge = new ContactBadge(mContext, viewHolder.pic,
-                        task.getEmployeeID(), viewHolder.initials);
+                        task.getEmployeeID(), viewHolder.initials, initials);
                 viewHolder.populateImageTask = new QuickContactHelperTask();
                 viewHolder.populateImageTask.execute(badge);
             }

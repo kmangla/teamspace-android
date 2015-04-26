@@ -25,15 +25,17 @@ public final class QuickContactHelperTask extends AsyncTask<ContactBadge, Void, 
 		private final QuickContactBadge badge;
 		private final TextView initials;
 		private final String employeeId;
+        private String employeeInitials;
 		private final ContentResolver contentResolver;
 		private MigratedEmployee employee;
 		
 		public ContactBadge(Context context, QuickContactBadge badge,
-				String employeeId, TextView defaultView) {
+				String employeeId, TextView defaultView, String employeeInitials) {
 			this.badge = badge;
 			this.employeeId = employeeId;
 			contentResolver = context.getContentResolver();
 			this.initials = defaultView;
+            this.employeeInitials = employeeInitials;
 		}
 		
 		public ContactBadge(Context context, QuickContactBadge badge,
@@ -110,7 +112,12 @@ public final class QuickContactHelperTask extends AsyncTask<ContactBadge, Void, 
                 mBadge.initials.setText(initials);
                 mBadge.initials.setVisibility(View.VISIBLE);
             }
-		}
+		} else if (mBadge.employeeInitials != null) {
+            if (mBadge.initials != null) {
+                mBadge.initials.setText(mBadge.employeeInitials);
+                mBadge.initials.setVisibility(View.VISIBLE);
+            }
+        }
 	}	
 	
 	private Integer fetchThumbnailId() {
