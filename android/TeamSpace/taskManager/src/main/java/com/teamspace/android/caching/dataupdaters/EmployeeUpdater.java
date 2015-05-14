@@ -48,7 +48,8 @@ public class EmployeeUpdater {
 
 				    @Override
 				    public void onErrorResponse(VolleyError error) {
-				    	Utils.log("createEmployee() POST failed");
+                        Utils.log("createEmployee() POST failed for url: " + url + " params: " + params
+                                + " got error: " + error);
 				    	error.printStackTrace();
 				    	if (mCallback != null) {
 				    		mCallback.onFailure(error.getLocalizedMessage());
