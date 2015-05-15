@@ -80,6 +80,12 @@ public class MessageListFragment extends Fragment {
 		setRetainInstance(true);
 	}
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Utils.trackPageView("MessagesForParticularTask");
+    }
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

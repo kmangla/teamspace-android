@@ -314,6 +314,12 @@ public class TaskAddEditFragment extends Fragment implements
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.showSoftInput(taskTitleEditText, 0);
 		}
+
+        if (editMode) {
+            Utils.trackPageView("TaskEdit");
+        } else {
+            Utils.trackPageView("TaskAdd");
+        }
 	}
 
 	private void refreshUIForTask() {

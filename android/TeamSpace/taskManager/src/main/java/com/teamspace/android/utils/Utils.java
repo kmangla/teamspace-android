@@ -427,5 +427,6 @@ public class Utils {
 
         // Send a screen view.
         t.send(new HitBuilders.ScreenViewBuilder().build());
+        Utils.log("tracker = " + t.hashCode() + " page = " + pageName);
     }
 }

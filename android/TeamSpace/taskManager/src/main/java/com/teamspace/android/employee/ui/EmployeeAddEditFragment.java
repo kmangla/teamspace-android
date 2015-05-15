@@ -101,6 +101,16 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 		setRetainInstance(true);
 	}
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (editMode) {
+            Utils.trackPageView("EmployeeEdit");
+        } else {
+            Utils.trackPageView("EmployeeAdd");
+        }
+    }
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
