@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.teamspace.android.BuildConfig;
 import com.teamspace.android.R;
 import com.teamspace.android.common.ui.MainActivityWithTabs;
@@ -413,5 +415,17 @@ public class Utils {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(TaskManagerApplication.getAppContext(), notification);
         r.play();
+    }
+
+    public static void trackPageView(String pageName) {
+        // Get tracker.
+        Tracker t = TaskManagerApplication.getTracker(
+                TaskManagerApplication.TrackerName.APP_TRACKER);
+
+        // Set screen name.
+        t.setScreenName(pageName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

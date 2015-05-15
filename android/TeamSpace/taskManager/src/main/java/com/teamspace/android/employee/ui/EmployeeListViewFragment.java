@@ -190,6 +190,12 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
 		
         return rootView;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Utils.trackPageView("AllEmployees");
+    }
     
     private static class EmployeeViewHolder {
     	public TextView name;

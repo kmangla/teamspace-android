@@ -104,6 +104,17 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (Utils.isStringNotEmpty(mEmployeeId) && mEmployeeId.equalsIgnoreCase(Utils.getSignedInUserId())) {
+            Utils.trackPageView("MyTasks");
+        } else {
+            Utils.trackPageView("TasksForParticularEmployee");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tasks_for_employee_fragment, null, false);

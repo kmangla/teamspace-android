@@ -632,6 +632,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         super.onResume();
         checkPlayServices();
         refreshUI();
+        Utils.trackPageView("AllTasks");
     }
 
     /**
