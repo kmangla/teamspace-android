@@ -631,6 +631,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     public void onResume() {
         super.onResume();
         checkPlayServices();
+        refreshUI();
     }
 
     /**
