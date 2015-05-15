@@ -12,6 +12,8 @@ import android.util.Log;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 
@@ -25,6 +27,8 @@ public class Utils {
     public static void sendSMS(String phoneNumber, String message)
     {
         if (phoneNumber == null || message == null) {
+            Utils.trackEvent("Exception", "PushNotificationDropped",
+                    "Utils:sendSMS-EmptyPhoneOrMessage");
             return;
         }
 
@@ -63,6 +67,7 @@ public class Utils {
                         Log.d("MessageSpace", "createMessage() POST failed for url " + url + " params: " + params
                                 + " with error " + error);
                         error.printStackTrace();
+                        Utils.trackEvent("Exception", "EmployeeReplyDropped", "Utils:sendToServer-Failed");
                     }
                 });
 
@@ -106,6 +111,7 @@ public class Utils {
                         Log.d("MessageSpace", "sendRegistrationIdToBackend() POST failed for url " + url + " params: " + params
                                 + " with error " + error);
                         error.printStackTrace();
+                        Utils.trackEvent("Exception", "GCMRegistrationFailed", "Utils:sendRegistrationIdToBackend");
                     }
                 });
     }
@@ -212,5 +218,50 @@ public class Utils {
         SharedPreferences sharedPref = context.
                 getSharedPreferences("userdetails", Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
+    }
+
+    public static void trackPageView(String pageName) {
+        // Get tracker.
+        Tracker t = MessageSpaceApplication.getTracker(
+                MessageSpaceApplication.TrackerName.APP_TRACKER);
+
+        // Set screen name.
+        t.setScreenName(pageName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+        Utils.log("tracker = " + t.hashCode() + " page = " + pageName);
+    }
+
+    public static void log(String message) {
+        log(null, message);
+    }
+
+    public static void log(String tag, String message) {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
+
+        if (tag == null) {
+            tag = "MESSAGESPACE";
+        }
+
+        Log.d(tag, message);
+    }
+
+    public static void trackEvent(String category, String action, String label) {
+        // Get tracker.
+        Tracker t = MessageSpaceApplication.getTracker(
+                MessageSpaceApplication.TrackerName.APP_TRACKER);
+
+        // Build and send an Event.
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(category)
+                .setAction(action)
+                .setLabel(label)
+                .build());
+
+        Utils.log("tracker = " + t.hashCode() + " category = " + category +
+                " action = " + action + " label = " + label);
     }
 }

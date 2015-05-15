@@ -109,5 +109,7 @@ public class MainFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) getActivity().
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+
+        Utils.trackPageView("MessageSpace");
     }
 }

@@ -40,7 +40,7 @@ public class IncomingSms extends BroadcastReceiver {
 
         } catch (Exception e) {
             Log.e("SmsReceiver", "Exception smsReceiver" +e);
-
+            Utils.trackEvent("Exception", "EmployeeReplyDropped", "IncomingSms:onReceive");
         }
     }
 }
