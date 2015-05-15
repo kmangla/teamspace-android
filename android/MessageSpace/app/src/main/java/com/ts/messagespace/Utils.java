@@ -183,7 +183,12 @@ public class Utils {
     }
 
     public static String getServer(Context context) {
-        return readStringFromSharedPrefs(context, "server");
+        String server = readStringFromSharedPrefs(context, "server");
+        if (server == null || server.length() == 0) {
+            server = "teamspace.herokuapp.com";
+        }
+
+        return server;
     }
 
     public static String getPort(Context context) {

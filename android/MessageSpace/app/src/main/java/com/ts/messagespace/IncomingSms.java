@@ -34,6 +34,7 @@ public class IncomingSms extends BroadcastReceiver {
 
                     String senderNum = phoneNumber;
                     String message = currentMessage.getDisplayMessageBody();
+                    Utils.trackEvent("Tracking", "SMSReceived", "IncomingSms:onReceive");
                     Utils.sendToServer(context, senderNum, message);
                 } // end for loop
             } // bundle is null
