@@ -401,6 +401,7 @@ public class Utils {
     }
 
     public static void saveSelfPhoneNumber(String value) {
+        signedInUserPhoneNumber = value;
         writeStringToSharedPrefs(Constants.EMPLOYEE_PHONE, value);
     }
 
