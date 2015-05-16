@@ -272,6 +272,14 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 					
 					dataMgr.createEmployee(employee, null);
 				}
+
+                if (editMode) {
+                    Utils.trackEvent("Tracking", "EmployeeEdited",
+                            "EmployeeAddEditFragment:saveButtonClicked");
+                } else {
+                    Utils.trackEvent("Tracking", "EmployeeAdded",
+                            "EmployeeAddEditFragment:saveButtonClicked");
+                }
 				
 				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
 				getFragmentActivity().finish();

@@ -243,6 +243,14 @@ public class TaskAddEditFragment extends Fragment implements
 				newIntent.putExtra(Constants.EMPLOYEE_NAME, name);
 				newIntent.putExtra(Constants.EMPLOYEE_PHONE, number);
 
+                if (editMode) {
+                    Utils.trackEvent("Tracking", "TaskEdited",
+                            "TaskAddEditFragment:saveButtonClicked");
+                } else {
+                    Utils.trackEvent("Tracking", "TaskAdded",
+                            "TaskAddEditFragment:saveButtonClicked");
+                }
+
 				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
 				getFragmentActivity().finish();
 			}
