@@ -41,7 +41,12 @@ public class TaskUpdater {
 				    public void onResponse(String response) {
 						Utils.log("createTask() POST response for url: " + url + " params: " + params
 								+ " got response: " + response);
-						task.setTaskID(response);
+                        try {
+                            task = MigratedTask.parseJSON(new JSONObject(response));
+                        } catch (Exception e) {
+                            task.setTaskID(response);
+                        }
+
 						DatabaseCache.getInstance(context).setMigratedTask(task);
 						if (mCallback != null) {
 							mCallback.onSuccess(response);

@@ -195,6 +195,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
     public void onResume() {
         super.onResume();
         Utils.trackPageView("AllEmployees");
+        refreshUI();
     }
     
     private static class EmployeeViewHolder {

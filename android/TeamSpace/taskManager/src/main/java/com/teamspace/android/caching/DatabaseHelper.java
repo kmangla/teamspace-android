@@ -1,6 +1,7 @@
 package com.teamspace.android.caching;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import android.content.ContentValues;
@@ -740,11 +741,18 @@ class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = database.query("new_tasks", null, "employee_id = ? AND status = ?",
                 new String[] { employeeID, "open"}, null, null, null);
 		cursor.moveToFirst();
+        HashSet<String> taskId = new HashSet<>();
 		while (!cursor.isAfterLast()) {
 			MigratedTask task = getMigratedTaskFromCursor(cursor);
-			tasks.add(task);
+
+            // Ignore duplicates
+            if (!taskId.contains(task.getTaskID())) {
+                tasks.add(task);
+                taskId.add(task.getTaskID());
+            }
+
 			cursor.moveToNext();
-		}
+        }
 		cursor.close();
 		return tasks;
 	}
