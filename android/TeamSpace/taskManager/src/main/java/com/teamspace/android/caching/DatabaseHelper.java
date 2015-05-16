@@ -761,8 +761,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		
 		ArrayList<MigratedTask> tasks = new ArrayList<MigratedTask>();
 
-		Cursor cursor = database.query("new_tasks", null, "user_id = ?",
-				new String[] { userID }, null, null, null);
+		Cursor cursor = database.query("new_tasks", null, "user_id = ? AND status = ?",
+				new String[] { userID, "open"}, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			MigratedTask task = getMigratedTaskFromCursor(cursor);
