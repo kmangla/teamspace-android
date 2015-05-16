@@ -44,14 +44,6 @@ public class GcmIntentService extends IntentService {
              * recognize.
              */
             if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " +
-                        extras.toString());
-                // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // Post notification of received message.
                 String messageStr = extras.getString("push");
@@ -66,7 +58,12 @@ public class GcmIntentService extends IntentService {
                     Utils.playNotificationSound();
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
+                    Utils.trackEvent("Exception", "PushNotificationDropped",
+                            "TS-GcmIntentService:onHandleIntent-IncorrectPayload");
                 }
+            } else {
+                Utils.trackEvent("Exception", "PushNotificationDropped",
+                        "TS-GcmIntentService:onHandleIntent-IncorrectMessageType");
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.

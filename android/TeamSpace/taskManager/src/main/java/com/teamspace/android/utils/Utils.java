@@ -430,7 +430,7 @@ public class Utils {
         Utils.log("tracker = " + t.hashCode() + " page = " + pageName);
     }
 
-    public static void trackEvent(String category, String action) {
+    public static void trackEvent(String category, String action, String label) {
         // Get tracker.
         Tracker t = TaskManagerApplication.getTracker(
                 TaskManagerApplication.TrackerName.APP_TRACKER);
@@ -439,6 +439,7 @@ public class Utils {
         t.send(new HitBuilders.EventBuilder()
                 .setCategory(category)
                 .setAction(action)
+                .setLabel(label)
                 .build());
 
         Utils.log("tracker = " + t.hashCode() + " category = " + category + " action = " + action);

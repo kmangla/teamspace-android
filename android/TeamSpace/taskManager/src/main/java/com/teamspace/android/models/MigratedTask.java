@@ -234,7 +234,7 @@ public class MigratedTask {
         try {
             task.lastMessage  = MigratedMessage.parseJSON(object.getJSONObject(LAST_MSG));
         } catch (JSONException e) {
-            Utils.log("Json parsing exception in MigratedTask - assignedTo field is not MigratedEmployee in server response");
+            Utils.log("Json parsing exception in MigratedTask - lastMessage field is not found in server responses");
         }
 
 		try {
