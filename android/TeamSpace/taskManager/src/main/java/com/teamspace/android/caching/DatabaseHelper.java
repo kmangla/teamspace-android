@@ -772,9 +772,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		Cursor cursor = database.query("new_tasks", null, "user_id = ? AND status = ?",
 				new String[] { userID, "open"}, null, null, null);
 		cursor.moveToFirst();
+        HashSet<String> taskId = new HashSet<>();
 		while (!cursor.isAfterLast()) {
 			MigratedTask task = getMigratedTaskFromCursor(cursor);
-			tasks.add(task);
+            // Ignore duplicates
+            if (!taskId.contains(task.getTaskID())) {
+                tasks.add(task);
+                taskId.add(task.getTaskID());
+            }
 			cursor.moveToNext();
 		}
 		cursor.close();
