@@ -82,6 +82,9 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
             @Override
             public void onClosed(int position, boolean fromRight) {
+                View view = Utils.getRowFromListView(swipelistview, position);
+                View danger = (View) view.findViewById(R.id.danger_level);
+                danger.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -102,6 +105,9 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 if (row == null) {
                     return;
                 }
+
+                View danger = (View) row.findViewById(R.id.danger_level);
+                danger.setVisibility(View.GONE);
 
                 TaskViewHolder viewHolder = (TaskViewHolder) row.getTag();
                 if (viewHolder == null || !(viewHolder instanceof TaskViewHolder)) {
@@ -477,6 +483,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             }
 
             viewHolder.lastMessage.setText(lastMsg);
+            viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Black"));
 
             if (lastMsgTime > 0) {
                 viewHolder.update.setText("" + new Date(task.getLastUpdate()));
@@ -522,6 +529,39 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                             closeAllRows();
                         }
                     });
+
+            View danger = (View) view.findViewById(R.id.danger_level);
+            if (task.getPriority() > 75) {
+                danger.setBackgroundColor(Utils.getColor(view.getContext(), "Red"));
+                viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
+                viewHolder.lastMessage.setText(view.getContext().getString(R.string.escalation_needed));
+                viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Red"));
+                viewHolder.sendReminder
+                        .setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                closeAllRows();
+                                Utils.callPhoneNumber(v.getContext(), task.getEmployeeNumber());
+                            }
+                        });
+            } else if (task.getPriority() > 50) {
+                danger.setBackgroundColor(Utils.getColor(view.getContext(), "Orange"));
+                viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
+                viewHolder.lastMessage.setText(view.getContext().getString(R.string.reply_pending));
+                viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Orange"));
+                viewHolder.sendReminder
+                        .setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                closeAllRows();
+                                Utils.callPhoneNumber(v.getContext(), task.getEmployeeNumber());
+                            }
+                        });
+            } else {
+                danger.setBackgroundColor(Utils.getColor(view.getContext(), "Transparent"));
+            }
 
             // For newly added item, change the appearance
             if (position == 0 && flashNewlyAddedRows
