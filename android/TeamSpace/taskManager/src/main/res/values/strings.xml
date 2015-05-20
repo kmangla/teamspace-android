@@ -22,6 +22,7 @@
     <string name="enter_phone_str">Enter Phone Number</string>
     <string name="change_number">Change Phone Number</string>
     <string name="change_server">Change Server IP</string>
+    <string name="pretend_phone">Hack Phone</string>
 	<string name="tasks_assigned">Tasks Assigned</string>
 	<string name="last_updated">Last Updated</string>
     <string name="task_employee"></string>
@@ -52,6 +53,9 @@
     <string name="send">Send</string>
     <string name="delete">Delete</string>
     <string name="call">Call</string>
+    <string name="call_emp">Call \n Employee</string>
+    <string name="reply_pending">Reply Pending</string>
+    <string name="escalation_needed">Escalation Needed</string>
     <string name="pause_task">Pause</string>
     <string name="unpause_task">Unpause</string>
     <string name="menu_settings">Settings</string>

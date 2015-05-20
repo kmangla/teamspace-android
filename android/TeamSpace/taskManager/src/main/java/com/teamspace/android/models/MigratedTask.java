@@ -31,6 +31,8 @@ public class MigratedTask {
 	private long lastUpdate;
 	private long lastSeen;
 	private long updateCount;
+
+    private long priority;
     private MigratedMessage lastMessage;
 	
 	private static String TASK_ID = "taskID";
@@ -52,6 +54,7 @@ public class MigratedTask {
 	private static String ID = "id";
 	private static String ASSIGNED_TO = "assignedTo";
     private static String LAST_MSG = "lastMessage";
+    private static String PRIORITY = "priority";
 	
 
 	public long getCreatedOn() {
@@ -117,6 +120,14 @@ public class MigratedTask {
 	public void setUserID(String userID) {
 		this.userID = userID;
 	}
+    public long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(long priority) {
+        this.priority = priority;
+    }
+
 	public String getEmployeeID() {
 		return employeeID;
 	}
@@ -220,6 +231,7 @@ public class MigratedTask {
 		task.title = object.getString(TITLE);
 		task.status = object.getString(STATUS);
 		task.frequency = object.getLong(FREQUENCY);
+        task.priority = object.getLong(PRIORITY);
 		
 		try {
 			task.updateCount = object.getLong(UPDATE_COUNT);

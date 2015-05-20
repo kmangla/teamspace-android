@@ -137,10 +137,8 @@
             android:layout_width="30dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"/>
+            android:background="@android:color/transparent" />
 
         <ImageView
             android:layout_width="20dp"
@@ -148,8 +146,7 @@
             android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_action_previous_item"
-            android:gravity="center"/>
+            android:src="@drawable/ic_action_previous_item" />
 
         <TextView
             android:id="@+id/dummy_view"
@@ -157,6 +154,14 @@
             android:layout_height="2dp"
             android:layout_below="@id/text_container"
             android:textSize="2sp" />
+
     </RelativeLayout>
+
+    <View
+        android:id="@+id/danger_level"
+        android:layout_width="6dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right"
+        android:background="@android:color/transparent"/>
 
 </FrameLayout>

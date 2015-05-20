@@ -70,6 +70,8 @@ public class Utils {
             return context.getResources().getColor(android.R.color.darker_gray);
         } else if ("Default".equalsIgnoreCase(colorName)) {
             return context.getResources().getColor(R.color.header_background);
+        } else if ("Transparent".equalsIgnoreCase(colorName)) {
+            return context.getResources().getColor(android.R.color.transparent);
         }
 
         return context.getResources().getColor(android.R.color.white);
