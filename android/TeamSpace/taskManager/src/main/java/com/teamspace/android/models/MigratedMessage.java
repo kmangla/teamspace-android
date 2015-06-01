@@ -22,6 +22,8 @@ public class MigratedMessage {
 	private long time;
 	// Unique id for the reply
 	private String messageID;
+    // System generated message
+    private boolean systemGenerated;
 	
 	private static String FOR_TASK = "forTask";
 	private static String TASK_ID = "taskID";
@@ -32,6 +34,7 @@ public class MigratedMessage {
 	private static String TIME = "time";
 	private static String MESSAGE_ID = "messageID";
 	private static String ID = "id";
+    private static String SYSTEM_GENERATED = "systemGenerated";
 	private static String UPDATED = "updatedAt";
 	
 	public String getTaskID() {
@@ -64,6 +67,12 @@ public class MigratedMessage {
 	public void setMessageID(String messageID) {
 		this.messageID = messageID;
 	}
+    public boolean getSystemGenerated() {
+        return systemGenerated;
+    }
+    public void setSystemGenerated(boolean systemGenerated) {
+        this.systemGenerated = systemGenerated;
+    }
 	
 	
 //	public JSONObject toJSONObject() throws JSONException { 
@@ -91,6 +100,11 @@ public class MigratedMessage {
 		message.taskID = object.getString(FOR_TASK);
 		message.messageID = object.getString(ID);
 		message.text = object.getString(TEXT);
+
+        try {
+            message.systemGenerated = object.getBoolean(SYSTEM_GENERATED);
+        } catch (Exception e) {
+        }
 
         try {
             MigratedEmployee emp = MigratedEmployee.parseJSON(object.getJSONObject(SENDER));

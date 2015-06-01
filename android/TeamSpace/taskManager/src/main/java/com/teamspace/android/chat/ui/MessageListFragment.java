@@ -252,6 +252,8 @@ public class MessageListFragment extends Fragment {
 	
 	private static class MyListAdapter extends ArrayAdapter<MigratedMessage> {
 
+        private enum RowType {SYSTEM_GENERATED, SELF, NON_SELF};
+
         private final Context mContext;
         public boolean flashNewlyAddedRows;
         public long flashRequestTime;
@@ -326,20 +328,39 @@ public class MessageListFragment extends Fragment {
         }
 
         @Override
+        public int getItemViewType (int position) {
+            final MigratedMessage message = getItem(position);
+            boolean selfRow = (message.getEmployeeID().equalsIgnoreCase(Utils.getSignedInUserId()));
+            boolean systemGenerated = message.getSystemGenerated();
+
+            if (systemGenerated) {
+                return RowType.SYSTEM_GENERATED.ordinal();
+            } else if (selfRow) {
+                return RowType.SELF.ordinal();
+            } else {
+                return RowType.NON_SELF.ordinal();
+            }
+        }
+
+        @Override
         public View getView(final int position, final View convertView, final ViewGroup parent) {
             View view = convertView;
             
             final MigratedMessage message = getItem(position);
             final String taskId = message.getTaskID();
             boolean selfRow = (message.getEmployeeID().equalsIgnoreCase(Utils.getSignedInUserId()));
+            boolean systemGenerated = message.getSystemGenerated();
 
             // If there is no view to reuse, create a new one and setup its viewholder
             if (view == null) {
-                if (selfRow) {
+                if (systemGenerated) {
+                    view = LayoutInflater.from(mContext).inflate(R.layout.message_list_system_generated_row, parent, false);
+                } else if (selfRow) {
                     view = LayoutInflater.from(mContext).inflate(R.layout.message_list_self_row, parent, false);
                 } else {
                     view = LayoutInflater.from(mContext).inflate(R.layout.message_list_others_row, parent, false);
                 }
+
                 MessageViewHolder vh = new MessageViewHolder(view);
                 view.setTag(vh);
             }
