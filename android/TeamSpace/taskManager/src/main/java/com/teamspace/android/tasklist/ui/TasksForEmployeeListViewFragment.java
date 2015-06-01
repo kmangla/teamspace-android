@@ -542,9 +542,8 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
 
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(mContext, "Send Reminder Clicked for task " + taskId,
-                                    Toast.LENGTH_SHORT).show();
                             closeAllRows();
+                            forceReminderOnTask(v.getContext(), task, position);
                         }
                     });
 
@@ -647,6 +646,33 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
 
             // Remove the completed task from the listview
             remove(task);
+        }
+
+        protected void forceReminderOnTask(final Context context,
+                                           MigratedTask task, int position) {
+            DataManager dataMgr = DataManager.getInstance(context);
+            task.setForceReminder(1);
+            dataMgr.updateTask(task, new DataManagerCallback() {
+
+                @Override
+                public void onSuccess(String response) {
+                    Toast.makeText(
+                            context,
+                            context.getResources().getString(
+                                    R.string.task_force_reminder_requested),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(String response) {
+                    // Notify user about the error
+                    Toast.makeText(
+                            context,
+                            context.getResources().getString(
+                                    R.string.error_task_update_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         protected void closeAllRows() {

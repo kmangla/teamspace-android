@@ -80,6 +80,9 @@ public class TaskUpdater {
 				    	Utils.log("updateTask() POST response for url: " + url + " params: " + params
 								+ " got response: " + response);
 						DatabaseCache.getInstance(context).updateMigratedTask(task);
+                        if (mCallback != null) {
+                            mCallback.onSuccess(response);
+                        }
 				    }
 				},		
 				new Response.ErrorListener() {
@@ -89,6 +92,9 @@ public class TaskUpdater {
 				    	Utils.log("updateTask() POST failed for url " + url + " params: " + params
 								+ " with error " + error);
 				    	error.printStackTrace();
+                        if (mCallback != null) {
+                            mCallback.onFailure(error.getLocalizedMessage());
+                        }
 				    }  
 				});
 

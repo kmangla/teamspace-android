@@ -31,6 +31,8 @@ public class MigratedTask {
 	private long lastUpdate;
 	private long lastSeen;
 	private long updateCount;
+    private long forceReminder;
+    private long markUpdated;
 
     private long priority;
     private MigratedMessage lastMessage;
@@ -45,6 +47,8 @@ public class MigratedTask {
 	private static String EMPLOYEE_NUMBER = "employeeNumber";
 	private static String COMPANY_ID = "companyID";
 	private static String FREQUENCY = "frequency";
+    private static String FORCE_REMINDER = "forceReminder";
+    private static String MARK_UPDATED = "markUpdated";
 	private static String CREATED_ON = "createdOn";
 	private static String LAST_REMINDER = "lastReminder";
 	private static String LAST_UPDATE = "lastUpdate";
@@ -123,11 +127,21 @@ public class MigratedTask {
     public long getPriority() {
         return priority;
     }
-
     public void setPriority(long priority) {
         this.priority = priority;
     }
-
+    public long getForceReminder() {
+        return forceReminder;
+    }
+    public void setForceReminder(long forceReminder) {
+        this.forceReminder = forceReminder;
+    }
+    public long getMarkUpdated() {
+        return markUpdated;
+    }
+    public void setMarkUpdated(long markUpdated) {
+        this.markUpdated = markUpdated;
+    }
 	public String getEmployeeID() {
 		return employeeID;
 	}
@@ -219,6 +233,8 @@ public class MigratedTask {
 		obj.put(STATUS, this.getStatus());
 		obj.put(FREQUENCY, this.getFrequency() + "");
 		obj.put(Constants.KEY, Utils.getSignedInUserKey());
+        obj.put(FORCE_REMINDER, String.valueOf(this.getForceReminder()));
+        obj.put(MARK_UPDATED, String.valueOf(this.getMarkUpdated()));
 		return obj;
 	}
 	
