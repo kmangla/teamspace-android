@@ -83,8 +83,10 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             @Override
             public void onClosed(int position, boolean fromRight) {
                 View view = Utils.getRowFromListView(swipelistview, position);
-                View danger = (View) view.findViewById(R.id.danger_level);
-                danger.setVisibility(View.VISIBLE);
+                if (view != null) {
+                    View danger = (View) view.findViewById(R.id.danger_level);
+                    danger.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
