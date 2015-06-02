@@ -54,6 +54,7 @@
     <string name="delete">Delete</string>
     <string name="call">Call</string>
     <string name="call_emp">Call \n Employee</string>
+    <string name="mark_updated">Mark\nUpdated</string>
     <string name="reply_pending">Reply Pending</string>
     <string name="escalation_needed">Escalation Needed</string>
     <string name="pause_task">Pause</string>
@@ -86,6 +87,8 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_add">Add</string>
     <string name="task_force_reminder_requested">Employee will be soon reminded for this task.</string>
+    <string name="task_mark_updated">This task is now marked up-to-date.</string>
+    <string name="task_mark_updated_by_owner">This task was marked up-to-date by you.</string>
 
     <!-- ERROR MESSAGES  -->
     <string name="error_employee_deletion_failed">Sorry, could not delete the employee due to server error.</string>

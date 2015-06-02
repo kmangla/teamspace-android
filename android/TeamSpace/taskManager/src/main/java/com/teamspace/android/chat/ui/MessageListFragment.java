@@ -84,6 +84,7 @@ public class MessageListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Utils.trackPageView("MessagesForParticularTask");
+        refreshUI();
     }
 
 	@Override

@@ -552,9 +552,9 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             View danger = (View) view.findViewById(R.id.danger_level);
             if (task.getPriority() > 75) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Red"));
-                viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
                 viewHolder.lastMessage.setText(view.getContext().getString(R.string.escalation_needed));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Red"));
+                viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
                 viewHolder.sendReminder
                         .setOnClickListener(new View.OnClickListener() {
 
@@ -564,11 +564,22 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                                 Utils.callPhoneNumber(v.getContext(), task.getEmployeeNumber());
                             }
                         });
+
+                viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_updated));
+                viewHolder.markCompleted
+                        .setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                closeAllRows();
+                                markUpdated(v.getContext(), task, position);
+                            }
+                        });
             } else if (task.getPriority() > 50) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Orange"));
-                viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
                 viewHolder.lastMessage.setText(view.getContext().getString(R.string.reply_pending));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Orange"));
+                viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
                 viewHolder.sendReminder
                         .setOnClickListener(new View.OnClickListener() {
 
@@ -576,6 +587,17 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             public void onClick(View v) {
                                 closeAllRows();
                                 Utils.callPhoneNumber(v.getContext(), task.getEmployeeNumber());
+                            }
+                        });
+
+                viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_updated));
+                viewHolder.markCompleted
+                        .setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                closeAllRows();
+                                markUpdated(v.getContext(), task, position);
                             }
                         });
             } else {
@@ -663,6 +685,44 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             context.getResources().getString(
                                     R.string.task_force_reminder_requested),
                             Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(String response) {
+                    // Notify user about the error
+                    Toast.makeText(
+                            context,
+                            context.getResources().getString(
+                                    R.string.error_task_update_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        protected void markUpdated(final Context context,
+                                   final MigratedTask task, int position) {
+            DataManager dataMgr = DataManager.getInstance(context);
+            task.setMarkUpdated(1);
+            dataMgr.updateTask(task, new DataManagerCallback() {
+
+                @Override
+                public void onSuccess(String response) {
+                    Toast.makeText(
+                            context,
+                            context.getResources().getString(
+                                    R.string.task_mark_updated),
+                            Toast.LENGTH_SHORT).show();
+
+                    String messageStr = context.getResources().getString(R.string.task_mark_updated_by_owner);
+                    MigratedMessage newMessage = new MigratedMessage();
+                    newMessage.setTaskID(task.getTaskID());
+                    newMessage.setTime(System.currentTimeMillis());
+                    newMessage.setEmployeeID(Utils.getSignedInUserId());
+                    newMessage.setSystemGenerated(true);
+                    newMessage.setText(messageStr);
+                    DataManager.getInstance(context).createMessage(newMessage, null);
+                    task.setPriority(0);
+                    refreshTaskList(context);
                 }
 
                 @Override

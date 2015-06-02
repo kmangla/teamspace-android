@@ -19,11 +19,12 @@ import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.models.Reply;
 import com.teamspace.android.models.Task;
 import com.teamspace.android.utils.TimeUtil;
+import com.teamspace.android.utils.Utils;
 
 class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String FILENAME = "tasks.sqlite";
-	private static final int VERSION = 25;
+	private static final int VERSION = 27;
 
 	public DatabaseHelper(Context c) {
 		super(c, FILENAME, null, VERSION);
@@ -61,7 +62,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("create table new_messages (" +
 				"message_id varchar(100), task_id varchar(100)," +
-				"text varchar(1024), employee_id varchar(100), " +
+				"text varchar(1024), system_generated boolean, employee_id varchar(100), " +
 				"time bigint)"); 
 
 		Log.i("task_db", "This was called");
@@ -108,6 +109,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("alter table new_tasks add column employee_number varchar(100)");
 			db.execSQL("alter table new_tasks add column title varchar(140)");
 		}
+        if (versionOld <= 25 && versionNew >= 26) {
+            db.execSQL("alter table new_messages add column system_generated boolean");
+        }
 
 	}
 		
@@ -622,6 +626,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("text",message.getText());
 		cv.put("time", message.getTime());
 		cv.put("message_id", message.getMessageID());
+        cv.put("system_generated", message.getSystemGenerated());
 
 		database.insert("new_messages", null, cv);
 	}
@@ -636,7 +641,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("text",message.getText());
 		cv.put("time", message.getTime());
 		cv.put("message_id", message.getMessageID());
-
+        cv.put("system_generated", message.getSystemGenerated());
 
 		database.update("new_messages", cv, "message_id = ?",
 				new String[] { String.valueOf(message.getMessageID()) });
@@ -974,6 +979,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
 				.getColumnIndex("message_id")));
 		migratedMessage.setTime(cursor.getLong(cursor
 				.getColumnIndex("time")));
+
+        String str = cursor.getString(cursor.getColumnIndex("system_generated"));
+        migratedMessage.setSystemGenerated("1".equalsIgnoreCase(str));
+
 		return migratedMessage;
 	}
 	
