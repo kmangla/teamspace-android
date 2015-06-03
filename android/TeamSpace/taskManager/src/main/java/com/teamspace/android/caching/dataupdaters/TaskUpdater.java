@@ -44,7 +44,6 @@ public class TaskUpdater {
                         try {
                             task = MigratedTask.parseJSON(new JSONObject(response));
                         } catch (Exception e) {
-                            task.setTaskID(response);
                         }
 
 						DatabaseCache.getInstance(context).setMigratedTask(task);

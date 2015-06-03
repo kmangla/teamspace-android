@@ -88,7 +88,9 @@
     <string name="action_add">Add</string>
     <string name="task_force_reminder_requested">Employee will be soon reminded for this task.</string>
     <string name="task_mark_updated">This task is now marked up-to-date.</string>
-    <string name="task_mark_updated_by_owner">This task was marked up-to-date by you.</string>
+    <string name="task_mark_updated_by_owner">Task marked up-to-date.</string>
+    <string name="employee_creation_sms_1">You will receive SMS messages from </string>
+    <string name="employee_creation_sms_2">Please reply to them regularly with the status updates for the tasks assigned to you. Regards, </string>
 
     <!-- ERROR MESSAGES  -->
     <string name="error_employee_deletion_failed">Sorry, could not delete the employee due to server error.</string>

@@ -14,6 +14,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -445,5 +446,16 @@ public class Utils {
                 .build());
 
         Utils.log("tracker = " + t.hashCode() + " category = " + category + " action = " + action);
+    }
+
+    public static void sendSMS(String phoneNumber, String message) {
+        if (phoneNumber == null || message == null) {
+            return;
+        }
+
+        Utils.log("Phone" + phoneNumber + "Sending message: " + message);
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
 }

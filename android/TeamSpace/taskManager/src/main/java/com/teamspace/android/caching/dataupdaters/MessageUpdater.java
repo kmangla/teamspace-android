@@ -42,7 +42,10 @@ public class MessageUpdater {
 				    public void onResponse(String response) {
 						Utils.log("createMessage() POST response for url: " + url + " params: " + params
 								+ " got response: " + response);
-						message.setMessageID(response);
+                        try {
+                            message = MigratedMessage.parseJSON(new JSONObject(response));
+                        } catch (Exception e) {
+                        }
 						DatabaseCache.getInstance(context).setMigratedMessage(message);
 						if (mCallback != null) {
 							mCallback.onSuccess(response);

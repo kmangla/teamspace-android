@@ -23,6 +23,7 @@ public class MigratedEmployee {
 	private String designation;
 	private String taskCount;
 	private String lastUpdated;
+    private String pairedNumber;
 	
 	private static String NAME = "name";
 	private static String PHONE = "phone";
@@ -45,6 +46,12 @@ public class MigratedEmployee {
 	public void setPhoneWithContryCode(String phone) {
 		this.phone = phone;
 	}
+    public String getPairedNumber() {
+        return pairedNumber;
+    }
+    public void setPairedNumber(String pairedNumber) {
+        this.pairedNumber = pairedNumber;
+    }
 	
 	public String getPhoneWithoutCountryCode(Context context) {
 		if (phone != null && phone.length() > 3) {
@@ -132,13 +139,19 @@ public class MigratedEmployee {
 		employee.employeeID = object.getString("id");
 		employee.designation = object.optString("accountType", "Employee");
         employee.taskCount = object.getString("taskCount");
-		
+
 		long time = System.currentTimeMillis();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
         Date resultdate = new Date(time);
         String createdAt = object.getString("createdAt");
         
         employee.lastUpdated = object.optString("updatedAt", createdAt).substring(0, 10);
+
+        try {
+            employee.pairedNumber = object.getString("pairedNumber");
+        } catch (JSONException e) {
+
+        }
         
         try {
 			employee.userID = object.getString("manager");

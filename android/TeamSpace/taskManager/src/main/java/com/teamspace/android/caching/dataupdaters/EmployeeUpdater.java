@@ -5,6 +5,7 @@ import java.util.HashMap;
 import android.content.Context;
 import android.util.Log;
 
+import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.caching.DatabaseCache;
@@ -14,6 +15,8 @@ import com.teamspace.android.networking.NetworkingLayer;
 import com.teamspace.android.utils.Utils;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
+import org.json.JSONObject;
 
 public class EmployeeUpdater {
 	private Context mContext;
@@ -37,11 +40,20 @@ public class EmployeeUpdater {
 				    public void onResponse(String response) {
 				    	Utils.log("createEmployee() POST response for url: " + url + " params: " + params
 								+ " got response: " + response);
-				    	mEmployee.setEmployeeID(response);
-						DatabaseCache.getInstance(mContext).setMigratedEmployeeBlockingCall(mEmployee);
-						if (mCallback != null) {
-							mCallback.onSuccess(response);
-						}
+                        try {
+                            mEmployee = MigratedEmployee.parseJSON(new JSONObject(response));
+                            DatabaseCache.getInstance(mContext).setMigratedEmployeeBlockingCall(mEmployee);
+                            if (mCallback != null) {
+                                mCallback.onSuccess(response);
+                            }
+                            String message = mContext.getResources().getString(R.string.employee_creation_sms_1) + " +" +
+                                    mEmployee.getPairedNumber() + ". " +
+                                    mContext.getResources().getString(R.string.employee_creation_sms_2) + " " +
+                                    Utils.getSignedInUserName();
+                            Utils.sendSMS(mEmployee.getPhoneWithCountryCode(), message);
+                        } catch (Exception e) {
+
+                        }
 				    }
 				},		
 				new Response.ErrorListener() {
