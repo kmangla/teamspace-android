@@ -329,6 +329,11 @@ public class MessageListFragment extends Fragment {
         }
 
         @Override
+        public int getViewTypeCount() {
+            return 3;
+        }
+
+        @Override
         public int getItemViewType (int position) {
             final MigratedMessage message = getItem(position);
             boolean selfRow = (message.getEmployeeID().equalsIgnoreCase(Utils.getSignedInUserId()));
