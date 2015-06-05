@@ -12,10 +12,19 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".MainActivity$PlaceholderFragment">
 
+        <Button
+            android:id="@+id/self_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_light"
+            android:text="@string/change_number"
+            android:textColor="@android:color/white" />
+
         <TextView
             android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/self_number"
             android:text="@string/test"
             android:textColor="@android:color/holo_blue_light"
             android:textSize="16sp" />

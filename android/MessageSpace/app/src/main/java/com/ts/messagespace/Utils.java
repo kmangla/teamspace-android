@@ -23,6 +23,7 @@ import java.util.HashMap;
 public class Utils {
     public static final String PROPERTY_REG_ID = "registration_id";
     public static final String PROPERTY_APP_VERSION = "appVersion";
+    private static String signedInUserPhoneNumber;
 
     public static void sendSMS(String phoneNumber, String message)
     {
@@ -167,12 +168,68 @@ public class Utils {
                 Context.MODE_PRIVATE);
     }
 
-    public static String getSelfPhoneNumber(Context context) {
-        TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String phoneNumber = tMgr.getLine1Number();
-        return phoneNumber;
+    public static boolean isStringNotEmpty(String str) {
+        if (str == null || str.length() == 0) {
+            return false;
+        }
+        return true;
     }
 
+    public static boolean isStringEmpty(String str) {
+        return !isStringNotEmpty(str);
+    }
+
+    public static String getSelfPhoneNumber(Context context) {
+        if (isStringNotEmpty(signedInUserPhoneNumber)) {
+            return signedInUserPhoneNumber;
+        }
+
+        TelephonyManager tMgr = (TelephonyManager) MessageSpaceApplication.getAppContext().
+                getSystemService(Context.TELEPHONY_SERVICE);
+        signedInUserPhoneNumber = tMgr.getLine1Number();
+
+        // Error case - some devices might not return phone number correctly
+        if (Utils.isStringEmpty(signedInUserPhoneNumber)) {
+            // Maybe user had manually entered his phone number during registration.
+            // Try to find that entry.
+            signedInUserPhoneNumber = Utils.readStringFromSharedPrefs(context, "EMPLOYEE_PHONE");
+            return signedInUserPhoneNumber;
+        }
+
+        // Success case
+        String countryCode = getCountryZipCode();
+
+        // If phone number includes country code, make sure it starts with +
+        if (signedInUserPhoneNumber.length() > 10 && signedInUserPhoneNumber.indexOf("+") < 0) {
+            signedInUserPhoneNumber = "+" + signedInUserPhoneNumber;
+        } else if (signedInUserPhoneNumber.length() <= 10) {
+            signedInUserPhoneNumber = "+" + countryCode + signedInUserPhoneNumber;
+        }
+        return signedInUserPhoneNumber;
+    }
+
+    public static String getCountryZipCode() {
+        String CountryID="";
+        String CountryZipCode="";
+
+        TelephonyManager manager = (TelephonyManager) MessageSpaceApplication.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID= manager.getSimCountryIso().toUpperCase();
+        String[] rl = MessageSpaceApplication.getAppContext().getResources().getStringArray(R.array.CountryCodes);
+        for(int i=0;i<rl.length;i++){
+            String[] g=rl[i].split(",");
+            if(g[1].trim().equals(CountryID.trim())){
+                CountryZipCode=g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
+
+    public static void saveSelfPhoneNumber(String value) {
+        signedInUserPhoneNumber = value;
+        writeStringToSharedPrefs(MessageSpaceApplication.getAppContext(), "EMPLOYEE_PHONE", value);
+    }
 
     public static void saveServer(Context context, String s) {
         if (s == null || s.length() == 0) {

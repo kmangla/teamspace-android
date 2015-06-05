@@ -1,9 +1,11 @@
 package com.ts.messagespace;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,14 @@ public class MainFragment extends Fragment {
         number = (EditText) rootView.findViewById(R.id.number);
         server = (EditText) rootView.findViewById(R.id.server_edit_text);
         port = (EditText) rootView.findViewById(R.id.port_edit_text);
+
+        Button selfNumber = (Button) rootView.findViewById(R.id.self_number);
+        selfNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enterPhoneNumber(view);
+            }
+        });
 
         Button saveServer = (Button) rootView.findViewById(R.id.save_server);
         saveServer.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +101,31 @@ public class MainFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void enterPhoneNumber(final View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        alert.setTitle("Enter Phone Number");
+        alert.setMessage("Example: +919890111111");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(getActivity());
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Utils.saveSelfPhoneNumber(input.getText().toString());
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
     }
 
     public void setGCMRegistrationId(String id) {
