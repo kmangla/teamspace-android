@@ -391,9 +391,23 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
         }
 
         public static int compareTasksBasedOnTaskSortArray(MigratedTask lhs, MigratedTask rhs, int indexInSortArray) {
-            // R.array.task_sort_options corresponds to the following cases.
+            // R.array.task_for_emp_sort_options corresponds to the following cases.
             switch (indexInSortArray) {
                 case 0:
+                    if (lhs.getPriority() < rhs.getPriority()) {
+                        return 1;
+                    } else if (lhs.getPriority() > rhs.getPriority()) {
+                        return -1;
+                    } else {
+                        if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
+                            return 1;
+                        } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
+                            return -1;
+                        } else {
+                            return lhs.getTitle().compareTo(rhs.getTitle());
+                        }
+                    }
+                case 1:
                     if (lhs.getLastUpdate() < rhs.getLastUpdate()) {
                         return 1;
                     } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
@@ -401,7 +415,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                     } else {
                         return lhs.getTitle().compareTo(rhs.getTitle());
                     }
-                case 1:
+                case 2:
                     if (lhs.getFrequency() > rhs.getFrequency()) {
                         return 1;
                     } else if (lhs.getFrequency() < rhs.getFrequency()) {
@@ -409,7 +423,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                     } else {
                         return lhs.getTitle().compareTo(rhs.getTitle());
                     }
-                case 2:
+                case 3:
                     if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
                         return 1;
                     } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
@@ -417,7 +431,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                     } else {
                         return lhs.getTitle().compareTo(rhs.getTitle());
                     }
-                case 3:
+                case 4:
                     return lhs.getTitle().compareTo(rhs.getTitle());
                 default:
                     return lhs.getTitle().compareTo(rhs.getTitle());

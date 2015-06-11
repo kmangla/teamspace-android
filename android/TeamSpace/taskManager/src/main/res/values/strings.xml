@@ -189,16 +189,17 @@
         <item>Notifications</item>
     </string-array>
     <string-array name="task_sort_options">
-        <item>Employee</item>
+        <item>Priority</item>
+        <item>Notifications</item>
         <item>Last Updated</item>
         <item>Frequency</item>
-        <item>Notifications</item>
+        <item>Employee</item>
         <item>Title</item>
     </string-array>
     <string-array name="task_for_emp_sort_options">
+        <item>Priority</item>
         <item>Last Updated</item>
         <item>Frequency</item>
-        <!--<item>Category</item>-->
         <item>Notifications</item>
         <item>Title</item>
     </string-array>
