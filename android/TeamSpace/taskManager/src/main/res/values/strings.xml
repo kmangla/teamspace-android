@@ -55,6 +55,7 @@
     <string name="call">Call</string>
     <string name="call_emp">Call \n Employee</string>
     <string name="mark_updated">Mark\nUpdated</string>
+    <string name="mark_completed">Mark\nCompleted</string>
     <string name="reply_pending">Reply Pending</string>
     <string name="escalation_needed">Escalation Needed</string>
     <string name="pause_task">Pause</string>

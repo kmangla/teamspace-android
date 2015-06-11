@@ -430,7 +430,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 view.setTag(vh);
             }
 
-            TaskViewHolder viewHolder = (TaskViewHolder) view.getTag();
+            final TaskViewHolder viewHolder = (TaskViewHolder) view.getTag();
             if (viewHolder == null || !(viewHolder instanceof TaskViewHolder)) {
                 return view;
             }
@@ -584,6 +584,32 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         });
             } else {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Transparent"));
+            }
+
+            // Allow the owner to mark task updated if its priority is non-zero
+            if (task.getPriority() > 0) {
+                viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_updated));
+                viewHolder.markCompleted
+                        .setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                closeAllRows();
+                                markUpdated(v.getContext(), task, position);
+
+                                // Change the button to say "mark completed"
+                                viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
+                                viewHolder.markCompleted
+                                        .setOnClickListener(new View.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(View v) {
+                                                closeAllRows();
+                                                markTaskCompleted(v.getContext(), task, position);
+                                            }
+                                        });
+                            }
+                        });
             }
 
             // For newly added item, change the appearance
