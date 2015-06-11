@@ -24,7 +24,7 @@ import com.teamspace.android.utils.Utils;
 class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String FILENAME = "tasks.sqlite";
-	private static final int VERSION = 27;
+	private static final int VERSION = 28;
 
 	public DatabaseHelper(Context c) {
 		super(c, FILENAME, null, VERSION);
@@ -62,7 +62,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("create table new_messages (" +
 				"message_id varchar(100), task_id varchar(100)," +
-				"text varchar(1024), system_generated boolean, employee_id varchar(100), " +
+				"text varchar(1024), system_generated boolean, notif_sent boolean, employee_id varchar(100), " +
 				"time bigint)"); 
 
 		Log.i("task_db", "This was called");
@@ -112,7 +112,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
         if (versionOld <= 25 && versionNew >= 26) {
             db.execSQL("alter table new_messages add column system_generated boolean");
         }
-
+        if (versionOld <= 27 && versionNew >= 28) {
+            db.execSQL("alter table new_messages add column notif_sent boolean");
+        }
 	}
 		
 	public ArrayList<Task> getTasks(String employeeID, boolean completed) {
@@ -627,6 +629,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("time", message.getTime());
 		cv.put("message_id", message.getMessageID());
         cv.put("system_generated", message.getSystemGenerated());
+        cv.put("notif_sent", message.getNotifSent());
 
 		database.insert("new_messages", null, cv);
 	}
@@ -642,6 +645,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("time", message.getTime());
 		cv.put("message_id", message.getMessageID());
         cv.put("system_generated", message.getSystemGenerated());
+        cv.put("notif_sent", message.getNotifSent());
 
 		database.update("new_messages", cv, "message_id = ?",
 				new String[] { String.valueOf(message.getMessageID()) });
@@ -982,6 +986,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         String str = cursor.getString(cursor.getColumnIndex("system_generated"));
         migratedMessage.setSystemGenerated("1".equalsIgnoreCase(str));
+
+        str = cursor.getString(cursor.getColumnIndex("notif_sent"));
+        migratedMessage.setNotifSent("1".equalsIgnoreCase(str));
 
 		return migratedMessage;
 	}

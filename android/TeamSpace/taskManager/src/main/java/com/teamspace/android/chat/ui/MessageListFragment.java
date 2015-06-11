@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -375,7 +376,10 @@ public class MessageListFragment extends Fragment {
             if (viewHolder == null || !(viewHolder instanceof MessageViewHolder)) {
             	return view;
             }
-            
+
+            if (selfRow && viewHolder.checkMark != null) {
+                viewHolder.checkMark.setVisibility(message.getNotifSent() ? View.VISIBLE : View.GONE);
+            }
             // Set the content of text views
             viewHolder.message.setText(message.getText());
             viewHolder.time.setText(Utils.getDateAndTime(message.getTime()));
@@ -450,11 +454,14 @@ public class MessageListFragment extends Fragment {
     	public TextView message;
     	public TextView time;
     	public View frontView;
+        public ImageView checkMark;
 
     	public MessageViewHolder(View view) {
     		message = (TextView) view.findViewById(R.id.message);            
 	        time = (TextView) view.findViewById(R.id.time);
 	        frontView = (View) view.findViewById(R.id.front);
+            checkMark = (ImageView) view.findViewById(R.id.check_mark);
+
     	}
     }
 }

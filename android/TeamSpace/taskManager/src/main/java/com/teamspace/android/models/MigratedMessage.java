@@ -24,6 +24,8 @@ public class MigratedMessage {
 	private String messageID;
     // System generated message
     private boolean systemGenerated;
+    // Message sent to receiver
+    private boolean notifSent;
 	
 	private static String FOR_TASK = "forTask";
 	private static String TASK_ID = "taskID";
@@ -35,6 +37,7 @@ public class MigratedMessage {
 	private static String MESSAGE_ID = "messageID";
 	private static String ID = "id";
     private static String SYSTEM_GENERATED = "systemGenerated";
+    private static String NOTIFICATION_SENT = "notifSent";
 	private static String UPDATED = "updatedAt";
 	
 	public String getTaskID() {
@@ -73,7 +76,13 @@ public class MigratedMessage {
     public void setSystemGenerated(boolean systemGenerated) {
         this.systemGenerated = systemGenerated;
     }
-	
+    public boolean getNotifSent() {
+        return notifSent;
+    }
+    public void setNotifSent(boolean notifSent) {
+        this.notifSent = notifSent;
+    }
+
 	
 //	public JSONObject toJSONObject() throws JSONException { 
 //		JSONObject obj  = new JSONObject();
@@ -103,6 +112,11 @@ public class MigratedMessage {
 
         try {
             message.systemGenerated = object.getBoolean(SYSTEM_GENERATED);
+        } catch (Exception e) {
+        }
+
+        try {
+            message.notifSent = object.getBoolean(NOTIFICATION_SENT);
         } catch (Exception e) {
         }
 
