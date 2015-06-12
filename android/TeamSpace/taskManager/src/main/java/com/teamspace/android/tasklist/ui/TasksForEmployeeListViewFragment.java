@@ -587,6 +587,18 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             public void onClick(View v) {
                                 closeAllRows();
                                 markUpdated(v.getContext(), task, position);
+
+                                // Change the button to say "mark completed"
+                                viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
+                                viewHolder.markCompleted
+                                        .setOnClickListener(new View.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(View v) {
+                                                closeAllRows();
+                                                markTaskCompleted(v.getContext(), task, position);
+                                            }
+                                        });
                             }
                         });
             } else if (task.getPriority() > 50) {
@@ -612,6 +624,18 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             public void onClick(View v) {
                                 closeAllRows();
                                 markUpdated(v.getContext(), task, position);
+
+                                // Change the button to say "mark completed"
+                                viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
+                                viewHolder.markCompleted
+                                        .setOnClickListener(new View.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(View v) {
+                                                closeAllRows();
+                                                markTaskCompleted(v.getContext(), task, position);
+                                            }
+                                        });
                             }
                         });
             } else {

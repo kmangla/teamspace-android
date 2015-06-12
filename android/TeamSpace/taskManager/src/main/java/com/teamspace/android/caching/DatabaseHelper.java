@@ -24,7 +24,7 @@ import com.teamspace.android.utils.Utils;
 class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String FILENAME = "tasks.sqlite";
-	private static final int VERSION = 28;
+	private static final int VERSION = 29;
 
 	public DatabaseHelper(Context c) {
 		super(c, FILENAME, null, VERSION);
@@ -54,7 +54,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("create table new_tasks (task_id varchar(100), "
 				+ "description varchar(1000), title varchar(140), status varchar(100), user_id varchar(100),"
 				+ "company_id varchar(100), employee_id varchar(100), employee_name varchar(100), employee_number varchar(100), frequency bigint,"
-				+ "created_on bigint, last_reminder bigint, update_count bigint, last_update bigint, last_seen bigint)");
+				+ "created_on bigint, last_reminder bigint, update_count bigint, last_update bigint, priority bigint, last_seen bigint)");
 		
 		db.execSQL("create table new_employees (name varchar(100), "
 				+ "phone varchar(100), company_id varchar(100), user_id varchar(100),"
@@ -114,6 +114,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
         if (versionOld <= 27 && versionNew >= 28) {
             db.execSQL("alter table new_messages add column notif_sent boolean");
+        }
+        if (versionOld <= 28 && versionNew >= 29) {
+            db.execSQL("alter table new_tasks add column priority bigint");
         }
 	}
 		
@@ -690,6 +693,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("last_reminder", task.getLastReminder());
 		cv.put("last_update", task.getLastUpdate());
 		cv.put("last_seen", task.getLastSeen());
+        cv.put("priority", task.getPriority());
 		cv.put("update_count", task.getUpdateCount());		
 
 		database.insert("new_tasks", null, cv);
@@ -714,6 +718,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("last_reminder", task.getLastReminder());
 		cv.put("last_update", task.getLastUpdate());
 		cv.put("last_seen", task.getLastSeen());
+        cv.put("priority", task.getPriority());
 
 		database.update("new_tasks", cv, "task_id = ?",
 				new String[] { String.valueOf(task.getTaskID()) });
@@ -1051,6 +1056,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
 				.getColumnIndex("last_update")));
 		migratedTask.setLastSeen(cursor.getLong(cursor
 				.getColumnIndex("last_seen")));
+        migratedTask.setPriority(cursor.getLong(cursor
+                .getColumnIndex("priority")));
 		return migratedTask;
 	}
 

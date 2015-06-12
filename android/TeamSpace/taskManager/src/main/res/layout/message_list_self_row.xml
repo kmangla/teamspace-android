@@ -34,16 +34,17 @@
 
             <ImageView
                 android:id="@+id/check_mark"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_marginTop="2dp"
+                android:layout_width="14dp"
+                android:layout_height="10dp"
                 android:src="@drawable/ic_action_accept"/>
 
             <TextView
                 android:id="@+id/time"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="6dp"
                 android:gravity="right"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:text="@string/sample_text"
                 android:textColor="@android:color/white"

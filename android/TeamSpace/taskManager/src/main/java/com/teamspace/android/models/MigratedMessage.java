@@ -39,6 +39,7 @@ public class MigratedMessage {
     private static String SYSTEM_GENERATED = "systemGenerated";
     private static String NOTIFICATION_SENT = "notifSent";
 	private static String UPDATED = "updatedAt";
+    private static String CREATED = "createdAt";
 	
 	public String getTaskID() {
 		return taskID;
@@ -101,6 +102,7 @@ public class MigratedMessage {
 		obj.put(TASK_ID, this.getTaskID());
 		obj.put(TEXT, this.getText());
 		obj.put(SENDER, this.getEmployeeID());
+        obj.put(SYSTEM_GENERATED, this.getSystemGenerated() ? "1" : "0");
 		return obj;
 	}
 
@@ -128,7 +130,7 @@ public class MigratedMessage {
         }
 
         try {
-			message.time = ((Date)ISO8601DateParser.parse(object.getString(UPDATED))).getTime();
+			message.time = ((Date)ISO8601DateParser.parse(object.getString(CREATED))).getTime();
 		} catch (JSONException e) {
 			message.time = System.currentTimeMillis(); 
 		}
