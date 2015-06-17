@@ -516,6 +516,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 viewHolder.notification.setText("" + updateCount);
             }
 
+            viewHolder.delete.setText(view.getContext().getString(R.string.delete));
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -525,6 +526,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 }
             });
 
+            viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_completed));
             viewHolder.markCompleted
                     .setOnClickListener(new View.OnClickListener() {
 
@@ -535,6 +537,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         }
                     });
 
+            viewHolder.sendReminder.setText(view.getContext().getString(R.string.send_reminder));
             viewHolder.sendReminder
                     .setOnClickListener(new View.OnClickListener() {
 

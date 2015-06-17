@@ -534,6 +534,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                 viewHolder.notification.setText("" + updateCount);
             }
 
+            viewHolder.delete.setText(view.getContext().getString(R.string.delete));
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -543,6 +544,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                 }
             });
 
+            viewHolder.delete.setText(view.getContext().getString(R.string.delete));
             viewHolder.markCompleted
                     .setOnClickListener(new View.OnClickListener() {
 
@@ -553,6 +555,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                         }
                     });
 
+            viewHolder.sendReminder.setText(view.getContext().getString(R.string.send_reminder));
             viewHolder.sendReminder
                     .setOnClickListener(new View.OnClickListener() {
 
