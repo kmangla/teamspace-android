@@ -520,7 +520,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Black"));
 
             if (lastMsgTime > 0) {
-                viewHolder.update.setText("" + new Date(task.getLastUpdate()));
+                viewHolder.update.setText(Utils.getDateAndTime(lastMsgTime) + "");
             } else {
                 viewHolder.update.setText(Constants.EMPTY_STRING);
             }
