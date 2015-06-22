@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,6 +64,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     SwipeListView swipelistview;
     private int currentSortPreference = 0;
     private Handler uiHandler;
+    public static final int NOTIFICATION_ID = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -222,6 +224,11 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 //				SettingsPreferenceFragment.KEY_PREF_SORT_TEXT_COLOR,
 //				SettingsPreferenceFragment.KEY_DEFAULT_SORT_TEXT_COLOR);
 //		int sortTextColor = Utils.getColor(getActivity(), sortTextColorStr);
+
+        // Clear any pending notifications
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(
+                Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
 
         return rootView;
     }

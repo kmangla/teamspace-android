@@ -1,10 +1,12 @@
 package com.teamspace.android.networking;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -55,7 +57,7 @@ public class GcmIntentService extends IntentService {
                     Utils.log(" username: " + msg.user.getName());
                     // Post notification of received message.
                     sendNotification(msg.user.getName() + ": " + msg.text);
-                    Utils.playNotificationSound();
+//                    Utils.playNotificationSound();
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
                     Utils.trackEvent("Exception", "PushNotificationDropped",
@@ -86,6 +88,9 @@ public class GcmIntentService extends IntentService {
                         .setContentTitle(getString(R.string.app_name))
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
+                        .setVisibility(Notification.VISIBILITY_PUBLIC)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setAutoCancel(true)
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
