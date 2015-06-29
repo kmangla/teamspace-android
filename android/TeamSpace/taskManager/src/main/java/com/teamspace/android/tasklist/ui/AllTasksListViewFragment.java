@@ -1,24 +1,18 @@
 package com.teamspace.android.tasklist.ui;
 
-
-import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +46,6 @@ import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class AllTasksListViewFragment extends Fragment implements OnItemSelectedListener, ActionBarResponderInterface {
 
@@ -65,6 +58,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     private int currentSortPreference = 0;
     private Handler uiHandler;
     public static final int NOTIFICATION_ID = 1;
+    private boolean mDelayRefresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -833,7 +827,19 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     public void onResume() {
         super.onResume();
         checkPlayServices();
-        refreshUI();
+        if (mDelayRefresh) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    refreshUI();
+                }
+            }, 2000);
+        } else {
+            refreshUI();
+        }
+
+        mDelayRefresh = false;
         Utils.trackPageView("AllTasks");
     }
 
@@ -951,6 +957,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 }
 
                 Utils.refreshListWithoutLosingScrollPosition(swipelistview, mAdapter);
+                mDelayRefresh = true;
                 break;
             default:
                 break;

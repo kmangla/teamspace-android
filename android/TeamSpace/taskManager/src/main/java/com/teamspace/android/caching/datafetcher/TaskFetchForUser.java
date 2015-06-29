@@ -8,8 +8,9 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.widget.Toast;
 
+import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.caching.DatabaseCache;
@@ -47,10 +48,6 @@ public class TaskFetchForUser implements DataFetchInterface {
 		    	if (callback != null) {
 		    		callback.networkResponseReceived = true;
 		    	}
-		    	
-		    	Utils.log("TaskFetchForUser GET response for url: " + url
-						+ " got response: " + response);
-		    	
 				// Call the callback
 				DatabaseCache.getInstance(context).deleteAllMigratedTasksForUserBlockingCall(userID);
 				ArrayList<MigratedTask> tasks = new ArrayList<MigratedTask>();
@@ -61,10 +58,11 @@ public class TaskFetchForUser implements DataFetchInterface {
 				      MigratedTask task = MigratedTask.parseJSON(object);
 				      tasks.add(task);
 				      DatabaseCache.getInstance(context).setMigratedTask(task);
+                      Utils.log("Task title - " + task.getTitle());
 					} catch (JSONException e) {
-						Log.e("TaskFetchForUser fetchDataFromServer json_parsing_exception", e.getMessage());
+						Utils.log("TaskFetchForUser fetchDataFromServer json_parsing_exception", e.getMessage());
 					} catch (java.text.ParseException e) {
-						Log.e("TaskFetchForUser fetchDataFromServer parsing_exception", e.getMessage());
+						Utils.log("TaskFetchForUser fetchDataFromServer parsing_exception", e.getMessage());
 					}
 				}
 				DataManager.getInstance(context).insertData(dataStoreKey, tasks);
@@ -77,6 +75,13 @@ public class TaskFetchForUser implements DataFetchInterface {
 
 		    @Override
 		    public void onErrorResponse(VolleyError error) {
+                // Notify user about the error
+                Utils.trackEvent("task", "fetch", "network_fail");
+                Toast.makeText(
+                        context,
+                        context.getResources().getString(
+                                R.string.error_task_fetch_failed),
+                        Toast.LENGTH_SHORT).show();
 		    	Utils.log("fetchDataFromServer() network call failed for tasks: " + url);
 		    	error.printStackTrace();
 		    }  

@@ -214,19 +214,38 @@ public class TaskAddEditFragment extends Fragment implements
 						@Override
 						public void onFailure(String response) {
 							// Notify user about the error
+							Utils.trackEvent("task", "update", "network_fail");
 							Toast.makeText(
 									v.getContext(),
 									v.getContext()
 											.getResources()
 											.getString(
-													R.string.error_employee_update_failed),
+													R.string.error_task_update_failed),
 									Toast.LENGTH_SHORT).show();
 						}
 					});
 				} else {
 					task.setTaskID(Constants.EMPTY_STRING);
 					task.setStatus(Constants.OPEN);
-					dataMgr.createTask(task, null);
+					dataMgr.createTask(task, new DataManagerCallback() {
+
+						@Override
+						public void onSuccess(String response) {
+						}
+
+						@Override
+						public void onFailure(String response) {
+							// Notify user about the error
+							Utils.trackEvent("task", "create", "network_fail");
+							Toast.makeText(
+									v.getContext(),
+									v.getContext()
+											.getResources()
+											.getString(
+													R.string.error_task_create_failed),
+									Toast.LENGTH_SHORT).show();
+						}
+					});
 				}
 
 				Intent newIntent = new Intent();
