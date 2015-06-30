@@ -27,5 +27,6 @@ public class Constants {
 	public static final String OPEN = "open";
 	public static final String CLOSED = "closed";
 	public static final String FREQUENCY = "FREQUENCY";	
-	public static final String DETAILS = "DETAILS";	
+	public static final String DETAILS = "DETAILS";
+    public static final String NOTIF_SENT = "NOTIF_SENT";
 }
