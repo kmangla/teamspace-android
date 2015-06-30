@@ -75,13 +75,10 @@ public class TaskFetchForUser implements DataFetchInterface {
 
 		    @Override
 		    public void onErrorResponse(VolleyError error) {
-                // Notify user about the error
-                Utils.trackEvent("task", "fetch", "network_fail");
-                Toast.makeText(
-                        context,
-                        context.getResources().getString(
-                                R.string.error_task_fetch_failed),
-                        Toast.LENGTH_SHORT).show();
+                if (callback != null) {
+                    callback.onFailure(context.getResources().getString(
+                            R.string.error_task_fetch_failed));
+                }
 		    	Utils.log("fetchDataFromServer() network call failed for tasks: " + url);
 		    	error.printStackTrace();
 		    }  

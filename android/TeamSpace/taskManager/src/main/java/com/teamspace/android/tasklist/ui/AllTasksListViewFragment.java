@@ -332,6 +332,16 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         public void onDataReceivedFromServer(String dataStoreKey) {
                             refreshUIForData(context, dataStoreKey);
                         }
+
+                        @Override
+                        public void onFailure(String message) {
+                            // Notify user about the error
+                            Utils.trackEvent("task", "fetch", "network_fail");
+                            Toast.makeText(
+                                    context,
+                                    message,
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     });
         }
 
