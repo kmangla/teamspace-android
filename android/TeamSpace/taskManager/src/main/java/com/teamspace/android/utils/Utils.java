@@ -271,6 +271,9 @@ public class Utils {
     }
 
     public static String getSignedInUserKey() {
+//        if (true) {
+//            return "5548fbd7cd008003003f04ab";
+//        }
         if (isStringNotEmpty(signedInUserKey)) {
             return signedInUserKey;
         }
@@ -289,6 +292,9 @@ public class Utils {
     }
 
     public static String getSignedInUserId() {
+//        if (true) {
+//            return "5548fbd7cd008003003f04ab";
+//        }
         if (isStringNotEmpty(signedInUserId)) {
             return signedInUserId;
         }
