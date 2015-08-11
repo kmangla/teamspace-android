@@ -19,6 +19,7 @@
     
 	<string name="save">Save</string>
     <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
     <string name="force_send">Force Send</string>
     <string name="continue_str">Continue with</string>
     <string name="enter_phone_str">Enter Phone Number</string>
