@@ -376,18 +376,25 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             // R.array.task_sort_options corresponds to the following cases.
             switch (indexInSortArray) {
                 case 0:
-                    if (lhs.getPriority() < rhs.getPriority()) {
+//                    if (lhs.getPriority() < rhs.getPriority()) { // escalation status
+//                        return 1;
+//                    } else if (lhs.getPriority() > rhs.getPriority()) {
+//                        return -1;
+//                    } else {
+//                        if (lhs.getUpdateCount() < rhs.getUpdateCount()) { // unread notifications
+//                            return 1;
+//                        } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
+//                            return -1;
+//                        } else {
+//                            return lhs.getTitle().compareTo(rhs.getTitle()); // title
+//                        }
+//                    }
+                    if (lhs.getLastUpdate() < rhs.getLastUpdate()) { // update time
                         return 1;
-                    } else if (lhs.getPriority() > rhs.getPriority()) {
+                    } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
                         return -1;
                     } else {
-                        if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
-                            return 1;
-                        } else if (lhs.getUpdateCount() > rhs.getUpdateCount()) {
-                            return -1;
-                        } else {
-                            return lhs.getTitle().compareTo(rhs.getTitle());
-                        }
+                        return lhs.getTitle().compareTo(rhs.getTitle()); // title
                     }
                 case 1:
                     if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
@@ -597,7 +604,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                                         });
                             }
                         });
-            } else if (task.getPriority() > 50) {
+            } else if (task.getPriority() > 0) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Orange"));
                 viewHolder.lastMessage.setText(view.getContext().getString(R.string.reply_pending));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Orange"));
@@ -635,6 +642,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                             }
                         });
             } else {
+                // Priority = 0 (task is on track)
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Transparent"));
             }
 
