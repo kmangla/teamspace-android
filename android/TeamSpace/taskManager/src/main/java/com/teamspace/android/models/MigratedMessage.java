@@ -108,9 +108,23 @@ public class MigratedMessage {
 
 	public static MigratedMessage parseJSON(JSONObject object) throws JSONException, ParseException {
 		MigratedMessage message = new MigratedMessage();
-		message.taskID = object.getString(FOR_TASK);
-		message.messageID = object.getString(ID);
-		message.text = object.getString(TEXT);
+        try {
+            message.taskID = object.getString(FOR_TASK);
+        } catch (Exception e) {
+            message.taskID = object.getString("taskID");
+        }
+
+        try {
+            message.messageID = object.getString(ID);
+        } catch (Exception e) {
+            message.messageID = object.getString("messageID");
+        }
+
+        try {
+            message.text = object.getString(TEXT);
+        } catch (Exception e) {
+            message.text = object.getString("text");
+        }
 
         try {
             message.systemGenerated = object.getBoolean(SYSTEM_GENERATED);
@@ -126,13 +140,22 @@ public class MigratedMessage {
             MigratedEmployee emp = MigratedEmployee.parseJSON(object.getJSONObject(SENDER));
             message.setEmployeeID(emp.getEmployeeID());
         } catch (Exception e) {
-            message.setEmployeeID(object.getString(SENDER));
+            try {
+                message.setEmployeeID(object.getString(SENDER));
+            } catch (Exception e1) {
+                message.setEmployeeID(object.getString("employeeID"));
+            }
         }
 
         try {
 			message.time = ((Date)ISO8601DateParser.parse(object.getString(CREATED))).getTime();
 		} catch (JSONException e) {
-			message.time = System.currentTimeMillis(); 
+            try {
+                Long timeStr = object.getLong("time");
+                message.time = new Date(timeStr).getTime();
+            } catch (JSONException e1) {
+                message.time = System.currentTimeMillis();
+            }
 		}
 		return message;
 	}

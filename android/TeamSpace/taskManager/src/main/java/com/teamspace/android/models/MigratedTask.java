@@ -54,6 +54,7 @@ public class MigratedTask {
 	private static String LAST_UPDATE = "lastUpdate";
 	private static String LAST_SEEN = "lastSeen";
 	private static String UPDATE_COUNT = "updateCount";
+    private static String LAST_MESSAGE = "last_message";
 	private static String ASSIGNED_BY = "assignedBy";
 	private static String ID = "id";
 	private static String ASSIGNED_TO = "assignedTo";
@@ -111,6 +112,10 @@ public class MigratedTask {
 	}
     public MigratedMessage getLastMessage() {
         return lastMessage;
+    }
+    public void setLastMessage(MigratedMessage lastMessage) {
+        lastMessage.setTaskID(this.taskID);
+        this.lastMessage = lastMessage;
     }
 	public void setTitle(String title) {
 		this.title = title;
@@ -216,6 +221,7 @@ public class MigratedTask {
 		obj.put(LAST_UPDATE, ISO8601DateParser.toString(new Date(this.getLastUpdate())));
 		obj.put(LAST_SEEN, ISO8601DateParser.toString(new Date(this.getLastSeen())));
 		obj.put(UPDATE_COUNT, this.getUpdateCount() + "");
+        obj.put(LAST_MESSAGE, this.getLastMessage() + "");
 
 		return obj;
 	}
@@ -261,6 +267,7 @@ public class MigratedTask {
 		}
         try {
             task.lastMessage  = MigratedMessage.parseJSON(object.getJSONObject(LAST_MSG));
+            task.lastMessage.setTaskID(task.taskID);
         } catch (JSONException e) {
             Utils.log("Json parsing exception in MigratedTask - lastMessage field is not found in server responses");
         }

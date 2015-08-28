@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.teamspace.android.models.Employee;
 import com.teamspace.android.models.EmployeeState;
 import com.teamspace.android.models.MigratedEmployee;
@@ -21,10 +22,12 @@ import com.teamspace.android.models.Task;
 import com.teamspace.android.utils.TimeUtil;
 import com.teamspace.android.utils.Utils;
 
+import org.json.JSONObject;
+
 class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String FILENAME = "tasks.sqlite";
-	private static final int VERSION = 29;
+	private static final int VERSION = 30;
 
 	public DatabaseHelper(Context c) {
 		super(c, FILENAME, null, VERSION);
@@ -54,7 +57,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("create table new_tasks (task_id varchar(100), "
 				+ "description varchar(1000), title varchar(140), status varchar(100), user_id varchar(100),"
 				+ "company_id varchar(100), employee_id varchar(100), employee_name varchar(100), employee_number varchar(100), frequency bigint,"
-				+ "created_on bigint, last_reminder bigint, update_count bigint, last_update bigint, priority bigint, last_seen bigint)");
+				+ "created_on bigint, last_reminder bigint, update_count bigint, last_message varchar(5000), last_update bigint, priority bigint, last_seen bigint)");
 		
 		db.execSQL("create table new_employees (name varchar(100), "
 				+ "phone varchar(100), company_id varchar(100), user_id varchar(100),"
@@ -117,6 +120,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
         if (versionOld <= 28 && versionNew >= 29) {
             db.execSQL("alter table new_tasks add column priority bigint");
+        }
+        if (versionOld <= 29 && versionNew >= 30) {
+            db.execSQL("alter table new_tasks add column last_message varchar(5000)");
         }
 	}
 		
@@ -694,7 +700,11 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("last_update", task.getLastUpdate());
 		cv.put("last_seen", task.getLastSeen());
         cv.put("priority", task.getPriority());
-		cv.put("update_count", task.getUpdateCount());		
+		cv.put("update_count", task.getUpdateCount());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(task.getLastMessage());
+        cv.put("last_message", json);
 
 		database.insert("new_tasks", null, cv);
 	}
@@ -719,6 +729,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("last_update", task.getLastUpdate());
 		cv.put("last_seen", task.getLastSeen());
         cv.put("priority", task.getPriority());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(task.getLastMessage());
+        cv.put("last_message", json);
 
 		database.update("new_tasks", cv, "task_id = ?",
 				new String[] { String.valueOf(task.getTaskID()) });
@@ -1058,6 +1072,15 @@ class DatabaseHelper extends SQLiteOpenHelper {
 				.getColumnIndex("last_seen")));
         migratedTask.setPriority(cursor.getLong(cursor
                 .getColumnIndex("priority")));
+
+        try {
+            String str = cursor.getString(cursor.getColumnIndex("last_message"));
+            MigratedMessage lastMessage = MigratedMessage.parseJSON(new JSONObject(str));
+            migratedTask.setLastMessage(lastMessage);
+        } catch (Exception e) {
+            Utils.log(e.toString());
+        }
+
 		return migratedTask;
 	}
 
