@@ -283,6 +283,7 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 
                 // Refresh the task lists to display this change
                 DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
+                DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_EMP, true);
 
 				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
 				getFragmentActivity().finish();
