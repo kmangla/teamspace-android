@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,15 @@ public class MainFragment extends Fragment {
         number = (EditText) rootView.findViewById(R.id.number);
         server = (EditText) rootView.findViewById(R.id.server_edit_text);
         port = (EditText) rootView.findViewById(R.id.port_edit_text);
+
+        Button viewLogs = (Button) rootView.findViewById(R.id.view_logs);
+        viewLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), LogActivity.class);
+                startActivity(i);
+            }
+        });
 
         Button selfNumber = (Button) rootView.findViewById(R.id.self_number);
         selfNumber.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +155,7 @@ public class MainFragment extends Fragment {
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
 
+        Utils.addDevLog(getActivity(), "Main screen opened (App Launched)");
         Utils.trackPageView("MessageSpace");
     }
 }

@@ -10,10 +10,13 @@
     <string name="number">Enter Phone Number</string>
     <string name="send">Send To User</string>
     <string name="change_number">Enter Self Number</string>
+    <string name="view_logs">View Logs</string>
+    <string name="delete_logs">Delete All Logs</string>
     <string name="send_to_server">Send To Server</string>
     <string name="copy">Copy To Clipboard</string>
     <string name="save_server">Save Server Address</string>
     <string name="action_settings">Settings</string>
+    <string name="logs">Logs</string>
 
     <string-array name="CountryCodes" >
         <item>93,AF</item>

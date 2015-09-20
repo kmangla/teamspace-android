@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.provider.SyncStateContract;
+import android.support.v4.app.FragmentActivity;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -15,6 +16,8 @@ import com.android.volley.VolleyError;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -325,5 +328,24 @@ public class Utils {
 
         Utils.log("tracker = " + t.hashCode() + " category = " + category +
                 " action = " + action + " label = " + label);
+    }
+
+    public static void addDevLog(Context context, String logMessage) {
+        DataManager.getInstance(context).writeLogFile(getCurrentDate() + ": " + logMessage + "\n");
+    }
+
+    public static String retrieveDevLogs(Context context) {
+        return DataManager.getInstance(context).readLogFile();
+    }
+
+    public static void clearDevLogs(Context context) {
+        DataManager.getInstance(context).deleteLogFile();
+    }
+
+    public static String getCurrentDate() {
+        long time = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
+        Date resultdate = new Date(time);
+        return sdf.format(resultdate);
     }
 }

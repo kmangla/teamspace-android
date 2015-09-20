@@ -13,9 +13,18 @@
         tools:context=".MainActivity$PlaceholderFragment">
 
         <Button
+            android:id="@+id/view_logs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_light"
+            android:text="@string/view_logs"
+            android:textColor="@android:color/white" />
+        <Button
             android:id="@+id/self_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/view_logs"
             android:background="@android:color/holo_blue_light"
             android:text="@string/change_number"
             android:textColor="@android:color/white" />
