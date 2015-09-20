@@ -18,6 +18,7 @@ import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.common.ui.DebugActivity;
+import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
 import com.teamspace.android.utils.Utils;
 
@@ -54,7 +55,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
             continueWithPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
-                    continueWithPhone(view);
+                    continueWithPhoneWithoutValidatingPhoneNumber(view);
                 }
             });
         }
@@ -120,7 +121,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
                 Utils.saveSelfPhoneNumber(phoneNumber);
                 String value = input.getText().toString();
                 Utils.saveSelfUserName(value);
-                continueWithPhone(view);
+                continueWithPhoneWithoutValidatingPhoneNumber(view);
             }
         });
 
@@ -157,6 +158,48 @@ public class PhoneNumberRegistrationFragment extends Fragment {
             }
 
             @Override
+            public void onFailure(String response) {
+                // Notify user about the error
+                Toast.makeText(
+                        view.getContext(),
+                        view.getContext().getResources().getString(
+                                R.string.error_registration_failed),
+                        Toast.LENGTH_SHORT).show();
+                if (progress != null) {
+                    progress.dismiss();
+                }
+            }
+        });
+    }
+
+    private void continueWithPhoneWithoutValidatingPhoneNumber(final View view) {
+        progress = new ProgressDialog(view.getContext());
+        progress.setTitle("Validating Phone Number");
+        progress.setMessage("Please wait while we automatically validate your phone number. This can take few minutes.");
+        progress.setCancelable(false);
+        progress.setMax(100);
+        progress.show();
+
+        // We send #### as OTP to server along with the phone number.
+        // If this phone number is in the whitelisted alpha users, the server will send back the
+        // userID and Key.
+        DataManager dataMgr = DataManager.getInstance(getActivity());
+        dataMgr.verifyOTP("####", new DataManagerCallback() {
+            public void onDataReceivedFromServer(String dataStoreKey) {
+                if (dataStoreKey == null) {
+                    return;
+                }
+                UserAuthData data = (UserAuthData)
+                        DataManager.getInstance(getActivity()).retrieveData(dataStoreKey);
+                if (data == null) {
+                    return;
+                }
+
+                Utils.setSignedInUserId(data.getUserId());
+                Utils.setSignedInUserKey(data.getKey());
+                recheckForUserIdAfter1Second();
+            }
+
             public void onFailure(String response) {
                 // Notify user about the error
                 Toast.makeText(
