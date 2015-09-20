@@ -28,13 +28,20 @@ public class Utils {
     public static final String PROPERTY_APP_VERSION = "appVersion";
     private static String signedInUserPhoneNumber;
 
-    public static void sendSMS(String phoneNumber, String message)
+    public static void sendSMS(Context context, String phoneNumber, String message)
     {
         if (phoneNumber == null || message == null) {
             Utils.trackEvent("Exception", "PushNotificationDropped",
                     "Utils:sendSMS-EmptyPhoneOrMessage");
             return;
         }
+
+        // Log the phone number and message
+        Utils.addDevLog(context, "Utils:sendSMS() Sent message to phone number ending in ..." +
+                        phoneNumber.substring(phoneNumber.length() - 3, phoneNumber.length()) +
+                        " where the message was ending in ..." +
+                        message.substring(message.length() / 2, message.length())
+        );
 
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
@@ -43,9 +50,11 @@ public class Utils {
     private static String TEXT = "description";
     private static String SENDER = "sentBy";
 
-    public static void sendToServer(Context context, String phoneNumber, String message)
+    public static void sendToServer(final Context context, String phoneNumber, String message)
     {
         if (phoneNumber == null || message == null) {
+            // Log the phone number and message
+            Utils.addDevLog(context, "Utils:sendToServer() Error: phoneNumber or message was null");
             return;
         }
 
@@ -54,22 +63,35 @@ public class Utils {
         params.put(TEXT, message);
         params.put(SENDER, phoneNumber);
 
+        // Log the phone number and message
+        Utils.addDevLog(context, "Utils:sendToServer() Sending post request to server because of " +
+                        "incoming SMS from phone number ending with ..." +
+                        phoneNumber.substring(phoneNumber.length() - 3, phoneNumber.length()) +
+                        " where the message was ending in ..." +
+                        message.substring(message.length() / 2, message.length())
+        );
+
         NetworkingLayer.getInstance(context).makePostRequest(
                 url,
                 params,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("MessageSpace", "createMessage() POST response for url: " + url + " params: " + params
-                                + " got response: " + response);
+                        String msg = "NetworkingLayer.makePostRequest() executed for url: " + url + " with params: " + params
+                                + " and got response: " + response;
+                        Log.d("MessageSpace", msg);
+                        Utils.addDevLog(context, msg);
                     }
                 },
                 new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("MessageSpace", "createMessage() POST failed for url " + url + " params: " + params
-                                + " with error " + error);
+                        String errorMsg = "NetworkingLayer.makePostRequest() failed for url " + url + " and params: " + params
+                                + " with error " + error;
+                        Log.d("MessageSpace", errorMsg);
+                        Utils.addDevLog(context, errorMsg);
+
                         error.printStackTrace();
                         Utils.trackEvent("Exception", "EmployeeReplyDropped", "Utils:sendToServer-Failed");
                     }
@@ -331,7 +353,7 @@ public class Utils {
     }
 
     public static void addDevLog(Context context, String logMessage) {
-        DataManager.getInstance(context).writeLogFile(getCurrentDate() + ": " + logMessage + "\n");
+        DataManager.getInstance(context).writeLogFile(getCurrentDate() + ": " + logMessage + "\n\n");
     }
 
     public static String retrieveDevLogs(Context context) {

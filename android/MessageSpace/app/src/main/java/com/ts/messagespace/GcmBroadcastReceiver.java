@@ -13,10 +13,10 @@ import android.util.Log;
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        Utils.addDevLog(context, "GcmBroadcastReceiver:onReceive() Push received");
         // Explicitly specify that GcmIntentService will handle the intent.
         ComponentName comp = new ComponentName(context.getPackageName(),
                 GcmIntentService.class.getName());
-        Log.d("VIVTAG", "onReceive in GcmBroadcastReceiver called");
         // Start the service, keeping the device awake while it is launching.
         startWakefulService(context, (intent.setComponent(comp)));
         setResultCode(Activity.RESULT_OK);

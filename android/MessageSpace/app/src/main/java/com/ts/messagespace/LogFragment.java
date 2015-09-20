@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**
@@ -16,6 +17,7 @@ public class LogFragment extends Fragment {
     private static View mRootView;
     private TextView logs;
     private Button deleteLogs;
+    private ScrollView logContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,6 +32,9 @@ public class LogFragment extends Fragment {
 
         logs = (TextView) mRootView.findViewById(R.id.logs);
         logs.setText(Utils.retrieveDevLogs(getActivity()));
+
+        logContainer = (ScrollView) mRootView.findViewById(R.id.log_container);
+        logContainer.fullScroll(View.FOCUS_DOWN);
 
         Button deleteLogs = (Button) mRootView.findViewById(R.id.delete_logs);
         deleteLogs.setOnClickListener(new View.OnClickListener() {

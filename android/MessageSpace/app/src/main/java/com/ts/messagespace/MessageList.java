@@ -13,18 +13,14 @@ import java.util.Date;
 public class MessageList {
     public ArrayList<Message> messageList;
 
-    public static MessageList parseJSON(JSONArray object) {
+    public static MessageList parseJSON(JSONArray object) throws JSONException {
         MessageList list = new MessageList();
         list.messageList = new ArrayList<Message>();
 
-        for(int i = 0; i < object.length(); i++) {
-            try {
-                JSONObject msgObject = object.getJSONObject(i);
-                Message message = Message.parseJSON(msgObject);
-                list.messageList.add(message);
-            } catch (Exception e) {
-
-            }
+        for (int i = 0; i < object.length(); i++) {
+            JSONObject msgObject = object.getJSONObject(i);
+            Message message = Message.parseJSON(msgObject);
+            list.messageList.add(message);
         }
 
         return list;

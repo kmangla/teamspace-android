@@ -12,6 +12,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class GcmIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Utils.trackEvent("Tracking", "PushNotificationReceived", "GcmIntentService:onHandleIntent");
+        Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Push received");
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
@@ -51,21 +53,30 @@ public class GcmIntentService extends IntentService {
                 try {
                     JSONArray object = new JSONArray(messages);
                     messageList = MessageList.parseJSON(object);
-                } catch (Exception e) {
+                } catch (JSONException e) {
                     Utils.trackEvent("Exception", "PushNotificationDropped",
                             "GcmIntentService:onHandleIntent-IncorrectPayload");
+                    Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received " +
+                            "but Json parsing exception occurred while parsing the payload");
                 }
 
-                if (messageList != null) {
+                if (messageList != null && messageList.messageList.size() > 0) {
                     for (int i = 0; i < messageList.messageList.size(); i++) {
                         Message msg = messageList.messageList.get(i);
-                        Utils.sendSMS(msg.phone, msg.message);
+                        Utils.sendSMS(this, msg.phone, msg.message);
+                        Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Sending SMS...");
                     }
+                } else {
+                    Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received " +
+                            "but message array is empty (could be json parsing exception)");
                 }
             } else {
                 Utils.trackEvent("Exception", "PushNotificationDropped",
                         "GcmIntentService:onHandleIntent-IncorrectMessageType");
+                Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received but message type was not gcm.");
             }
+        } else {
+            Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received but extras was empty");
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
