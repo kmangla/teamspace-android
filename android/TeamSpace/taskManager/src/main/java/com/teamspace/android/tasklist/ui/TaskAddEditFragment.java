@@ -270,6 +270,9 @@ public class TaskAddEditFragment extends Fragment implements
                             "TaskAddEditFragment:saveButtonClicked");
                 }
 
+                // Refresh the main task list to display this new task
+                DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
+
 				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
 				getFragmentActivity().finish();
 			}

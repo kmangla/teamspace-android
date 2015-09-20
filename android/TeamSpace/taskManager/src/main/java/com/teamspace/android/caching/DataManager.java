@@ -54,6 +54,14 @@ public class DataManager {
 		
 		return dataStore.get(dataStoreKey); 
 	}
+
+    public void removeData(String dataStoreKey) {
+        if (dataStoreKey == null) {
+            return;
+        }
+
+        dataStore.remove(dataStoreKey);
+    }
 	
 	private void fetchData(DataFetchInterface dataFetcher, DataManagerCallback callback) {
 		dataFetcher.fetchDataFromDatabaseCache(callback);

@@ -845,19 +845,26 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     public void onResume() {
         super.onResume();
         checkPlayServices();
-        if (mDelayRefresh) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    refreshUI();
-                }
-            }, 2000);
-        } else {
-            refreshUI();
-        }
 
-        mDelayRefresh = false;
+        // Refresh UI only if someone asked us to do this.
+        Object flag = DataManager.getInstance(getActivity()).retrieveData(Constants.REFRESH_ALL_TASKS);
+        DataManager.getInstance(getActivity()).removeData(Constants.REFRESH_ALL_TASKS);
+        boolean refreshAllTasksList = (flag != null) ? ((boolean) flag) : false;
+        if (refreshAllTasksList) {
+            if (mDelayRefresh) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshUI();
+                    }
+                }, 2000);
+            } else {
+                refreshUI();
+            }
+
+            mDelayRefresh = false;
+        }
         Utils.trackPageView("AllTasks");
     }
 
@@ -975,6 +982,9 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 }
 
                 Utils.refreshListWithoutLosingScrollPosition(swipelistview, mAdapter);
+                // When a new task is created, we delay the refresh of the main task list so that
+                // server can propagate the newly created task and we get it back correctly when we
+                // fetch all tasks
                 mDelayRefresh = true;
                 break;
             default:

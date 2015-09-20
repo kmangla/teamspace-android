@@ -280,7 +280,10 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                     Utils.trackEvent("Tracking", "EmployeeAdded",
                             "EmployeeAddEditFragment:saveButtonClicked");
                 }
-				
+
+                // Refresh the task lists to display this change
+                DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
+
 				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
 				getFragmentActivity().finish();
 			}
