@@ -175,7 +175,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
     private void continueWithPhoneWithoutValidatingPhoneNumber(final View view) {
         progress = new ProgressDialog(view.getContext());
         progress.setTitle("Validating Phone Number");
-        progress.setMessage("Please wait while we automatically validate your phone number. This can take few minutes.");
+        progress.setMessage("Checking in Alpha users database");
         progress.setCancelable(false);
         progress.setMax(100);
         progress.show();
@@ -197,7 +197,14 @@ public class PhoneNumberRegistrationFragment extends Fragment {
 
                 Utils.setSignedInUserId(data.getUserId());
                 Utils.setSignedInUserKey(data.getKey());
-                recheckForUserIdAfter1Second();
+                // Adding some artificial delay so that user can read the display message
+                // while spinner shows.
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        recheckForUserIdAfter1Second();
+                    }
+                }, 2000);
             }
 
             public void onFailure(String response) {
