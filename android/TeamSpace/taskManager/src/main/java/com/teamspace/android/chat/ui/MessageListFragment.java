@@ -267,11 +267,13 @@ public class MessageListFragment extends Fragment {
             mContext = context;
             mListView = listView;
             mTask = task;
-            
-            refreshMessageList(context);
         }
         
         private void refreshMessageList(final Context context) {
+            // Refresh from network only if we recently didn't do so.
+            Object flag = DataManager.getInstance(mContext).retrieveData(Constants.REFRESH_MSG + mTask.getTaskID());
+            boolean skipNetworkRefresh = (flag != null) ? ((boolean) flag) : false;
+
 			DataManager.getInstance(context).fetchMessagesForTask(mTask.getTaskID(),
 					new DataManagerCallback() {
 
@@ -283,8 +285,9 @@ public class MessageListFragment extends Fragment {
 						@Override
 						public void onDataReceivedFromServer(String dataStoreKey) {
 							refreshUIForData(context, dataStoreKey);
+                            DataManager.getInstance(mContext).insertData(Constants.REFRESH_MSG + mTask.getTaskID(), true);
 						}
-					});
+					}, skipNetworkRefresh);
 		}
 
         protected void refreshUIForData(Context context, String dataStoreKey) {

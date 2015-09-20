@@ -63,10 +63,16 @@ public class DataManager {
         dataStore.remove(dataStoreKey);
     }
 	
-	private void fetchData(DataFetchInterface dataFetcher, DataManagerCallback callback) {
+	private void fetchData(DataFetchInterface dataFetcher, DataManagerCallback callback, boolean skipNetworkRefresh) {
 		dataFetcher.fetchDataFromDatabaseCache(callback);
-		dataFetcher.fetchDataFromServer(callback);
+        if (!skipNetworkRefresh) {
+            dataFetcher.fetchDataFromServer(callback);
+        }
 	}
+
+    private void fetchData(DataFetchInterface dataFetcher, DataManagerCallback callback) {
+        fetchData(dataFetcher, callback, false);
+    }
 	
 	public void fetchTasksForEmployee(String employeeID, DataManagerCallback callback) {
 		DataFetchInterface dataFetcher = new TaskFetchForEmployee(mContext, employeeID);
@@ -78,9 +84,9 @@ public class DataManager {
 		fetchData(dataFetcher, callback);
 	}
 	
-	public void fetchMessagesForTask(String taskId, DataManagerCallback callback) {
+	public void fetchMessagesForTask(String taskId, DataManagerCallback callback, boolean skipNetworkRefresh) {
 		DataFetchInterface dataFetcher = new MessageFetchForTask(mContext, taskId);
-		fetchData(dataFetcher, callback);
+		fetchData(dataFetcher, callback, skipNetworkRefresh);
 	}
 
 	public void fetchEmployeesForUser(String userID, DataManagerCallback callback) {
