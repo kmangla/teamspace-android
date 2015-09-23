@@ -24,7 +24,7 @@
     <string name="continue_str">Continue with</string>
     <string name="enter_phone_str">Enter Phone Number</string>
     <string name="change_number">Change Phone Number</string>
-    <string name="change_server">Change Server IP</string>
+    <string name="change_server">Debug Settings</string>
     <string name="pretend_phone">Hack Phone</string>
 	<string name="tasks_assigned">Tasks Assigned</string>
 	<string name="last_updated">Last Updated</string>
