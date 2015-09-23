@@ -184,7 +184,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
         // If this phone number is in the whitelisted alpha users, the server will send back the
         // userID and Key.
         DataManager dataMgr = DataManager.getInstance(getActivity());
-        dataMgr.verifyOTP("####", new DataManagerCallback() {
+        dataMgr.verifyOTP("LLLL", new DataManagerCallback() {
             public void onDataReceivedFromServer(String dataStoreKey) {
                 if (dataStoreKey == null) {
                     return;
