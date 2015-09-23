@@ -199,6 +199,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
                 Utils.setSignedInUserKey(data.getKey());
                 // Adding some artificial delay so that user can read the display message
                 // while spinner shows.
+                handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
