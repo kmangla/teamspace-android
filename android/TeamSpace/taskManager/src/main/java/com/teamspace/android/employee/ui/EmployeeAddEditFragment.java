@@ -187,6 +187,13 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 
                     if (nameFromEditBox.contains(getString(R.string.not_available)) ||
                             phoneNumberFromEditBox.contains(getString(R.string.not_available))) {
+                        // Notify user about the error
+                        Toast.makeText(
+                                v.getContext(),
+                                v.getContext().getResources()
+                                        .getString(
+                                                R.string.error_employee_not_available),
+                                Toast.LENGTH_LONG).show();
                         getFragmentActivity().finish();
                         return;
                     }
@@ -199,8 +206,15 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                             getString(R.string.employee_number_title).length() + 2);
                 }
 
-                if (!Utils.isStringNotEmpty(phoneNumberFromEditBox) ||
-                        !Utils.isStringNotEmpty(nameFromEditBox)) {
+                if (Utils.isStringEmpty(phoneNumberFromEditBox) ||
+                        Utils.isStringEmpty(nameFromEditBox)) {
+                    // Notify user about the error
+                    Toast.makeText(
+                            v.getContext(),
+                            v.getContext().getResources()
+                                    .getString(
+                                            R.string.error_employee_not_available),
+                            Toast.LENGTH_LONG).show();
                     getFragmentActivity().finish();
                     return;
                 }
@@ -214,7 +228,7 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 									.getResources()
 									.getString(
 											R.string.error_missing_country_code),
-							Toast.LENGTH_SHORT).show();
+							Toast.LENGTH_LONG).show();
 					return;
 				}
 

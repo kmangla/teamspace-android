@@ -114,13 +114,16 @@
     <!-- ERROR MESSAGES  -->
     <string name="error_employee_deletion_failed">Sorry, could not delete the employee due to server error.</string>
     <string name="error_employee_update_failed">Sorry, could not update the employee due to server error.</string>
+    <string name="error_employee_not_available">Sorry, either the name or phone number was not available.</string>
     <string name="error_employee_not_valid">Sorry, could not find the Employee selected.</string>
     <string name="error_task_update_failed">Sorry, could not save the task due to poor network.</string>
     <string name="error_task_create_failed">Sorry, could not create task due to poor network.</string>
     <string name="error_task_fetch_failed">Sorry, could not update tasks due to poor network.</string>
     <string name="error_registration_failed">Sorry, could not contact the server for validation.</string>
-    <string name="error_missing_country_code">Error, missing country code for phone number.</string>
+    <string name="error_missing_country_code">Error, Please include the country code for phone number entered.</string>
     <string name="error_incomplete_info">Error, details for Employee</string>
+    <string name="error_employee_failed_parse">Sorry, could not create the employee due to parsing exception.</string>
+    <string name="error_employee_failed_json">Sorry, could not create the employee due to json exception.</string>
 
     <string-array name="country_array">
         <item>India</item>

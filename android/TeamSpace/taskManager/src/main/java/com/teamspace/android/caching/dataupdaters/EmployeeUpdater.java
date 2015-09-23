@@ -1,9 +1,11 @@
 package com.teamspace.android.caching.dataupdaters;
 
+import java.text.ParseException;
 import java.util.HashMap;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
@@ -16,6 +18,7 @@ import com.teamspace.android.utils.Utils;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EmployeeUpdater {
@@ -51,8 +54,22 @@ public class EmployeeUpdater {
                                     mContext.getResources().getString(R.string.employee_creation_sms_2) + " " +
                                     Utils.getSignedInUserName();
                             Utils.sendSMS(mEmployee.getPhoneWithCountryCode(), message);
-                        } catch (Exception e) {
-
+                        } catch (ParseException e) {
+                            // Notify user about the error
+                            Toast.makeText(
+                                    mContext,
+                                    mContext.getResources()
+                                            .getString(
+                                                    R.string.error_employee_failed_parse),
+                                    Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            // Notify user about the error
+                            Toast.makeText(
+                                    mContext,
+                                    mContext.getResources()
+                                            .getString(
+                                                    R.string.error_employee_failed_json),
+                                    Toast.LENGTH_LONG).show();
                         }
 				    }
 				},		
@@ -62,6 +79,13 @@ public class EmployeeUpdater {
 				    public void onErrorResponse(VolleyError error) {
                         Utils.log("createEmployee() POST failed for url: " + url + " params: " + params
                                 + " got error: " + error);
+                        // Notify user about the error
+                        Toast.makeText(
+                                mContext,
+                                mContext.getResources()
+                                        .getString(
+                                                R.string.error_employee_update_failed),
+                                Toast.LENGTH_LONG).show();
 				    	error.printStackTrace();
 				    	if (mCallback != null) {
 				    		mCallback.onFailure(error.getLocalizedMessage());
