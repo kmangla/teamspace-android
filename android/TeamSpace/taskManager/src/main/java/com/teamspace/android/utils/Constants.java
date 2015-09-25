@@ -32,4 +32,5 @@ public class Constants {
     public static final String REFRESH_ALL_TASKS = "REFRESH_ALL_TASKS";
     public static final String REFRESH_EMP = "REFRESH_EMP";
     public static final String REFRESH_MSG = "REFRESH_MSG";
+    public static final String FRESH_LOGIN = "FRESH_LOGIN";
 }

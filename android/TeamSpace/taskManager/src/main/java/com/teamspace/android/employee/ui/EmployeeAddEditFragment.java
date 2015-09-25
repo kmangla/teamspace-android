@@ -5,7 +5,9 @@
 package com.teamspace.android.employee.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -57,8 +59,9 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 	String employeePhone = "";
 	boolean editMode;
     boolean mImportedFromContacts;
+    private boolean isFreshLogin;
 
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -116,6 +119,10 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.employee_add_fragment, container, false);			
 //		contact_pic = (QuickContactBadge) v.findViewById(R.id.contact_image);
+
+        if (getActivity().getIntent().getExtras() != null) {
+            isFreshLogin = getActivity().getIntent().getExtras().getBoolean(Constants.FRESH_LOGIN);
+        }
 
 		// Button for Importing Contacts Via Contact Picker
 		Button buttonPickContact = (Button)v.findViewById(R.id.pickcontact);
@@ -304,10 +311,28 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 			}
 		});
 
+        if (isFreshLogin) {
+            showTutorial();
+        }
+        
 		return v;
 	}
-	
-	private void refreshUIForEmployee() {
+
+    private void showTutorial() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(getActivity().getString(R.string.how_to_add_emp));
+        alert.setMessage(getActivity().getString(R.string.how_to_add_emp_ans));
+
+        alert.setNeutralButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        alert.show();
+    }
+
+    private void refreshUIForEmployee() {
 		employeeNameEditText.setText(employee.getName());
 		employeeNumberEditText.setText(employee.getPhoneWithCountryCode());
 		

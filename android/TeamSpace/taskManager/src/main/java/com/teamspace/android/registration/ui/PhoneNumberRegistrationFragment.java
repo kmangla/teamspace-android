@@ -20,6 +20,7 @@ import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.common.ui.DebugActivity;
 import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
+import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 
 /**
@@ -234,6 +235,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
             DataManager.getInstance(getActivity()).validateOTPFromSMS = false;
 
             Intent i = new Intent(getActivity(), AllTasksListViewActivity.class);
+            i.putExtra(Constants.FRESH_LOGIN, true);
             startActivity(i);
 
             getActivity().finish();

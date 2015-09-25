@@ -69,6 +69,17 @@
     <string name="edit_emp">Edit Employee</string>
     <string name="send">Send</string>
     <string name="delete">Delete</string>
+    <string name="next">Next</string>
+    <string name="ok">OK</string>
+    <string name="later">Later</string>
+    <string name="how_to_add_emp">How to add an employee?</string>
+    <string name="how_to_add_emp_ans">You can add an employee by simply typing his name and phone number.
+    \n OR You can even import the employee details from your phone book / contacts. </string>
+    <string name="get_started">Lets get started</string>
+    <string name="get_started_task">After adding employees, you can assign tasks to your employees.
+        Click Next to create a task and assign it to an employee.</string>
+    <string name="get_started_employee">Before assigning tasks to your employees, you need to add the employee details.
+        Click Next to add an employee.</string>
     <string name="call">Call</string>
     <string name="call_emp">Call \n Employee</string>
     <string name="send_reminder">Send \n Reminder</string>

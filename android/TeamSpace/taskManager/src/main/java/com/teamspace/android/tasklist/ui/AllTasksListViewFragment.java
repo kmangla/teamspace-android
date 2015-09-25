@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -20,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.QuickContactBadge;
 import android.widget.Spinner;
@@ -33,8 +36,10 @@ import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.caching.DatabaseCache;
 import com.teamspace.android.chat.ui.MessageListActivity;
 import com.teamspace.android.common.ui.SettingsPreferenceFragment;
+import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
 import com.teamspace.android.employee.ui.EmployeeListViewActivity;
 import com.teamspace.android.interfaces.ActionBarResponderInterface;
+import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.MigratedMessage;
 import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.models.QuickContactHelperTask;
@@ -59,11 +64,16 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     private Handler uiHandler;
     public static final int NOTIFICATION_ID = 1;
     private boolean mDelayRefresh;
+    private boolean isFreshLogin; // Used for onboarding flow if there are 0 employees
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.all_tasks_fragment, null, false);
+
+        if (getActivity().getIntent().getExtras() != null) {
+            isFreshLogin = getActivity().getIntent().getExtras().getBoolean(Constants.FRESH_LOGIN);
+        }
 
         swipelistview = (SwipeListView) rootView.findViewById(R.id.swipe_list_view);
         View headerView = (View) rootView.findViewById(R.id.all_tasks_header);
@@ -183,7 +193,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         int textColor = Utils.getColor(getActivity(), textColorStr);
 
         /* Setup the adapter */
-        mAdapter = new MyListAdapter(getActivity(), backgroundColor, textColor, swipelistview);
+        mAdapter = new MyListAdapter(getActivity(), backgroundColor, textColor, swipelistview, isFreshLogin);
         swipelistview.setAdapter(mAdapter);
 
         // Add sort spinner as the header of the list view.
@@ -307,14 +317,17 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         public boolean flashNewlyAddedRows;
         public long flashRequestTime;
         private SwipeListView mSwipeListView;
+        private boolean isFreshLogin;
+        private boolean showTaskOnboardingOnResume;
 
         public MyListAdapter(final Context context, int backgroundColor,
-                             int textColor, SwipeListView swipeListView) {
+                             int textColor, SwipeListView swipeListView, boolean isFreshLogin) {
             super(context, 0);
             mContext = context;
             mBackgroundColor = backgroundColor;
             mTextColor = textColor;
             mSwipeListView = swipeListView;
+            this.isFreshLogin = isFreshLogin;
 
             refreshTaskList(context);
         }
@@ -325,12 +338,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
                         @Override
                         public void onDataReceivedFromCache(String dataStoreKey) {
-                            refreshUIForData(context, dataStoreKey);
+                            refreshUIForData(context, dataStoreKey, false);
                         }
 
                         @Override
                         public void onDataReceivedFromServer(String dataStoreKey) {
-                            refreshUIForData(context, dataStoreKey);
+                            refreshUIForData(context, dataStoreKey, true);
                         }
 
                         @Override
@@ -345,7 +358,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                     });
         }
 
-        protected void refreshUIForData(Context context, String dataStoreKey) {
+        protected void refreshUIForData(Context context, String dataStoreKey, boolean fromServer) {
             if (dataStoreKey == null) {
                 return;
             }
@@ -370,6 +383,84 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 add(task);
             }
             Utils.refreshListWithoutLosingScrollPosition(mSwipeListView, this);
+
+            // If there are no tasks, see if the user needs onboarding
+            if (fromServer && data.size() == 0) {
+                launchOnboardingFlowIfNeeded();
+            }
+        }
+
+        private void launchOnboardingFlowIfNeeded() {
+            if (!isFreshLogin) {
+                return;
+            }
+            DataManager.getInstance(mContext).fetchEmployeesForUser(Utils.getSignedInUserId(),
+                    new DataManagerCallback() {
+
+                @Override
+                public void onDataReceivedFromServer(String dataStoreKey) {
+                    if (dataStoreKey == null) {
+                        return;
+                    }
+
+                    ArrayList<MigratedEmployee> data = (ArrayList<MigratedEmployee>) DataManager
+                            .getInstance(mContext).retrieveData(
+                                    dataStoreKey);
+
+                    if (data.size() == 0) {
+                        showTaskOnboardingOnResume = true;
+                        launchEmployeeAddEditActivity();
+                    } else {
+                        launchTaskAddEditActivity();
+                    }
+                }
+            });
+
+        }
+
+        private void launchEmployeeAddEditActivity() {
+            AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+            alert.setTitle(mContext.getString(R.string.get_started));
+            alert.setMessage(mContext.getString(R.string.get_started_employee));
+
+            alert.setPositiveButton(mContext.getString(R.string.next), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // If there are no employees, take the user to "add employee" screen.
+                    Intent i = new Intent(mContext, EmployeeAddEditActivity.class);
+                    i.putExtra(Constants.FRESH_LOGIN, true);
+                    mContext.startActivity(i);
+                }
+            });
+
+            alert.setNegativeButton(mContext.getString(R.string.later), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
+        }
+
+        private void launchTaskAddEditActivity() {
+            AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+            alert.setTitle(mContext.getString(R.string.get_started));
+            alert.setMessage(mContext.getString(R.string.get_started_task));
+
+            alert.setPositiveButton(mContext.getString(R.string.next), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // If there are employees but no tasks, take user to "add task" screen
+                    Intent i = new Intent(mContext, TaskAddEditActivity.class);
+                    mContext.startActivity(i);
+                }
+            });
+
+            alert.setNegativeButton(mContext.getString(R.string.later), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
         }
 
         public static int compareTasksBasedOnTaskSortArray(MigratedTask lhs, MigratedTask rhs, int indexInSortArray) {
