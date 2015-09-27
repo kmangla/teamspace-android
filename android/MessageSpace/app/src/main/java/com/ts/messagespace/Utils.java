@@ -101,6 +101,7 @@ public class Utils {
 
     private static String REGID = "regID";
     private static String DEVICEID = "deviceID";
+    private static String PHONE = "phoneNumber";
     private static String APPID = "appID";
 
 
@@ -118,6 +119,7 @@ public class Utils {
         final HashMap<String, String> params  = new HashMap<String, String>();
         params.put(REGID, regid);
         params.put(DEVICEID, Utils.getSelfPhoneNumber(context));
+        params.put(PHONE, Utils.getSelfPhoneNumber(context));
         params.put(APPID, "1");
 
         NetworkingLayer.getInstance(context).makePostRequest(
