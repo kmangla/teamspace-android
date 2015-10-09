@@ -162,14 +162,22 @@ public class Utils {
         final HashMap<String, String> params  = new HashMap<String, String>();
         if (getSignedInUserId() != null) {
             params.put(Constants.USERID, getSignedInUserId());
+        } else if (getSignedInUserPhoneNumber() != null) {
+            params.put(Constants.USER_PHONE, getSignedInUserPhoneNumber());
         } else {
-
+            params.put(Constants.USERID, "Unknown user");
         }
-        params.put(Constants.USER_PHONE, getSignedInUserPhoneNumber());
-        params.put(Constants.URL, errorUrl);
+
+        if (errorUrl != null) {
+            params.put(Constants.URL, errorUrl);
+        }
         params.put(Constants.SERVER_CODE, Integer.toString(serverResponseCode));
-        params.put(Constants.SERVER_RESPONSE, serverResponse);
-        params.put(Constants.DESCRIPTION, description);
+        if (serverResponse != null) {
+            params.put(Constants.SERVER_RESPONSE, serverResponse);
+        }
+        if (description != null) {
+            params.put(Constants.DESCRIPTION, description);
+        }
 
         NetworkingLayer.getInstance(context).makePostRequest(
                 url,
