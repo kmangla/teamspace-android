@@ -99,12 +99,6 @@ public class Utils {
 
     }
 
-    private static String REGID = "regID";
-    private static String DEVICEID = "deviceID";
-    private static String PHONE = "phoneNumber";
-    private static String APPID = "appID";
-
-
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP
      * or CCS to send messages to your app.
@@ -117,10 +111,10 @@ public class Utils {
         // /token?regID=<token>&phone=<number>
         final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_TOKEN;
         final HashMap<String, String> params  = new HashMap<String, String>();
-        params.put(REGID, regid);
-        params.put(DEVICEID, Utils.getSelfPhoneNumber(context));
-        params.put(PHONE, Utils.getSelfPhoneNumber(context));
-        params.put(APPID, "1");
+        params.put(Constants.REGID, regid);
+        params.put(Constants.DEVICEID, Utils.getSelfPhoneNumber(context));
+        params.put(Constants.PHONE, Utils.getSelfPhoneNumber(context));
+        params.put(Constants.APPID, "1");
 
         NetworkingLayer.getInstance(context).makePostRequest(
                 url,
