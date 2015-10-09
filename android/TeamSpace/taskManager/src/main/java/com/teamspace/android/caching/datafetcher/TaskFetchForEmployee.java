@@ -64,8 +64,16 @@ public class TaskFetchForEmployee implements DataFetchInterface {
 				      DatabaseCache.getInstance(context).setMigratedTask(task);
 					} catch (JSONException e) {
 						Log.e("TaskFetchForEmployee fetchDataFromServer json_parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to JSON parse the tasks for a particular employee from server's response even though server returned 200");
 					} catch (java.text.ParseException e) {
 						Log.e("TaskFetchForEmployee fetchDataFromServer parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to parse the tasks for a particular employee from server's response even though server returned 200");
 					}
 				}
 				DataManager.getInstance(context).insertData(dataStoreKey, tasks);
@@ -81,6 +89,10 @@ public class TaskFetchForEmployee implements DataFetchInterface {
 		    public void onErrorResponse(VolleyError error) {
 		    	Utils.log("fetchDataFromServer() network call failed " + url + " while fetching tasks for a given employee " + error);
 		    	error.printStackTrace();
+                Utils.logErrorToServer(context, url,
+                        error.networkResponse.statusCode,
+                        error.networkResponse.toString(),
+                        "Failed to fetch tasks for employee from server because server returned error");
 		    }  
 		});
 	}

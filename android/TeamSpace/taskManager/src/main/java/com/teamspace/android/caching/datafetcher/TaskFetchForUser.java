@@ -61,8 +61,16 @@ public class TaskFetchForUser implements DataFetchInterface {
                       Utils.log("Task title - " + task.getTitle());
 					} catch (JSONException e) {
 						Utils.log("TaskFetchForUser fetchDataFromServer json_parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to JSON parse the tasks for this user from server's response even though server returned 200");
 					} catch (java.text.ParseException e) {
 						Utils.log("TaskFetchForUser fetchDataFromServer parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to parse the tasks for this user from server's response even though server returned 200");
 					}
 				}
 				DataManager.getInstance(context).insertData(dataStoreKey, tasks);
@@ -81,6 +89,10 @@ public class TaskFetchForUser implements DataFetchInterface {
                 }
 		    	Utils.log("fetchDataFromServer() network call failed for tasks: " + url);
 		    	error.printStackTrace();
+                Utils.logErrorToServer(context, url,
+                        error.networkResponse.statusCode,
+                        error.networkResponse.toString(),
+                        "Failed to fetch tasks for this user from server because server returned error");
 		    }  
 		});
 	}

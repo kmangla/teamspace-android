@@ -151,6 +151,48 @@ public class Utils {
         }
     }
 
+    public static void logErrorToServer(Context context, String errorUrl, int serverResponseCode,
+                                        String serverResponse, String description) {
+        if (description == null && errorUrl == null) {
+            return;
+        }
+
+        // /error?userID=<userID>&phone=<number>&url=<url>&serverCode=<serverCode>&serverResponse=<serverResponse>&desc=<desc>
+        final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_ERROR;
+        final HashMap<String, String> params  = new HashMap<String, String>();
+        if (getSignedInUserId() != null) {
+            params.put(Constants.USERID, getSignedInUserId());
+        } else {
+
+        }
+        params.put(Constants.USER_PHONE, getSignedInUserPhoneNumber());
+        params.put(Constants.URL, errorUrl);
+        params.put(Constants.SERVER_CODE, Integer.toString(serverResponseCode));
+        params.put(Constants.SERVER_RESPONSE, serverResponse);
+        params.put(Constants.DESCRIPTION, description);
+
+        NetworkingLayer.getInstance(context).makePostRequest(
+                url,
+                params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Utils.log("logErrorToServer() POST response for url: " + url + " params: " + params
+                                + " got response: " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.log("logErrorToServer() POST failed for url " + url + " params: " + params
+                                + " with error " + error);
+                        error.printStackTrace();
+                    }
+                });
+
+    }
+
     public static void log(String message) {
         log(null, message);
     }
@@ -271,6 +313,10 @@ public class Utils {
     }
 
     public static String getSignedInUserKey() {
+//        if (true) {
+//            return "5548fbd7cd008003003f04ab";
+//        }
+
         if (isStringNotEmpty(signedInUserKey)) {
             return signedInUserKey;
         }
@@ -289,6 +335,10 @@ public class Utils {
     }
 
     public static String getSignedInUserId() {
+//        if (true) {
+//            return "5548fbd7cd008003003f04ab";
+//        }
+
         if (isStringNotEmpty(signedInUserId)) {
             return signedInUserId;
         }

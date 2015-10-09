@@ -12,6 +12,7 @@ public class NetworkRoutes {
 	public static final String ROUTE_MESSAGE = "/message";
     public static final String ROUTE_VERIFY_OTP = "/verifyOTP";
     public static final String ROUTE_TOKEN = "/token";
+    public static final String ROUTE_ERROR = "/error";
 
     public static String getRouteBase() {
         return "http://" + Utils.getServerIP() + Utils.getServerPort();

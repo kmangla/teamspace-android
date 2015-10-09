@@ -33,4 +33,11 @@ public class Constants {
     public static final String REFRESH_EMP = "REFRESH_EMP";
     public static final String REFRESH_MSG = "REFRESH_MSG";
     public static final String FRESH_LOGIN = "FRESH_LOGIN";
+    public static final String USERID = "userID";
+    public static final String SERVER_CODE = "serverCode";
+    public static final String SERVER_RESPONSE = "serverResponse";
+    public static final String URL = "url";
+    public static final String DESCRIPTION = "desc";
+    public static final String USER_PHONE = "phone";
+
 }
