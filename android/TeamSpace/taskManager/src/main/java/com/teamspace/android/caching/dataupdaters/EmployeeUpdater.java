@@ -62,6 +62,10 @@ public class EmployeeUpdater {
                                             .getString(
                                                     R.string.error_employee_failed_parse),
                                     Toast.LENGTH_LONG).show();
+                            Utils.logErrorToServer(mContext, url,
+                                    200,
+                                    null,
+                                    "Failed to create employee because server's response could not be parsed even though server returned 200");
                         } catch (JSONException e) {
                             // Notify user about the error
                             Toast.makeText(
@@ -70,6 +74,10 @@ public class EmployeeUpdater {
                                             .getString(
                                                     R.string.error_employee_failed_json),
                                     Toast.LENGTH_LONG).show();
+                            Utils.logErrorToServer(mContext, url,
+                                    200,
+                                    null,
+                                    "Failed to create employee because server's response could not be JSON parsed even though server returned 200");
                         }
 				    }
 				},		
@@ -90,6 +98,10 @@ public class EmployeeUpdater {
 				    	if (mCallback != null) {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
+                        Utils.logErrorToServer(mContext, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to create employee because server returned error");
 				    }  
 				});
 	}
@@ -129,6 +141,10 @@ public class EmployeeUpdater {
 						if (mCallback != null) {
 							mCallback.onFailure(error.getLocalizedMessage());
 						}
+                        Utils.logErrorToServer(mContext, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to update employee because server returned error");
 				    }  
 				});
 	}
@@ -170,6 +186,10 @@ public class EmployeeUpdater {
 						if (mCallback != null) {
 							mCallback.onFailure(error.getMessage());
 				    	}
+                        Utils.logErrorToServer(mContext, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to delete employee because server returned error");
 				    }  
 				});
 	}

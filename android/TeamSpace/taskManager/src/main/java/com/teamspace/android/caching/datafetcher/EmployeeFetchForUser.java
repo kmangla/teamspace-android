@@ -63,8 +63,16 @@ public class EmployeeFetchForUser implements DataFetchInterface {
 				      DatabaseCache.getInstance(context).setMigratedEmployeeBlockingCall(employee);
 					} catch (JSONException e) {
 						Log.e("EmployeeFetchForUser fetchDataFromServer() json_parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to JSON parse the employees for this user from server's response even though server returned 200");
 					} catch (java.text.ParseException e) {
 						Log.e("EmployeeFetchForUser fetchDataFromServer() json_parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to parse the employees for this user from server's response even though server returned 200");
 					}
 				}
 				DataManager.getInstance(context).insertData(dataStoreKey, employees);
@@ -79,6 +87,10 @@ public class EmployeeFetchForUser implements DataFetchInterface {
 		    public void onErrorResponse(VolleyError error) {
 		    	Utils.log("EmployeeFetchForUser fetchDataFromServer() network call failed for employees with url " + url);
 		    	error.printStackTrace();
+                Utils.logErrorToServer(context, url,
+                        error.networkResponse.statusCode,
+                        error.networkResponse.toString(),
+                        "Failed to fetch employees for this user from server because server returned error");
 		    }
 		});
 
