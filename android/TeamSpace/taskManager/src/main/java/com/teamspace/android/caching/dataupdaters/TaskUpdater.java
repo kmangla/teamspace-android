@@ -44,6 +44,10 @@ public class TaskUpdater {
                         try {
                             task = MigratedTask.parseJSON(new JSONObject(response));
                         } catch (Exception e) {
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    null,
+                                    "Failed to create task because server's response could not be JSON parsed");
                         }
 
 						DatabaseCache.getInstance(context).setMigratedTask(task);
@@ -62,6 +66,10 @@ public class TaskUpdater {
 						if (mCallback != null) {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
+                        Utils.logErrorToServer(context, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to create task because server returned error");
 				    }  
 				});
 	}
@@ -94,6 +102,10 @@ public class TaskUpdater {
                         if (mCallback != null) {
                             mCallback.onFailure(error.getLocalizedMessage());
                         }
+                        Utils.logErrorToServer(context, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to update task because server returned error");
 				    }  
 				});
 
@@ -138,6 +150,10 @@ public class TaskUpdater {
 						if (mCallback != null) {
 							mCallback.onFailure(error.getMessage());
 				    	}
+                        Utils.logErrorToServer(context, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to delete task because server returned error");
 				    }  
 				});
 
