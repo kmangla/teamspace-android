@@ -63,8 +63,16 @@ public class MessageFetchForTask implements DataFetchInterface {
 				      DatabaseCache.getInstance(context).setMigratedMessage(message);
 					} catch (JSONException e) {
 						Log.e("MessageFetchForTask fetchDataFromServer() json_parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to JSON parse the messages for a particular task from server's response even though server returned 200");
 					} catch (java.text.ParseException e) {
 						Log.e("MessageFetchForTask fetchDataFromServer() json_parsing_exception", e.getMessage());
+                        Utils.logErrorToServer(context, url,
+                                200,
+                                null,
+                                "Failed to parse the messages for a particular task from server's response even though server returned 200");
 					}
 				}
 				DataManager.getInstance(context).insertData(dataStoreKey, messages);
@@ -79,6 +87,10 @@ public class MessageFetchForTask implements DataFetchInterface {
 		    public void onErrorResponse(VolleyError error) {
 		    	Utils.log("fetchDataFromServer() network call failed for messages " + url);
 		    	error.printStackTrace();
+                Utils.logErrorToServer(context, url,
+                        error.networkResponse.statusCode,
+                        error.networkResponse.toString(),
+                        "Failed to fetch messages for task because server returned error");
 		    }
 		});
 	}

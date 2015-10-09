@@ -62,13 +62,13 @@ public class RegistrationFetcher {
                             Log.e("RegistrationFetcher getOrCreateUser() json_parsing_exception", e.getMessage());
                             Utils.logErrorToServer(context, url,
                                     200,
-                                    null,
+                                    response.toString(),
                                     "Failed to JSON parse user's ID and Key from server's response even though server returned 200");
                         } catch (java.text.ParseException e) {
                             Log.e("RegistrationFetcher getOrCreateUser() json_parsing_exception", e.getMessage());
                             Utils.logErrorToServer(context, url,
                                     200,
-                                    null,
+                                    response.toString(),
                                     "Failed to parse user's ID and Key from server's response even though server returned 200");
                         }
 

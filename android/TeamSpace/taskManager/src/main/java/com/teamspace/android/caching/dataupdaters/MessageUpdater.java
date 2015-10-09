@@ -45,6 +45,10 @@ public class MessageUpdater {
                         try {
                             message = MigratedMessage.parseJSON(new JSONObject(response));
                         } catch (Exception e) {
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    null,
+                                    "Failed to create message because server's response could not be parsed even though server returned 200");
                         }
 						DatabaseCache.getInstance(context).setMigratedMessage(message);
 						if (mCallback != null) {
@@ -62,6 +66,10 @@ public class MessageUpdater {
 						if (mCallback != null) {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
+                        Utils.logErrorToServer(context, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to create message for task because server returned error");
 				    }  
 				});
 	}

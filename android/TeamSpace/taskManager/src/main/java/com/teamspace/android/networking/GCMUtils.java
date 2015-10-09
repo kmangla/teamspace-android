@@ -142,6 +142,10 @@ public class GCMUtils {
                         Utils.log("sendRegistrationIdToBackendBlockingCall() POST failed for url " + url + " params: " + params
                                 + " with error " + error);
                         error.printStackTrace();
+                        Utils.logErrorToServer(mContext, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to send registration ID to server because server returned error");
                     }
                 });
     }
