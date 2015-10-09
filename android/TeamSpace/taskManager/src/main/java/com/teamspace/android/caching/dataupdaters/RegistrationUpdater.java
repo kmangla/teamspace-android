@@ -55,6 +55,10 @@ public class RegistrationUpdater {
 				    	if (mCallback != null) {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
+                        Utils.logErrorToServer(mContext, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to generate OTP because server returned error");
 				    }  
 				});
 	}

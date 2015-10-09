@@ -60,8 +60,16 @@ public class RegistrationFetcher {
                             userData = UserAuthData.parseJSON(object);
                         } catch (JSONException e) {
                             Log.e("RegistrationFetcher getOrCreateUser() json_parsing_exception", e.getMessage());
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    null,
+                                    "Failed to JSON parse user's ID and Key from server's response even though server returned 200");
                         } catch (java.text.ParseException e) {
                             Log.e("RegistrationFetcher getOrCreateUser() json_parsing_exception", e.getMessage());
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    null,
+                                    "Failed to parse user's ID and Key from server's response even though server returned 200");
                         }
 
                         if (userData != null) {
@@ -74,6 +82,10 @@ public class RegistrationFetcher {
                             if (callback != null) {
                                 callback.onFailure(Constants.EMPTY_STRING);
                             }
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    null,
+                                    "Failed to find user's ID and Key in server's response even though server returned 200");
                         }
                     }
                 },
@@ -85,6 +97,10 @@ public class RegistrationFetcher {
                         if (callback != null) {
                             callback.onFailure(error.getLocalizedMessage());
                         }
+                        Utils.logErrorToServer(context, url,
+                                error.networkResponse.statusCode,
+                                error.networkResponse.toString(),
+                                "Failed to verify OTP because server returned error");
                     }
                 });
 
