@@ -576,7 +576,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             View danger = (View) view.findViewById(R.id.danger_level);
             if (task.getPriority() > 75) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Red"));
-                viewHolder.lastMessage.setText(view.getContext().getString(R.string.escalation_needed));
+//                viewHolder.lastMessage.setText(view.getContext().getString(R.string.escalation_needed));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Red"));
                 viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
                 viewHolder.sendReminder
@@ -613,7 +613,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                         });
             } else if (task.getPriority() > 0) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Orange"));
-                viewHolder.lastMessage.setText(view.getContext().getString(R.string.reply_pending));
+//                viewHolder.lastMessage.setText(view.getContext().getString(R.string.reply_pending));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Orange"));
                 viewHolder.sendReminder.setText(view.getContext().getString(R.string.call_emp));
                 viewHolder.sendReminder
