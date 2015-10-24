@@ -82,6 +82,8 @@
         Click Next to add an employee.</string>
     <string name="call">Call</string>
     <string name="call_emp">Call \n Employee</string>
+    <string name="message_emp">SMS \n Employee</string>
+    <string name="warn_emp">You have not been replying to the SMS for the tasks assigned to you. Please reply to them regularly.</string>
     <string name="send_reminder">Send \n Reminder</string>
     <string name="mark_updated">Mark\nUpdated</string>
     <string name="mark_completed">Mark\nCompleted</string>

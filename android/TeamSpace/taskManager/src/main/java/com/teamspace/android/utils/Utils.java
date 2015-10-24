@@ -516,4 +516,16 @@ public class Utils {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
     }
+
+    public static void sendCustomSMS(Context context, String employeeNumber) {
+        if (employeeNumber == null) {
+            return;
+        }
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+        sendIntent.setData(Uri.parse("sms:"));
+        sendIntent.setType("vnd.android-dir/mms-sms");
+        sendIntent.putExtra("address", employeeNumber);
+        sendIntent.putExtra("sms_body", context.getString(R.string.warn_emp) + " -" + Utils.getSignedInUserName());
+        context.startActivity(sendIntent);
+    }
 }
