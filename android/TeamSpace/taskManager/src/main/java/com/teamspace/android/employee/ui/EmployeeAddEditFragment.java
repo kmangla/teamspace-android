@@ -181,6 +181,9 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 				TaskManagerApplication applicationContext = ((TaskManagerApplication) getFragmentActivity()
 						.getApplication());
 
+                // Prevent user from accidentally clicking the "Done" button twice
+                saveButton.setEnabled(false);
+
 				// Make sure we have the country code before saving the number
 				String phoneNumberFromEditBox = employeeNumberEditText
 						.getText().toString();
