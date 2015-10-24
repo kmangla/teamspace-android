@@ -55,9 +55,12 @@ public class GcmIntentService extends IntentService {
                     Message msg = Message.parseJSON(object);
                     Utils.log("text: " + msg.text + " ntype: " + msg.ntype + " taskId: " + msg.taskID);
                     Utils.log(" username: " + msg.user.getName());
-                    // Post notification of received message.
-                    sendNotification(msg.user.getName() + ": " + msg.text);
-//                    Utils.playNotificationSound();
+                    if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
+                        Utils.sendSMS(msg.user.getPhoneWithCountryCode(), msg.text);
+                    } else {
+                        // Post notification of received message.
+                        sendNotification(msg.user.getName() + ": " + msg.text);
+                    }
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
                     Utils.trackEvent("Exception", "PushNotificationDropped",
