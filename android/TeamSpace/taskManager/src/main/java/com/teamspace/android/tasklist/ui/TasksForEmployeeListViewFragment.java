@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.QuickContactBadge;
 import android.widget.Spinner;
@@ -596,7 +599,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             @Override
                             public void onClick(View v) {
                                 closeAllRows();
-                                markUpdated(v.getContext(), task, position);
+                                markUpdatedRequestText(v.getContext(), task, position);
 
                                 // Change the button to say "mark completed"
                                 viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
@@ -633,7 +636,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             @Override
                             public void onClick(View v) {
                                 closeAllRows();
-                                markUpdated(v.getContext(), task, position);
+                                markUpdatedRequestText(v.getContext(), task, position);
 
                                 // Change the button to say "mark completed"
                                 viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
@@ -662,7 +665,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                             @Override
                             public void onClick(View v) {
                                 closeAllRows();
-                                markUpdated(v.getContext(), task, position);
+                                markUpdatedRequestText(v.getContext(), task, position);
 
                                 // Change the button to say "mark completed"
                                 viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
@@ -774,10 +777,37 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             });
         }
 
+        private void markUpdatedRequestText(final Context context,
+                                            final MigratedTask task, final int position) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+            alert.setTitle(context.getString(R.string.optional_message));
+            alert.setMessage(context.getString(R.string.optional_message_text));
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(context);
+            alert.setView(input);
+
+            alert.setPositiveButton(context.getString(R.string.add), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    markUpdated(context, task, position, input.getText().toString());
+                }
+            });
+
+            alert.setNegativeButton(context.getString(R.string.skip), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    markUpdated(context, task, position, null);
+                }
+            });
+
+            alert.show();
+        }
+
         protected void markUpdated(final Context context,
-                                   final MigratedTask task, int position) {
+                                   final MigratedTask task, int position, String updatedText) {
             DataManager dataMgr = DataManager.getInstance(context);
             task.setMarkUpdated(1);
+            task.setMarkUpdatedText(updatedText);
             dataMgr.updateTask(task, new DataManagerCallback() {
 
                 @Override

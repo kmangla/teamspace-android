@@ -19,6 +19,8 @@
     
 	<string name="save">Save</string>
     <string name="done">Done</string>
+    <string name="skip">Skip</string>
+    <string name="add">Add</string>
     <string name="cancel">Cancel</string>
     <string name="force_send">Force Send</string>
     <string name="continue_str">Continue with</string>
@@ -83,6 +85,8 @@
     <string name="call">Call</string>
     <string name="call_emp">Call \n Employee</string>
     <string name="message_emp">SMS \n Employee</string>
+    <string name="optional_message">Add Optional Message</string>
+    <string name="optional_message_text">Add optional message explaining why this task is now up-to-date</string>
     <string name="warn_emp">You have not been replying to the SMS for the tasks assigned to you. Please reply to them regularly.</string>
     <string name="send_reminder">Send \n Reminder</string>
     <string name="mark_updated">Mark\nUpdated</string>
@@ -129,8 +133,8 @@
     <string name="error_employee_update_failed">Sorry, could not update the employee due to server error.</string>
     <string name="error_employee_not_available">Sorry, either the name or phone number was not available.</string>
     <string name="error_employee_not_valid">Sorry, could not find the Employee selected.</string>
-    <string name="error_task_update_failed">Sorry, could not save the task due to poor network.</string>
-    <string name="error_task_create_failed">Sorry, could not create task due to poor network.</string>
+    <string name="error_task_update_failed">Sorry, could not save the task due to network error.</string>
+    <string name="error_task_create_failed">Sorry, could not create task due to network error.</string>
     <string name="error_task_fetch_failed">Sorry, could not update tasks due to poor network or server failure.</string>
     <string name="error_registration_failed">Sorry, could not contact the server for validation.</string>
     <string name="error_missing_country_code">Error, Please include the country code for phone number entered.</string>

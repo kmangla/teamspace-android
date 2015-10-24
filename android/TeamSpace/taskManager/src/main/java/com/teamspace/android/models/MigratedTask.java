@@ -33,6 +33,8 @@ public class MigratedTask {
 	private long updateCount;
     private long forceReminder;
     private long markUpdated;
+    private String markUpdatedText;
+
 
     private long priority;
     private MigratedMessage lastMessage;
@@ -49,6 +51,7 @@ public class MigratedTask {
 	private static String FREQUENCY = "frequency";
     private static String FORCE_REMINDER = "forceReminder";
     private static String MARK_UPDATED = "markUpdated";
+    private static String MARK_UPDATED_TEXT = "markUpdatedText";
 	private static String CREATED_ON = "createdOn";
 	private static String LAST_REMINDER = "lastReminder";
 	private static String LAST_UPDATE = "lastUpdate";
@@ -241,6 +244,9 @@ public class MigratedTask {
 		obj.put(Constants.KEY, Utils.getSignedInUserKey());
         obj.put(FORCE_REMINDER, String.valueOf(this.getForceReminder()));
         obj.put(MARK_UPDATED, String.valueOf(this.getMarkUpdated()));
+        if (this.getMarkUpdatedText() != null){
+            obj.put(MARK_UPDATED_TEXT, this.getMarkUpdatedText());
+        }
 		return obj;
 	}
 	
@@ -323,4 +329,12 @@ public class MigratedTask {
 	public void setAssignedBy(String assignedBy) {
 		this.assignedBy = assignedBy;
 	}
+
+    public String getMarkUpdatedText() {
+        return markUpdatedText;
+    }
+
+    public void setMarkUpdatedText(String markUpdatedText) {
+        this.markUpdatedText = markUpdatedText;
+    }
 }
