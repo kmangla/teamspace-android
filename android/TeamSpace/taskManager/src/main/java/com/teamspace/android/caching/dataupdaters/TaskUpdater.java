@@ -67,8 +67,8 @@ public class TaskUpdater {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
                         Utils.logErrorToServer(context, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to create task because server returned error");
 				    }  
 				});
@@ -103,8 +103,8 @@ public class TaskUpdater {
                             mCallback.onFailure(error.getLocalizedMessage());
                         }
                         Utils.logErrorToServer(context, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to update task because server returned error");
 				    }  
 				});
@@ -151,8 +151,8 @@ public class TaskUpdater {
 							mCallback.onFailure(error.getMessage());
 				    	}
                         Utils.logErrorToServer(context, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to delete task because server returned error");
 				    }  
 				});

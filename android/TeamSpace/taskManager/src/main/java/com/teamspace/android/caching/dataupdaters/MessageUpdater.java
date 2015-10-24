@@ -67,8 +67,8 @@ public class MessageUpdater {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
                         Utils.logErrorToServer(context, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to create message for task because server returned error");
 				    }  
 				});

@@ -88,8 +88,8 @@ public class MessageFetchForTask implements DataFetchInterface {
 		    	Utils.log("fetchDataFromServer() network call failed for messages " + url);
 		    	error.printStackTrace();
                 Utils.logErrorToServer(context, url,
-                        error.networkResponse.statusCode,
-                        error.networkResponse.toString(),
+                        error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                        error.networkResponse != null ? error.networkResponse.toString() : null,
                         "Failed to fetch messages for task because server returned error");
 		    }
 		});

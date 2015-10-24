@@ -90,8 +90,8 @@ public class TaskFetchForEmployee implements DataFetchInterface {
 		    	Utils.log("fetchDataFromServer() network call failed " + url + " while fetching tasks for a given employee " + error);
 		    	error.printStackTrace();
                 Utils.logErrorToServer(context, url,
-                        error.networkResponse.statusCode,
-                        error.networkResponse.toString(),
+                        error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                        error.networkResponse != null ? error.networkResponse.toString() : null,
                         "Failed to fetch tasks for employee from server because server returned error");
 		    }  
 		});

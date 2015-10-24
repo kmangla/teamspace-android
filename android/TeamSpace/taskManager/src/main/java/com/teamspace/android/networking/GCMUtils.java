@@ -143,8 +143,8 @@ public class GCMUtils {
                                 + " with error " + error);
                         error.printStackTrace();
                         Utils.logErrorToServer(mContext, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to send registration ID to server because server returned error");
                     }
                 });

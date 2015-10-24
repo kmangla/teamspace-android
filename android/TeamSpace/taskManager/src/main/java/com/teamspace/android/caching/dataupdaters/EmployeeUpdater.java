@@ -99,8 +99,8 @@ public class EmployeeUpdater {
 				    		mCallback.onFailure(error.getLocalizedMessage());
 						}
                         Utils.logErrorToServer(mContext, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to create employee because server returned error");
 				    }  
 				});
@@ -142,8 +142,8 @@ public class EmployeeUpdater {
 							mCallback.onFailure(error.getLocalizedMessage());
 						}
                         Utils.logErrorToServer(mContext, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to update employee because server returned error");
 				    }  
 				});
@@ -187,8 +187,8 @@ public class EmployeeUpdater {
 							mCallback.onFailure(error.getMessage());
 				    	}
                         Utils.logErrorToServer(mContext, url,
-                                error.networkResponse.statusCode,
-                                error.networkResponse.toString(),
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to delete employee because server returned error");
 				    }  
 				});
