@@ -56,7 +56,7 @@ public class GcmIntentService extends IntentService {
                     Utils.log("text: " + msg.text + " ntype: " + msg.ntype + " taskId: " + msg.taskID);
                     Utils.log(" username: " + msg.user.getName());
                     if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
-                        Utils.sendSMS(msg.user.getPhoneWithCountryCode(), msg.text);
+                        Utils.sendSMS(this, msg.user.getPhoneWithCountryCode(), msg.text);
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text);

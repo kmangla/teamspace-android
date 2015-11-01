@@ -14,6 +14,8 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.PhoneStateListener;
+import android.telephony.ServiceState;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -506,8 +508,16 @@ public class Utils {
         Utils.log("tracker = " + t.hashCode() + " category = " + category + " action = " + action);
     }
 
-    public static void sendSMS(String phoneNumber, String message) {
+    public static void sendSMS(Context context, String phoneNumber, String message) {
         if (phoneNumber == null || message == null) {
+            return;
+        }
+
+        if (NetworkingLayer.getInstance(context).isRoaming()) {
+            Utils.logErrorToServer(context, "sending automated sms from owners phone",
+                    -1,
+                    null,
+                    "Failed to send automated sms from owner's device because user " + getSignedInUserId() + " is on roaming.");
             return;
         }
 

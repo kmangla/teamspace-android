@@ -53,7 +53,7 @@ public class EmployeeUpdater {
                                     mEmployee.getPairedNumber() + ". " +
                                     mContext.getResources().getString(R.string.employee_creation_sms_2) + " " +
                                     Utils.getSignedInUserName();
-                            Utils.sendSMS(mEmployee.getPhoneWithCountryCode(), message);
+                            Utils.sendSMS(mContext, mEmployee.getPhoneWithCountryCode(), message);
                         } catch (ParseException e) {
                             // Notify user about the error
                             Toast.makeText(

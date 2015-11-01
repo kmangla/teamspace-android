@@ -7,6 +7,9 @@ import org.json.JSONArray;
 
 import android.content.Context;
 import android.os.Handler;
+import android.telephony.PhoneStateListener;
+import android.telephony.ServiceState;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.teamspace.android.BuildConfig;
@@ -26,16 +29,42 @@ public class NetworkingLayer {
 	private static NetworkingLayer instance;
 	private RequestQueue mRequestQueue;
 	private Context mContext;
+
+    public boolean isRoaming() {
+        return mIsRoaming;
+    }
+
+    private static boolean mIsRoaming;
 	
 	private NetworkingLayer(Context context) {
 		mContext = context.getApplicationContext();
 		mRequestQueue = Volley.newRequestQueue(mContext);
+
+        final TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        PhoneStateListener phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onServiceStateChanged(ServiceState serviceState) {
+                super.onServiceStateChanged(serviceState);
+                if (telephonyManager.isNetworkRoaming()) {
+                    mIsRoaming = true;
+                } else {
+                    mIsRoaming = false;
+                }
+                // You can also check roaming state using this
+                if (serviceState.getRoaming()) {
+                    // In Roaming
+                } else {
+                    // Not in Roaming
+                }
+            }
+        };
 	}
 	
 	public static NetworkingLayer getInstance(Context context) {
 		if (null == instance) {
 			instance = new NetworkingLayer(context);
-		} 
+		}
+
 		return instance;
 	} 
 	
