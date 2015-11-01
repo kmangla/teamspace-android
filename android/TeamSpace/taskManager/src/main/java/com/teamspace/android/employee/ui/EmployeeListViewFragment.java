@@ -47,6 +47,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
 	private MyListAdapter mAdapter;
 	private int oldItemCount;
 	private ImageButton addButton;
+    private Button addEmpButton;
 	SwipeListView swipelistview;
 	private int currentSortPreference = 0;
 	
@@ -132,12 +133,20 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
 	     });       
         
         addButton = (ImageButton) headerView.findViewById(R.id.add_button);
+        addButton.setVisibility(View.GONE);
         addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {					
 				addItem();
 			}
 		});
+        addEmpButton = (Button) headerView.findViewById(R.id.add_emp_button);
+        addEmpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItem();
+            }
+        });
 
 		// If user has selected any color preferences, respect that.
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -158,6 +167,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
         // Add sort spinner as the header of the list view.
 		final Spinner spinner = (Spinner) headerView.findViewById(R.id.sort_spinner);
         ImageButton sortButton = (ImageButton) headerView.findViewById(R.id.sort_button);
+        sortButton.setVisibility(View.GONE);
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

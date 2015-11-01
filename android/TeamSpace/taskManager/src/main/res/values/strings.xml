@@ -3,6 +3,8 @@
 
     <string name="app_name">Team Space</string>
     <string name="sample_text">Sample Text</string>
+    <string name="add_new_task">"Add a new Task"</string>
+    <string name="add_new_emp">"Add a new Employee"</string>
     <string name="hint_message">Add a comment</string>
     <string name="messages">Messages</string>
     <string name="message_details">Message Details</string>

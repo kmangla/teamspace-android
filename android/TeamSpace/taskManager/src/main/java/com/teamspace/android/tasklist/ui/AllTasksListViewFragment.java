@@ -59,6 +59,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     private MyListAdapter mAdapter;
     private int oldItemCount;
     private ImageButton addButton;
+    private Button addTaskButton;
     SwipeListView swipelistview;
     private int currentSortPreference = 0;
     private Handler uiHandler;
@@ -157,7 +158,15 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         });
 
         addButton = (ImageButton) headerView.findViewById(R.id.add_button);
+        addButton.setVisibility(View.GONE);
+        addTaskButton = (Button) headerView.findViewById(R.id.add_task_button);
         addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItem();
+            }
+        });
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addItem();
@@ -179,6 +188,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 launchSelfTasksActivity();
             }
         });
+        selfButton.setVisibility(View.GONE);
 
         // If user has selected any color preferences, respect that.
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
