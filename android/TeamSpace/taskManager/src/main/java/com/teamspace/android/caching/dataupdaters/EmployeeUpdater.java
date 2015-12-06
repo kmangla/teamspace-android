@@ -33,7 +33,7 @@ public class EmployeeUpdater {
 	}
 
 	public void create() {
-		final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_EMPLOYEE;
+		final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_EMPLOYEE + "?cb=" + String.valueOf(System.nanoTime());
 		final HashMap<String, String> params = mEmployee.toMapObject();
 		NetworkingLayer.getInstance(mContext).makePostRequest(
 				url,
@@ -92,7 +92,7 @@ public class EmployeeUpdater {
                                 mContext,
                                 mContext.getResources()
                                         .getString(
-                                                R.string.error_employee_update_failed),
+                                                R.string.error_employee_create_failed),
                                 Toast.LENGTH_LONG).show();
 				    	error.printStackTrace();
 				    	if (mCallback != null) {

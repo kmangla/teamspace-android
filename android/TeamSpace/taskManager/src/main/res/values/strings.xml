@@ -133,6 +133,7 @@
     <!-- ERROR MESSAGES  -->
     <string name="error_employee_deletion_failed">Sorry, could not delete the employee due to server error.</string>
     <string name="error_employee_update_failed">Sorry, could not update the employee due to server error.</string>
+    <string name="error_employee_create_failed">Sorry, could not create the employee due to server error.</string>
     <string name="error_employee_not_available">Sorry, either the name or phone number was not available.</string>
     <string name="error_employee_not_valid">Sorry, could not find the Employee selected.</string>
     <string name="error_task_update_failed">Sorry, could not save the task due to network error.</string>

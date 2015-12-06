@@ -16,6 +16,7 @@ public class Constants {
 	public static final String EMPTY_STRING = "";
 	public static final String EMPLOYEE = "Employee";
 	public static final String KEY = "key";
+    public static final String CACHE_BUSTER = "cb";
 	public static final long DAILY = 86400;
 	public static final long WEEKLY = 86400 * 7;
 	public static final long BIWEEKLY = 86400 * 14;

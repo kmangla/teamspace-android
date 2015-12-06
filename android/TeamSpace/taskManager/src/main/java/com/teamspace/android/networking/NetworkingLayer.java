@@ -12,6 +12,7 @@ import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.teamspace.android.BuildConfig;
 import com.teamspace.android.common.ui.TaskManagerApplication;
 import com.teamspace.android.data.MockNetworkData;
@@ -38,7 +39,7 @@ public class NetworkingLayer {
 	
 	private NetworkingLayer(Context context) {
 		mContext = context.getApplicationContext();
-		mRequestQueue = Volley.newRequestQueue(mContext);
+		mRequestQueue = Volley.newRequestQueue(mContext.getApplicationContext());
 
         final TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         PhoneStateListener phoneStateListener = new PhoneStateListener() {
@@ -119,6 +120,11 @@ public class NetworkingLayer {
                 return NetworkingLayer.buildNetworkCallHeaders();
             }
 		};
+
+        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 		// Add the request  
 		mRequestQueue.add(jsObjRequest);
