@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -69,6 +70,11 @@ public class NetworkingLayer {
                 return NetworkingLayer.buildNetworkCallHeaders();
             }
 		};
+
+        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 		// Add the request  
 		mRequestQueue.add(jsObjRequest);
