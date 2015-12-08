@@ -197,6 +197,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
 
                 MigratedTask taskSelected = mAdapter.getItem(position);
                 Intent i = new Intent(getActivity(), MessageListActivity.class);
+                taskSelected.setUpdateCount(0);
 
                 String selectedTaskId = taskSelected.getTaskID();
 

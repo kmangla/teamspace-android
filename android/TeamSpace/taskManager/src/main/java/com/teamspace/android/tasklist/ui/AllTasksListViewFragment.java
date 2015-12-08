@@ -251,6 +251,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         MigratedTask taskSelected = mAdapter.getItem(position);
         Intent i = new Intent(getActivity(), MessageListActivity.class);
         String selectedTaskId = taskSelected.getTaskID();
+        taskSelected.setUpdateCount(0);
 
         // If we don't have a taskID, it means that the task was just created and we were
         // displaying the dummy stub while the network call was in progress. User clicked
