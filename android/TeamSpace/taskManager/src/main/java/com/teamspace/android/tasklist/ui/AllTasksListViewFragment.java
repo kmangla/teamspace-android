@@ -123,14 +123,22 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                     return;
                 }
 
+                MigratedTask task = mAdapter.getItem(position);
+
                 if (right) {
                     viewHolder.markCompleted.setVisibility(View.INVISIBLE);
                     viewHolder.delete.setVisibility(View.INVISIBLE);
                     viewHolder.sendReminder.setVisibility(View.INVISIBLE);
+                    viewHolder.markUpdated.setVisibility(View.INVISIBLE);
                 } else {
                     viewHolder.markCompleted.setVisibility(View.VISIBLE);
                     viewHolder.delete.setVisibility(View.VISIBLE);
                     viewHolder.sendReminder.setVisibility(View.VISIBLE);
+                    if (task.getPriority() > 0) {
+                        viewHolder.markUpdated.setVisibility(View.VISIBLE);
+                    } else {
+                        viewHolder.markUpdated.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -298,6 +306,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         public Button moreButton;
         Button delete;
         Button markCompleted;
+        Button markUpdated;
         Button sendReminder;
         public QuickContactBadge pic;
         public View frontView;
@@ -316,7 +325,8 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             backView = (View) view.findViewById(R.id.back);
             delete = (Button) view.findViewById(R.id.swipe_button1);
             markCompleted = (Button) view.findViewById(R.id.swipe_button2);
-            sendReminder = (Button) view.findViewById(R.id.swipe_button3);
+            markUpdated = (Button) view.findViewById(R.id.swipe_button3);
+            sendReminder = (Button) view.findViewById(R.id.swipe_button4);
         }
     }
 
@@ -586,6 +596,11 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             viewHolder.markCompleted.setVisibility(View.VISIBLE);
             viewHolder.delete.setVisibility(View.VISIBLE);
             viewHolder.sendReminder.setVisibility(View.VISIBLE);
+            if (task.getPriority() > 0) {
+                viewHolder.markUpdated.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.markUpdated.setVisibility(View.GONE);
+            }
 
             // If we found a bitmap in the cache for this employee (by phone number), 
             // we do not show initials. We directly show the bitmap image. Otherwise
@@ -668,10 +683,20 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         }
                     });
 
+            viewHolder.markUpdated.setText(view.getContext().getString(R.string.mark_updated));
+            viewHolder.markUpdated
+                    .setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            closeAllRows();
+                            markUpdatedRequestText(v.getContext(), task, position);
+                        }
+                    });
+
             View danger = (View) view.findViewById(R.id.danger_level);
             if (task.getPriority() > 75) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Red"));
-                // viewHolder.lastMessage.setText(view.getContext().getString(R.string.escalation_needed));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Red"));
                 viewHolder.sendReminder.setText(view.getContext().getString(R.string.message_emp));
                 viewHolder.sendReminder
@@ -683,32 +708,8 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                                 Utils.sendCustomSMS(v.getContext(), task.getEmployeeNumber());
                             }
                         });
-
-                viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_updated));
-                viewHolder.markCompleted
-                        .setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                closeAllRows();
-                                markUpdatedRequestText(v.getContext(), task, position);
-
-                                // Change the button to say "mark completed"
-                                viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
-                                viewHolder.markCompleted
-                                        .setOnClickListener(new View.OnClickListener() {
-
-                                            @Override
-                                            public void onClick(View v) {
-                                                closeAllRows();
-                                                markTaskCompleted(v.getContext(), task, position);
-                                            }
-                                        });
-                            }
-                        });
             } else if (task.getPriority() > 0) {
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Orange"));
-//                viewHolder.lastMessage.setText(view.getContext().getString(R.string.reply_pending));
                 viewHolder.lastMessage.setTextColor(Utils.getColor(view.getContext(), "Orange"));
                 viewHolder.sendReminder.setText(view.getContext().getString(R.string.message_emp));
                 viewHolder.sendReminder
@@ -720,58 +721,9 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                                 Utils.sendCustomSMS(v.getContext(), task.getEmployeeNumber());
                             }
                         });
-
-                viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_updated));
-                viewHolder.markCompleted
-                        .setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                closeAllRows();
-                                markUpdatedRequestText(v.getContext(), task, position);
-
-                                // Change the button to say "mark completed"
-                                viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
-                                viewHolder.markCompleted
-                                        .setOnClickListener(new View.OnClickListener() {
-
-                                            @Override
-                                            public void onClick(View v) {
-                                                closeAllRows();
-                                                markTaskCompleted(v.getContext(), task, position);
-                                            }
-                                        });
-                            }
-                        });
             } else {
                 // Priority = 0 (task is on track)
                 danger.setBackgroundColor(Utils.getColor(view.getContext(), "Transparent"));
-            }
-
-            // Allow the owner to mark task updated if its priority is non-zero
-            if (task.getPriority() > 0) {
-                viewHolder.markCompleted.setText(view.getContext().getString(R.string.mark_updated));
-                viewHolder.markCompleted
-                        .setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                closeAllRows();
-                                markUpdatedRequestText(v.getContext(), task, position);
-
-                                // Change the button to say "mark completed"
-                                viewHolder.markCompleted.setText(v.getContext().getString(R.string.mark_completed));
-                                viewHolder.markCompleted
-                                        .setOnClickListener(new View.OnClickListener() {
-
-                                            @Override
-                                            public void onClick(View v) {
-                                                closeAllRows();
-                                                markTaskCompleted(v.getContext(), task, position);
-                                            }
-                                        });
-                            }
-                        });
             }
 
             // For newly added item, change the appearance
@@ -839,7 +791,13 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             });
 
             // Remove the completed task from the listview
-            remove(task);
+            MigratedTask tempTask = getItem(position);
+            if (task.getTaskID().equalsIgnoreCase(tempTask.getTaskID())) {
+                this.remove(task);
+                Utils.refreshListWithoutLosingScrollPosition(mSwipeListView, this);
+            } else {
+                refreshTaskList(context);
+            }
         }
 
         protected void forceReminderOnTask(final Context context,

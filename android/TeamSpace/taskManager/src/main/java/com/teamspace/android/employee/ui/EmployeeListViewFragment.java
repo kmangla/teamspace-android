@@ -95,6 +95,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
                     return;
                 }
 
+                viewHolder.fourthButton.setVisibility(View.GONE);
                 if (right) {
                     viewHolder.call.setVisibility(View.INVISIBLE);
                     viewHolder.delete.setVisibility(View.INVISIBLE);
@@ -225,6 +226,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
     	Button delete;
 		Button edit;
 		Button call;
+        Button fourthButton;
     	public View frontView;
     	public View backView;
 
@@ -243,6 +245,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
 	        delete = (Button) view.findViewById(R.id.swipe_button1);
 	        edit = (Button) view.findViewById(R.id.swipe_button2);
 	        call = (Button) view.findViewById(R.id.swipe_button3);
+            fourthButton = (Button) view.findViewById(R.id.swipe_button4);
     	}
     }
 
@@ -374,6 +377,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
             viewHolder.call.setVisibility(View.VISIBLE);
             viewHolder.delete.setVisibility(View.VISIBLE);
             viewHolder.edit.setVisibility(View.VISIBLE);
+            viewHolder.fourthButton.setVisibility(View.GONE);
             
             // If we found a bitmap in the cache for this employee (by phone number), 
             // we do not show initials. We directly show the bitmap image. Otherwise
