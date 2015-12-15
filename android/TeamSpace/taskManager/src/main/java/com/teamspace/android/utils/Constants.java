@@ -4,6 +4,7 @@ public class Constants {
 	
 	public static final String EMPLOYEE_ID = "EMPLOYEE_ID";
 	public static final String TASK_ID = "TASK_ID";
+    public static final String TASK_ARRAY = "TASK_ARRAY";
     public static final String USER_ID = "USER_ID";
     public static final String SERVER_IP = "SERVER_IP";
     public static final String SERVER_PORT = "SERVER_PORT";

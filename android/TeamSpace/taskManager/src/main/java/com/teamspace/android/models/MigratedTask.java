@@ -35,7 +35,6 @@ public class MigratedTask {
     private long markUpdated;
     private String markUpdatedText;
 
-
     private long priority;
     private MigratedMessage lastMessage;
 	
@@ -63,8 +62,11 @@ public class MigratedTask {
 	private static String ASSIGNED_TO = "assignedTo";
     private static String LAST_MSG = "lastMessage";
     private static String PRIORITY = "priority";
-	
 
+
+    public boolean isCreationPending() {
+        return (updateCount < 0);
+    }
 	public long getCreatedOn() {
 		return createdOn;
 	}

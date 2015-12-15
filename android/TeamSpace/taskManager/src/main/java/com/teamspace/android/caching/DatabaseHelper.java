@@ -27,7 +27,7 @@ import org.json.JSONObject;
 class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String FILENAME = "tasks.sqlite";
-	private static final int VERSION = 30;
+	private static final int VERSION = 31;
 
 	public DatabaseHelper(Context c) {
 		super(c, FILENAME, null, VERSION);
@@ -61,7 +61,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("create table new_employees (name varchar(100), "
 				+ "phone varchar(100), company_id varchar(100), user_id varchar(100),"
-				+ "employee_id varchar(100), designation varchar(256), task_count varchar(100), last_updated varchar(100))");
+				+ "employee_id varchar(100), designation varchar(256), task_count varchar(100), task_blob varchar(5000), last_updated varchar(100))");
 		
 		db.execSQL("create table new_messages (" +
 				"message_id varchar(100), task_id varchar(100)," +
@@ -123,6 +123,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
         if (versionOld <= 29 && versionNew >= 30) {
             db.execSQL("alter table new_tasks add column last_message varchar(5000)");
+        }
+        if (versionOld <= 30 && versionNew >= 31) {
+            db.execSQL("alter table new_employees add column task_blob varchar(5000)");
         }
 	}
 		
@@ -840,6 +843,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("phone", employee.getPhoneWithCountryCode());
 		cv.put("task_count", employee.getTaskCount());
 		cv.put("last_updated", employee.getLastUpdated());
+        cv.put("task_blob", employee.getTaskBlob());
 
 		database.insert("new_employees", null, cv);
 	}
@@ -1030,6 +1034,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
 				.getColumnIndex("task_count")));
 		migratedEmployee.setLastUpdated(cursor.getString(cursor
 				.getColumnIndex("last_updated")));
+        migratedEmployee.setTaskBlob(cursor.getString(cursor
+                .getColumnIndex("task_blob")));
 		return migratedEmployee;
 	}
 

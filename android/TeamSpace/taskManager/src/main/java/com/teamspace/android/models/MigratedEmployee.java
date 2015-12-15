@@ -24,6 +24,8 @@ public class MigratedEmployee {
 	private String taskCount;
 	private String lastUpdated;
     private String pairedNumber;
+    private String taskBlob;
+
 	
 	private static String NAME = "name";
 	private static String PHONE = "phone";
@@ -31,6 +33,7 @@ public class MigratedEmployee {
 	private static String USER_ID = "userID";
 	private static String EMPLOYEE_ID = "employeeID";
 	private static String DESIGNATION = "designation";
+    private static String TASK_BLOB = "taskBlob";
 	private static String TASK_COUNT = "taskCount";
 	private static String LAST_UPDATED = "lastUpdated";
 	
@@ -40,6 +43,12 @@ public class MigratedEmployee {
 	public void setName(String name) {
 		this.name = name;
 	}
+    public String getTaskBlob() {
+        return taskBlob;
+    }
+    public void setTaskBlob(String blob) {
+        this.taskBlob = blob;
+    }
 	public String getPhoneWithCountryCode() {
 		return phone;
 	}
@@ -107,19 +116,8 @@ public class MigratedEmployee {
 	public String toString() {
 		return this.employeeID;
 	}
-	public JSONObject toJSONObject() throws JSONException {
-		JSONObject obj = new JSONObject();
-		obj.put(NAME, this.getName());
-		obj.put(PHONE, this.getPhoneWithCountryCode());
-		obj.put(COMPANY_ID, this.getCompanyID());
-		obj.put(USER_ID, this.getUserID());
-		obj.put(EMPLOYEE_ID, this.getEmployeeID());
-		obj.put(DESIGNATION, this.getDesignation());
-		obj.put(TASK_COUNT, this.getTaskCount());
-		obj.put(LAST_UPDATED, this.getLastUpdated());
-		return obj;
-	}
-	public HashMap<String, String> toMapObject() {
+
+    public HashMap<String, String> toMapObject() {
 		HashMap<String, String> obj = new HashMap<String, String>();
 		obj.put(NAME, this.getName());
 		obj.put(PHONE, this.getPhoneWithCountryCode());
@@ -130,6 +128,7 @@ public class MigratedEmployee {
 		}
 		obj.put(DESIGNATION, this.getDesignation());
 		obj.put(Constants.KEY, Utils.getSignedInUserKey());
+        obj.put(TASK_BLOB, this.getTaskBlob());
 		return obj;
 	}
 	public static MigratedEmployee parseJSON(JSONObject object) throws JSONException, ParseException {
@@ -149,6 +148,7 @@ public class MigratedEmployee {
 
         try {
             employee.pairedNumber = object.getString("pairedNumber");
+            employee.taskBlob = object.getString("taskBlob");
         } catch (JSONException e) {
 
         }

@@ -3,7 +3,7 @@
 
     <string name="app_name">Team Space</string>
     <string name="sample_text">Sample Text</string>
-    <string name="add_new_task">"Add a new Task"</string>
+    <string name="add_new_task">"Create Task"</string>
     <string name="add_new_emp">"Add a new Employee"</string>
     <string name="hint_message">Add a comment</string>
     <string name="messages">Messages</string>
@@ -11,15 +11,19 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_debug">Debug Settings</string>
-    <string name="task_title_hint">Enter task title here</string>
+    <string name="task_title_hint">Enter task description here</string>
     <string name="task_details_hint">Enter task details here</string>
     <string name="task_employee_title">Employee Name</string>
     <string name="add_employee">Add new employee</string>
     <string name="task_detail_page">Task Details</string>
     <string name="task_status_page">Task Status</string>
     <string name="import_from_contacts">Import From Contacts</string>
-    
-	<string name="save">Save</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+	<string name="save">Save For Later</string>
+    <string name="save_now">Save</string>
+    <string name="create">Create Now</string>
     <string name="done">Done</string>
     <string name="skip">Skip</string>
     <string name="add">Add</string>
@@ -61,14 +65,15 @@
     <string name="employee_number_title">Employee Number</string>
     <string name="employee_number_hint"></string>
     <string name="task_frequency_prompt">Choose a frequency</string>
-    <string name="task_title">Title*</string>
+    <string name="task_title">Title</string>
+    <string name="task_subtitle">Create new task for every new line typed above</string>
     <string name="registration_welcome">Welcome to \nTeam Space</string>
     <string name="task_details">Task Details</string>
     <string name="employees">Employees</string>
-    <string name="add_task">New Task</string>
+    <string name="add_task">Create Task For:</string>
     <string name="add_edit_emp">New Employee</string>
-    <string name="task_frequency">Status Updates Needed*</string>
-    <string name="assigned_to">Assigned To*</string>
+    <string name="task_frequency">Status Updates Needed</string>
+    <string name="assigned_to">Assigned To</string>
     <string name="edit">Edit</string>
     <string name="edit_emp">Edit Employee</string>
     <string name="send">Send</string>
@@ -103,6 +108,7 @@
     <string name="pref_end_time_title">Ending Time</string>
     <string name="task_day_title">Day</string>
     <string name="dummy_section_text">Section %1d is just a dummy section.</string>
+    <string name="task_creation_pending">This task creation is pending. You can edit it when you use the app next time.</string>
     <string name="demo_external_activity">Demo External Activity</string>
     <string name="demo_collection">Demo Collection</string>
     <string name="activity_dynamiclistview_header">Touch the grip or long press an item to drag.\nSwipe to dismiss.\nTap an item to insert a new item.</string>
@@ -129,8 +135,10 @@
     <string name="task_mark_updated_by_owner">Task marked up-to-date.</string>
     <string name="employee_creation_sms_1">You will receive SMS messages from </string>
     <string name="employee_creation_sms_2">Please reply to them regularly with the status updates for the tasks assigned to you. Regards, </string>
+    <string name="task_draft_saved">Draft saved for later</string>
 
     <!-- ERROR MESSAGES  -->
+    <string name="error_task_draft_failed">Sorry, could not save the draft due to network error.</string>
     <string name="error_employee_deletion_failed">Sorry, could not delete the employee due to server error.</string>
     <string name="error_employee_update_failed">Sorry, could not update the employee due to server error.</string>
     <string name="error_employee_create_failed">Sorry, could not create the employee due to server error.</string>

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -125,7 +126,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
                 MigratedTask task = mAdapter.getItem(position);
 
-                if (right) {
+                if (right || task.isCreationPending()) {
                     viewHolder.markCompleted.setVisibility(View.INVISIBLE);
                     viewHolder.delete.setVisibility(View.INVISIBLE);
                     viewHolder.sendReminder.setVisibility(View.INVISIBLE);
@@ -257,6 +258,14 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
     private void taskSelected(int position) {
         MigratedTask taskSelected = mAdapter.getItem(position);
+        if (taskSelected.isCreationPending()) {
+            Toast.makeText(
+                    getActivity(),
+                    R.string.task_creation_pending,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent i = new Intent(getActivity(), MessageListActivity.class);
         String selectedTaskId = taskSelected.getTaskID();
         taskSelected.setUpdateCount(0);
@@ -371,10 +380,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         public void onFailure(String message) {
                             // Notify user about the error
                             Utils.trackEvent("task", "fetch", "network_fail");
-                            Toast.makeText(
-                                    context,
-                                    message,
-                                    Toast.LENGTH_SHORT).show();
+                            if (message != null) {
+                                Toast.makeText(
+                                        context,
+                                        message,
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
         }
@@ -584,6 +595,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 viewHolder.populateImageTask = null;
             }
 
+            if (task.isCreationPending()) {
+                viewHolder.frontView.setBackgroundColor(Color.LTGRAY);
+            } else {
+                viewHolder.frontView.setBackgroundColor(Color.WHITE);
+            }
+
             Button moreButton = (Button) view.findViewById(R.id.more_button);
             moreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -593,13 +610,20 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 }
             });
 
-            viewHolder.markCompleted.setVisibility(View.VISIBLE);
-            viewHolder.delete.setVisibility(View.VISIBLE);
-            viewHolder.sendReminder.setVisibility(View.VISIBLE);
-            if (task.getPriority() > 0) {
-                viewHolder.markUpdated.setVisibility(View.VISIBLE);
-            } else {
+            if (task.isCreationPending()) {
+                viewHolder.markCompleted.setVisibility(View.GONE);
+                viewHolder.delete.setVisibility(View.GONE);
+                viewHolder.sendReminder.setVisibility(View.GONE);
                 viewHolder.markUpdated.setVisibility(View.GONE);
+            } else {
+                viewHolder.markCompleted.setVisibility(View.VISIBLE);
+                viewHolder.delete.setVisibility(View.VISIBLE);
+                viewHolder.sendReminder.setVisibility(View.VISIBLE);
+                if (task.getPriority() > 0) {
+                    viewHolder.markUpdated.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.markUpdated.setVisibility(View.GONE);
+                }
             }
 
             // If we found a bitmap in the cache for this employee (by phone number), 
@@ -1049,17 +1073,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 if (extras != null) {
                     // Create a fake task row and add it so that the UI looks
                     // responsive to the user.
-                    String title = extras.getString(Constants.TASK_TITLE);
-                    String employeeId = extras.getString(Constants.EMPLOYEE_ID);
-                    String name = extras.getString(Constants.EMPLOYEE_NAME);
-                    String number = extras.getString(Constants.EMPLOYEE_PHONE);
-                    MigratedTask newTask = new MigratedTask();
-                    newTask.setTitle(title);
-                    newTask.setEmployeeID(employeeId);
-                    newTask.setEmployeeName(name);
-                    newTask.setEmployeeNumber(number);
-                    newTask.setLastUpdate(System.currentTimeMillis());
-                    mAdapter.add(newTask);
+                    String key = extras.getString(Constants.TASK_ARRAY);
+                    ArrayList<MigratedTask> tempTasks = (ArrayList<MigratedTask>) DataManager
+                            .getInstance(getActivity()).retrieveData(
+                                    key);
+
+                    mAdapter.addAll(tempTasks);
                     mAdapter.sortAdapterList(currentSortPreference);
                 }
 
