@@ -17,7 +17,6 @@ public class MigratedTask {
 
 	private String taskID;
 	private String status;
-	private String description;
 	private String title;
 	private String userID;
 	private String employeeID;
@@ -51,7 +50,7 @@ public class MigratedTask {
     private static String FORCE_REMINDER = "forceReminder";
     private static String MARK_UPDATED = "markUpdated";
     private static String MARK_UPDATED_TEXT = "markUpdatedText";
-	private static String CREATED_ON = "createdOn";
+	private static String CREATED_AT = "createdAt";
 	private static String LAST_REMINDER = "lastReminder";
 	private static String LAST_UPDATE = "lastUpdate";
 	private static String LAST_SEEN = "lastSeen";
@@ -105,12 +104,6 @@ public class MigratedTask {
 	}
 	public void setStatus(String status) {
 		this.status = status;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
 	}
 	public String getTitle() {
 		return title;
@@ -217,11 +210,10 @@ public class MigratedTask {
 		obj.put(EMPLOYEE_ID, this.getEmployeeID());
 		obj.put(EMPLOYEE_NAME, this.getEmployeeName());
 		obj.put(EMPLOYEE_NUMBER, this.getEmployeeNumber());
-		obj.put(DESCRIPTION, this.getDescription());
 		obj.put(TITLE, this.getTitle());
 		obj.put(STATUS, this.getStatus());
 		obj.put(FREQUENCY, this.getFrequency());
-		obj.put(CREATED_ON, ISO8601DateParser.toString(new Date(this.getCreatedOn())));
+		obj.put(CREATED_AT, ISO8601DateParser.toString(new Date(this.getCreatedOn())));
 		obj.put(LAST_REMINDER, ISO8601DateParser.toString(new Date(this.getLastReminder())));
 		obj.put(LAST_UPDATE, ISO8601DateParser.toString(new Date(this.getLastUpdate())));
 		obj.put(LAST_SEEN, ISO8601DateParser.toString(new Date(this.getLastSeen())));
@@ -239,7 +231,6 @@ public class MigratedTask {
 			obj.put(TASK_ID, this.getTaskID());
 		}
 		obj.put(EMPLOYEE_ID, this.getEmployeeID());
-		obj.put(DESCRIPTION, this.getDescription());
 		obj.put(TITLE, this.getTitle());
 		obj.put(STATUS, this.getStatus());
 		obj.put(FREQUENCY, this.getFrequency() + "");
@@ -257,11 +248,9 @@ public class MigratedTask {
 		task.taskID = object.getString(ID);
 		task.userID = object.getString(ASSIGNED_BY);
 		task.companyID = object.getString(ASSIGNED_BY);		
-		task.description = object.getString(DESCRIPTION);
 		task.title = object.getString(TITLE);
 		task.status = object.getString(STATUS);
 		task.frequency = object.getLong(FREQUENCY);
-        task.priority = object.getLong(PRIORITY);
 		
 		try {
 			task.updateCount = object.getLong(UPDATE_COUNT);
@@ -270,6 +259,7 @@ public class MigratedTask {
 		}
 		try {
 			task.assignedBy = object.getString(ASSIGNED_BY);
+            task.priority = object.getLong(PRIORITY);
 		} catch (JSONException e) {
 			 Utils.log("Json parsing exception in MigratedTask - assignedBy field not found in server response");
 		}
@@ -301,7 +291,7 @@ public class MigratedTask {
         }
 
 		try {
-			task.createdOn = ((Date)ISO8601DateParser.parse(object.getString(CREATED_ON))) .getTime();
+			task.createdOn = ((Date)ISO8601DateParser.parse(object.getString(CREATED_AT))) .getTime();
 		} catch (JSONException e) {
 			task.createdOn = 0; 
 		}

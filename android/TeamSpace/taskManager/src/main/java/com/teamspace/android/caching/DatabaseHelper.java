@@ -694,7 +694,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("employee_id", task.getEmployeeID());
 		cv.put("employee_name", task.getEmployeeName());
 		cv.put("employee_number", task.getEmployeeNumber());
-		cv.put("description", task.getDescription());
 		cv.put("title", task.getTitle());
 		cv.put("status", task.getStatus());
 		cv.put("frequency", task.getFrequency());
@@ -723,7 +722,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("employee_id", task.getEmployeeID());
 		cv.put("employee_name", task.getEmployeeName());
 		cv.put("employee_number", task.getEmployeeNumber());
-		cv.put("description", task.getDescription());
 		cv.put("title", task.getTitle());
 		cv.put("status", task.getStatus());
 		cv.put("frequency", task.getFrequency());
@@ -1058,8 +1056,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
 				.getColumnIndex("company_id")));
 		migratedTask.setUserID(cursor.getString(cursor
 				.getColumnIndex("user_id")));
-		migratedTask.setDescription(cursor.getString(cursor
-				.getColumnIndex("description")));
 		migratedTask.setTitle(cursor.getString(cursor
 				.getColumnIndex("title")));
 		migratedTask.setUpdateCount(cursor.getLong(cursor

@@ -191,7 +191,6 @@ public class MessageListFragment extends Fragment {
 		taskEmployeeName = newTask.getEmployeeName();
 		
 		Utils.setTextViewTextAndVisibility(title, taskTitle);
-		Utils.setTextViewTextAndVisibility(detail, newTask.getDescription());
 
 		// Convert seconds to frequency (daily, weekly, monthly etc.)
 		String freq = Constants.DAILY_STR;
@@ -239,7 +238,6 @@ public class MessageListFragment extends Fragment {
 				editedTask.setTaskID(task.getTaskID());
 				editedTask.setTitle(title);
 				editedTask.setFrequency(freq);
-				editedTask.setDescription(details);
 				editedTask.setEmployeeID(employeeId);
 				editedTask.setEmployeeName(name);
 				editedTask.setEmployeeNumber(number);
