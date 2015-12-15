@@ -116,7 +116,6 @@ public class MessageListFragment extends Fragment {
 
         // Setup header view fields
 		title = (TextView) headerView.findViewById(R.id.title);
-		detail = (TextView) headerView.findViewById(R.id.detail);
 		empName = (TextView) headerView.findViewById(R.id.employee_name);
 
 		Utils.setTextViewTextAndVisibility(title, taskTitle);
