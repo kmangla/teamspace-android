@@ -21,8 +21,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teamspace.android.R;
@@ -41,11 +44,15 @@ public class TaskAddEditFragment extends Fragment implements
 
 	private MigratedTask task;
 	EditText taskTitleEditText;
-	EditText taskDescriptionEditText;
-	Spinner freqSpinner;
+    RadioButton dailyButton;
+    RadioButton monthlyButton;
+    RadioButton weeklyButton;
+    CheckBox createMultiple;
+    TextView createMultipleText;
 	Spinner empSpinner;
 
 	Button saveButton;
+    Button saveDraft;
 
 	String taskId = "";
 	String taskTitle = "";
@@ -113,189 +120,248 @@ public class TaskAddEditFragment extends Fragment implements
 		View v = inflater.inflate(R.layout.task_add_fragment, container, false);
 
 		taskTitleEditText = (EditText) v.findViewById(R.id.task_title);
-		taskDescriptionEditText = (EditText) v.findViewById(R.id.task_details);
 
 		if (Utils.isStringNotEmpty(taskTitle)) {
 			taskTitleEditText.setText(taskTitle);
 		}
 
+        dailyButton = (RadioButton) v.findViewById(R.id.daily);
+        weeklyButton = (RadioButton) v.findViewById(R.id.weekly);
+        monthlyButton = (RadioButton) v.findViewById(R.id.monthly);
+        dailyButton.setChecked(true);
+
+        createMultiple = (CheckBox) v.findViewById(R.id.create_multiple);
+        createMultipleText = (TextView) v.findViewById(R.id.create_multiple_text);
+        createMultiple.setChecked(true);
+
 		// Add spinner for selecting employee
 		empSpinner = (Spinner) v.findViewById(R.id.employee_spinner);
-
         populateEmployeeSpinner(v.getContext(), null);
-
 		empSpinner.setOnItemSelectedListener(this);
 
-		// Add spinner for selecting frequency
-		freqSpinner = (Spinner) v.findViewById(R.id.frequency);
+        if (allEmployees.size() > 0) {
+            taskTitleEditText.setText(allEmployees.get(0).getTaskBlob());
+        }
 
 		// Create an ArrayAdapter using the frequency array
 		ArrayAdapter<CharSequence> freqAdapter = ArrayAdapter
 				.createFromResource(getActivity(), R.array.frequency_array,
-						R.layout.task_spinner_item);
+						R.layout.task_spinner_item_white);
 		freqAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// Apply the adapter to the spinner
-		freqSpinner.setAdapter(freqAdapter);
-		freqSpinner.setOnItemSelectedListener(this);
 
 		saveButton = (Button) v.findViewById(R.id.save_button);
-		saveButton.setOnClickListener(new View.OnClickListener() {
+        saveDraft = (Button) v.findViewById(R.id.draft_button);
 
+        saveDraft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                MigratedEmployee emp = allEmployees.get(empSpinner
+                        .getSelectedItemPosition());
+                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp, v);
+            }
+        });
+
+        if (editMode) {
+            createMultiple.setVisibility(View.GONE);
+            createMultipleText.setVisibility(View.GONE);
+            createMultiple.setChecked(false);
+            saveButton.setText(R.string.save_now);
+            saveDraft.setVisibility(View.GONE);
+        }
+
+		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {
-				TaskManagerApplication applicationContext = ((TaskManagerApplication) getFragmentActivity()
-						.getApplication());
-				DataManager dataMgr = DataManager
-						.getInstance(applicationContext);
-
-				task.setTitle(taskTitleEditText.getText().toString());
-				task.setDescription(taskDescriptionEditText.getText()
-						.toString());
-				MigratedEmployee emp = allEmployees.get(empSpinner
-						.getSelectedItemPosition());
-                if (Utils.isStringEmpty(emp.getEmployeeID()) &&
-                        Utils.isStringNotEmpty(emp.getPhoneWithCountryCode()) &&
-                        Utils.isStringNotEmpty(emp.getName())) {
-                    MigratedEmployee actualEmp = DatabaseCache.getInstance(getActivity()).
-                            getMigratedEmployeeByPhoneAndName(emp.getPhoneWithCountryCode(), emp.getName());
-                    if (actualEmp != null) {
-                        emp.setEmployeeID(actualEmp.getEmployeeID());
-                    }
-                }
-
-                // If somehow the task is assigned to "Add New Employee", do nothing.
-                if (Utils.isStringEmpty(emp.getEmployeeID()) || emp.getEmployeeID().equalsIgnoreCase("0000")) {
-                    // Notify user about the error
-                    Toast.makeText(
-                            v.getContext(),
-                            v.getContext()
-                                    .getResources()
-                                    .getString(
-                                            R.string.error_employee_not_valid),
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-				task.setEmployeeID(emp.getEmployeeID());
-				task.setEmployeeName(emp.getName());
-				task.setEmployeeNumber(emp.getPhoneWithCountryCode());
-
-				long freq = Constants.DAILY;
-				// Convert freq to seconds
-				switch (freqSpinner.getSelectedItemPosition()) {
-				case 0:
-					freq = Constants.DAILY;
-					break;
-				case 1:
-					freq = Constants.WEEKLY;
-					break;
-				case 2:
-					freq = Constants.BIWEEKLY;
-					break;
-				case 3:
-					freq = Constants.MONTHLY;
-					break;
-				default:
-					freq = Constants.DAILY;
-					break;
-				}
-
-				task.setFrequency(freq);
-
-				if (Utils.isStringNotEmpty(taskId)) {
-					task.setTaskID(taskId);
-					dataMgr.updateTask(task, new DataManagerCallback() {
-
-						@Override
-						public void onSuccess(String response) {
-						}
-
-						@Override
-						public void onFailure(String response) {
-							// Notify user about the error
-							Utils.trackEvent("task", "update", "network_fail");
-							Toast.makeText(
-									v.getContext(),
-									v.getContext()
-											.getResources()
-											.getString(
-													R.string.error_task_update_failed),
-									Toast.LENGTH_SHORT).show();
-						}
-					});
-				} else {
-					task.setTaskID(Constants.EMPTY_STRING);
-					task.setStatus(Constants.OPEN);
-					dataMgr.createTask(task, new DataManagerCallback() {
-
-						@Override
-						public void onSuccess(String response) {
-						}
-
-						@Override
-						public void onFailure(String response) {
-							// Notify user about the error
-							Utils.trackEvent("task", "create", "network_fail");
-							Toast.makeText(
-									v.getContext(),
-									v.getContext()
-											.getResources()
-											.getString(
-													R.string.error_task_create_failed),
-									Toast.LENGTH_SHORT).show();
-						}
-					});
-				}
-
-				Intent newIntent = new Intent();
-				newIntent.putExtra(Constants.TASK_ID, task.getTaskID());
-				newIntent.putExtra(Constants.TASK_TITLE, task.getTitle());
-				newIntent.putExtra(Constants.DETAILS, task.getDescription());
-				newIntent.putExtra(Constants.FREQUENCY, task.getFrequency());
-				newIntent.putExtra(Constants.EMPLOYEE_ID, task.getEmployeeID());
-				String name = allEmployees.get(
-						empSpinner.getSelectedItemPosition()).getName();
-				String number = allEmployees.get(
-						empSpinner.getSelectedItemPosition())
-						.getPhoneWithCountryCode();
-				newIntent.putExtra(Constants.EMPLOYEE_NAME, name);
-				newIntent.putExtra(Constants.EMPLOYEE_PHONE, number);
-
-                if (editMode) {
-                    Utils.trackEvent("Tracking", "TaskEdited",
-                            "TaskAddEditFragment:saveButtonClicked");
-                } else {
-                    Utils.trackEvent("Tracking", "TaskAdded",
-                            "TaskAddEditFragment:saveButtonClicked");
-                }
-
-                // Refresh the main task list to display this new task
-                DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
-
-				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
-				getFragmentActivity().finish();
-			}
+                createTasksForEmployee(v);
+            }
 		});
 
 		return v;
 	}
 
+    private void createTasksForEmployee(final View v) {
+        TaskManagerApplication applicationContext = ((TaskManagerApplication) getFragmentActivity()
+                .getApplication());
+        DataManager dataMgr = DataManager
+                .getInstance(applicationContext);
+
+        MigratedEmployee emp = allEmployees.get(empSpinner
+                .getSelectedItemPosition());
+        if (Utils.isStringEmpty(emp.getEmployeeID()) &&
+                Utils.isStringNotEmpty(emp.getPhoneWithCountryCode()) &&
+                Utils.isStringNotEmpty(emp.getName())) {
+            MigratedEmployee actualEmp = DatabaseCache.getInstance(getActivity()).
+                    getMigratedEmployeeByPhoneAndName(emp.getPhoneWithCountryCode(), emp.getName());
+            if (actualEmp != null) {
+                emp.setEmployeeID(actualEmp.getEmployeeID());
+            }
+        }
+
+        // Clear the draft if any for this employee since we are now creating the tasks for real
+        updateTaskBlobForEmployee("", emp, v);
+
+        // If somehow the task is assigned to "Add New Employee", do nothing.
+        if (Utils.isStringEmpty(emp.getEmployeeID()) || emp.getEmployeeID().equalsIgnoreCase("0000")) {
+            // Notify user about the error
+            Toast.makeText(
+                    v.getContext(),
+                    v.getContext()
+                            .getResources()
+                            .getString(
+                                    R.string.error_employee_not_valid),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String key = "newTask:" + System.nanoTime();
+        ArrayList<MigratedTask> data = new ArrayList<MigratedTask>();
+        DataManager.getInstance(getActivity()).insertData(key, data);
+
+        String longTitle = taskTitleEditText.getText().toString();
+        String [] split = longTitle.split("\n");
+        if (!createMultiple.isChecked()) {
+            split = new String[1];
+            split[0] = longTitle;
+        }
+
+        for (int i = 0; i < split.length; i ++) {
+            String tempTitle = split[i];
+            tempTitle = tempTitle.trim();
+            if (tempTitle.length() == 0) {
+                continue;
+            }
+
+            task.setTitle(tempTitle);
+            task.setEmployeeID(emp.getEmployeeID());
+            task.setEmployeeName(emp.getName());
+            task.setEmployeeNumber(emp.getPhoneWithCountryCode());
+
+            long freq;
+
+            // Convert freq to seconds
+            if (dailyButton.isChecked()) {
+                freq = Constants.DAILY;
+            } else if (weeklyButton.isChecked()) {
+                freq = Constants.WEEKLY;
+            } else {
+                freq = Constants.MONTHLY;
+            }
+
+            task.setFrequency(freq);
+
+            if (Utils.isStringNotEmpty(taskId)) {
+                task.setTaskID(taskId);
+                dataMgr.updateTask(task, new DataManagerCallback() {
+
+                    @Override
+                    public void onSuccess(String response) {
+                    }
+
+                    @Override
+                    public void onFailure(String response) {
+                        // Notify user about the error
+                        Utils.trackEvent("task", "update", "network_fail");
+                        Toast.makeText(
+                                v.getContext(),
+                                v.getContext()
+                                        .getResources()
+                                        .getString(
+                                                R.string.error_task_update_failed),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                task.setTaskID(Constants.EMPTY_STRING);
+                task.setStatus(Constants.OPEN);
+                task.setUpdateCount(-1);
+                task.setLastUpdate(System.currentTimeMillis());
+                data.add(task);
+                dataMgr.createTask(task, new DataManagerCallback() {
+
+                    @Override
+                    public void onSuccess(String response) {
+                    }
+
+                    @Override
+                    public void onFailure(String response) {
+                        // Notify user about the error
+                        Utils.trackEvent("task", "create", "network_fail");
+                        Toast.makeText(
+                                v.getContext(),
+                                v.getContext()
+                                        .getResources()
+                                        .getString(
+                                                R.string.error_task_create_failed),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            task = new MigratedTask();
+        }
+
+        Intent newIntent = new Intent();
+        newIntent.putExtra(Constants.TASK_ARRAY, key);
+
+        if (editMode) {
+            Utils.trackEvent("Tracking", "TaskEdited",
+                    "TaskAddEditFragment:saveButtonClicked");
+        } else {
+            Utils.trackEvent("Tracking", "TaskAdded",
+                    "TaskAddEditFragment:saveButtonClicked");
+        }
+
+        // Refresh the main task list to display this new task
+        DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
+
+        getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
+        getFragmentActivity().finish();
+    }
+
+    private void updateTaskBlobForEmployee(String blobToCache, MigratedEmployee emp, final View v) {
+        emp.setTaskBlob(blobToCache);
+        DataManager dataMgr = DataManager.getInstance(getActivity().getApplicationContext());
+        dataMgr.updateEmployee(emp, new DataManagerCallback() {
+
+            @Override
+            public void onSuccess(String response) {
+                Toast.makeText(
+                        v.getContext(),
+                        v.getContext().getResources()
+                                .getString(
+                                        R.string.task_draft_saved),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(String response) {
+                // Notify user about the error
+                Toast.makeText(
+                        v.getContext(),
+                        v.getContext().getResources()
+                                .getString(
+                                        R.string.error_task_draft_failed),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void populateEmployeeSpinner(Context context, MigratedEmployee newEmp) {
         allEmployees = DatabaseCache.getInstance(context)
                 .getMigratedEmployeesBlockingCall();
 
-        MigratedEmployee addNew = new MigratedEmployee();
-        addNew.setEmployeeID("0000");
-        addNew.setName("Add new employee");
-        addNew.setPhoneWithContryCode("0000");
-        allEmployees.add(0, addNew);
+//        MigratedEmployee addNew = new MigratedEmployee();
+//        addNew.setEmployeeID("0000");
+//        addNew.setName("Add new employee");
+//        addNew.setPhoneWithContryCode("0000");
+//        allEmployees.add(0, addNew);
 
-        MigratedEmployee self = new MigratedEmployee();
-        self.setEmployeeID(Utils.getSignedInUserId());
-        self.setName(Utils.getSignedInUserName());
-        self.setPhoneWithContryCode(Utils.getSignedInUserPhoneNumber());
-        allEmployees.add(0, self);
+//        MigratedEmployee self = new MigratedEmployee();
+//        self.setEmployeeID(Utils.getSignedInUserId());
+//        self.setName(Utils.getSignedInUserName());
+//        self.setPhoneWithContryCode(Utils.getSignedInUserPhoneNumber());
+//        allEmployees.add(0, self);
 
         if (newEmp != null) {
             allEmployees.add(0, newEmp);
@@ -322,10 +388,9 @@ public class TaskAddEditFragment extends Fragment implements
 
         // Create an ArrayAdapter using the list of employees
         ArrayAdapter<String> empAdapter = new ArrayAdapter<String>(
-                getActivity(), R.layout.task_spinner_item);
+                getActivity(), R.layout.task_spinner_item_white);
         empAdapter.addAll(allEmployeeNames);
-        empAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        empAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         empSpinner.setAdapter(empAdapter);
         empSpinner.setSelection(0);
@@ -354,7 +419,6 @@ public class TaskAddEditFragment extends Fragment implements
 
 	private void refreshUIForTask() {
 		taskTitleEditText.setText(task.getTitle());
-		taskDescriptionEditText.setText(task.getDescription());
 
 		for (int i = 0; i < allEmployees.size(); i++) {
 			if (allEmployees.get(i).getEmployeeID()
@@ -364,19 +428,18 @@ public class TaskAddEditFragment extends Fragment implements
 			}
 		}
 
-		// Convert seconds to frequency (daily, weekly, monthly etc.)
-		int freq = 0; // Daily
-		if (task.getFrequency() <= Constants.DAILY) {
-			freq = 0;
-		} else if (task.getFrequency() <= Constants.WEEKLY) {
-			freq = 1;
-		} else if (task.getFrequency() <= Constants.BIWEEKLY) {
-			freq = 2;
-		} else if (task.getFrequency() <= Constants.MONTHLY) {
-			freq = 3;
-		}
+        dailyButton.setChecked(false);
+        weeklyButton.setChecked(false);
+        monthlyButton.setChecked(false);
 
-		freqSpinner.setSelection(freq);
+		// Convert seconds to frequency (daily, weekly, monthly etc.)
+		if (task.getFrequency() <= Constants.DAILY) {
+            dailyButton.setChecked(true);
+		} else if (task.getFrequency() <= Constants.WEEKLY) {
+            weeklyButton.setChecked(true);
+		} else {
+            monthlyButton.setChecked(true);
+		}
 	}
 
 	public FragmentActivity getFragmentActivity() {
@@ -386,9 +449,14 @@ public class TaskAddEditFragment extends Fragment implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-        if (parent == empSpinner && position == 1) {
-            Intent i = new Intent(view.getContext(), EmployeeAddEditActivity.class);
-            startActivityForResult(i, ADD_EMPLOYEE);
+//        if (parent == empSpinner && position == 1) {
+//            Intent i = new Intent(view.getContext(), EmployeeAddEditActivity.class);
+//            startActivityForResult(i, ADD_EMPLOYEE);
+//        }
+
+        if (parent == empSpinner) {
+            MigratedEmployee emp = allEmployees.get(position);
+            taskTitleEditText.setText(emp.getTaskBlob());
         }
 	}
 
