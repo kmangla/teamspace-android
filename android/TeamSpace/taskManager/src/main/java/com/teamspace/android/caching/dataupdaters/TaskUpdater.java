@@ -31,7 +31,7 @@ public class TaskUpdater {
 	}
 
 	public void create() {
-		final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_TASK + "?cb=" + String.valueOf(System.nanoTime());
+		final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_TASK;
 		final HashMap<String, String> params = task.toMapObject();
 		NetworkingLayer.getInstance(context).makePostRequest(
 				url,

@@ -33,7 +33,7 @@ public class EmployeeUpdater {
 	}
 
 	public void create() {
-		final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_EMPLOYEE + "?cb=" + String.valueOf(System.nanoTime());
+		final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_EMPLOYEE;
 		final HashMap<String, String> params = mEmployee.toMapObject();
 		NetworkingLayer.getInstance(mContext).makePostRequest(
 				url,
