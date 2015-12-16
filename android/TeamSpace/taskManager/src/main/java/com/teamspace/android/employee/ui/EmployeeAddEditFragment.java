@@ -6,6 +6,7 @@ package com.teamspace.android.employee.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -265,14 +266,26 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 				employee.setCompanyID(Utils.getSignedInUserId());
 				
 				DataManager dataMgr = DataManager.getInstance(applicationContext);
-				Intent newIntent = new Intent();
-				
+
+                // Block the UI till employee creation succeeds or fails
+                final ProgressDialog progress;
+                progress = new ProgressDialog(v.getContext());
+                progress.setTitle("Contacting Server");
+                progress.setMessage("Please wait while we propagate the changes to our servers. This might take up to a minute.");
+                progress.setCancelable(false);
+                progress.setMax(200);
+                progress.show();
+
 				if (Utils.isStringNotEmpty(employeeID)) {
 					employee.setEmployeeID(employeeID);
 					dataMgr.updateEmployee(employee, new DataManagerCallback() {
 
 						@Override
-						public void onSuccess(String response) {							
+						public void onSuccess(String response) {
+                            if (progress != null) {
+                                progress.dismiss();
+                            }
+                            employeeUpdateDone(false);
 						}
 
 						@Override
@@ -284,18 +297,43 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 											.getString(
 													R.string.error_employee_update_failed),
 									Toast.LENGTH_SHORT).show();
+                            if (progress != null) {
+                                progress.dismiss();
+                            }
+                            employeeUpdateDone(false);
 						}
 					});					
 				} else {
 					employee.setEmployeeID(Constants.EMPTY_STRING);
 					employee.setDesignation(Constants.EMPLOYEE);
 					employee.setTaskCount("0");
-					
-					newIntent.putExtra(Constants.EMPLOYEE_NAME, employee.getName());
-					newIntent.putExtra(Constants.EMPLOYEE_PHONE, employee.getPhoneWithCountryCode());
-					
-					dataMgr.createEmployee(employee, null);
-				}
+
+					dataMgr.createEmployee(employee, new DataManagerCallback() {
+
+                        @Override
+                        public void onSuccess(String response) {
+                            if (progress != null) {
+                                progress.dismiss();
+                            }
+                            employeeUpdateDone(true);
+                        }
+
+                        @Override
+                        public void onFailure(String response) {
+                            // Notify user about the error
+                            Toast.makeText(
+                                    v.getContext(),
+                                    v.getContext().getResources()
+                                            .getString(
+                                                    R.string.error_employee_create_failed),
+                                    Toast.LENGTH_SHORT).show();
+                            if (progress != null) {
+                                progress.dismiss();
+                            }
+                            employeeUpdateDone(false);
+                        }
+                    });
+                }
 
                 if (editMode) {
                     Utils.trackEvent("Tracking", "EmployeeEdited",
@@ -304,13 +342,6 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                     Utils.trackEvent("Tracking", "EmployeeAdded",
                             "EmployeeAddEditFragment:saveButtonClicked");
                 }
-
-                // Refresh the task lists to display this change
-                DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
-                DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_EMP, true);
-
-				getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
-				getFragmentActivity().finish();
 			}
 		});
 
@@ -320,6 +351,22 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
         
 		return v;
 	}
+
+    private void employeeUpdateDone(boolean returnNewEmployee) {
+        Intent newIntent = new Intent();
+
+        if (returnNewEmployee) {
+            newIntent.putExtra(Constants.EMPLOYEE_NAME, employee.getName());
+            newIntent.putExtra(Constants.EMPLOYEE_PHONE, employee.getPhoneWithCountryCode());
+        }
+
+        // Refresh the task lists to display this change
+        DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
+        DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_EMP, true);
+
+        getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
+        getFragmentActivity().finish();
+    }
 
     private void showTutorial() {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
