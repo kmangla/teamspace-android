@@ -128,7 +128,9 @@ public class MigratedEmployee {
 		}
 		obj.put(DESIGNATION, this.getDesignation());
 		obj.put(Constants.KEY, Utils.getSignedInUserKey());
-        obj.put(TASK_BLOB, this.getTaskBlob());
+        if (this.getTaskBlob() != null) {
+            obj.put(TASK_BLOB, this.getTaskBlob());
+        }
 		return obj;
 	}
 	public static MigratedEmployee parseJSON(JSONObject object) throws JSONException, ParseException {
