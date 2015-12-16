@@ -300,7 +300,6 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                             if (progress != null) {
                                 progress.dismiss();
                             }
-                            employeeUpdateDone(false);
 						}
 					});					
 				} else {
@@ -330,7 +329,6 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                             if (progress != null) {
                                 progress.dismiss();
                             }
-                            employeeUpdateDone(false);
                         }
                     });
                 }
