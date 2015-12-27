@@ -257,12 +257,21 @@ public class MigratedTask {
 		} catch (JSONException e) {
 			task.updateCount = 0; 
 		}
+
 		try {
 			task.assignedBy = object.getString(ASSIGNED_BY);
-            task.priority = object.getLong(PRIORITY);
 		} catch (JSONException e) {
-			 Utils.log("Json parsing exception in MigratedTask - assignedBy field not found in server response");
+			Utils.log("Json parsing exception in MigratedTask - assignedBy field not found in server response");
+            task.assignedBy = Utils.getSignedInUserId();
 		}
+
+        try {
+            task.priority = object.getLong(PRIORITY);
+        } catch (JSONException e) {
+            Utils.log("Json parsing exception in MigratedTask - priority field not found in server response");
+            task.priority = 0;
+        }
+
         try {
             task.lastMessage  = MigratedMessage.parseJSON(object.getJSONObject(LAST_MSG));
             task.lastMessage.setTaskID(task.taskID);
