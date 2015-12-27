@@ -226,22 +226,23 @@ public class MessageListFragment extends Fragment {
 			if (extras != null) {
 				// Update the task details which were just changed so that the
 				// UI looks responsive to the user.
-				String title = extras.getString(Constants.TASK_TITLE);
-				String employeeId = extras.getString(Constants.EMPLOYEE_ID);
-				String name = extras.getString(Constants.EMPLOYEE_NAME);
-				String number = extras.getString(Constants.EMPLOYEE_PHONE);
-				long freq = extras.getLong(Constants.FREQUENCY);
-				String details = extras.getString(Constants.DETAILS);
 
-				MigratedTask editedTask = new MigratedTask();
-				editedTask.setTaskID(task.getTaskID());
-				editedTask.setTitle(title);
-				editedTask.setFrequency(freq);
-				editedTask.setEmployeeID(employeeId);
-				editedTask.setEmployeeName(name);
-				editedTask.setEmployeeNumber(number);
-				editedTask.setLastUpdate(System.currentTimeMillis());
-				updateHeaderForTask(editedTask);
+                String key = extras.getString(Constants.TASK_ARRAY);
+                ArrayList<MigratedTask> tempTasks = (ArrayList<MigratedTask>) DataManager
+                        .getInstance(getActivity()).retrieveData(
+                                key);
+
+                if (tempTasks != null && tempTasks.size() > 0) {
+                    MigratedTask editedTask = new MigratedTask();
+                    editedTask.setTaskID(task.getTaskID());
+                    editedTask.setTitle(tempTasks.get(0).getTitle());
+                    editedTask.setFrequency(tempTasks.get(0).getFrequency());
+                    editedTask.setEmployeeID(tempTasks.get(0).getEmployeeID());
+                    editedTask.setEmployeeName(tempTasks.get(0).getEmployeeName());
+                    editedTask.setEmployeeNumber(tempTasks.get(0).getEmployeeNumber());
+                    editedTask.setLastUpdate(System.currentTimeMillis());
+                    updateHeaderForTask(editedTask);
+                }
 			}
 			break;
 		default:
