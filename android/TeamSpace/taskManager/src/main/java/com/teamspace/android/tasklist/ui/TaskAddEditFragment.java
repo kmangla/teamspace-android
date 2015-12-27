@@ -266,6 +266,7 @@ public class TaskAddEditFragment extends Fragment implements
 
             if (Utils.isStringNotEmpty(taskId)) {
                 task.setTaskID(taskId);
+                data.add(task);
                 dataMgr.updateTask(task, new DataManagerCallback() {
 
                     @Override
