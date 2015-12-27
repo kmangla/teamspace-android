@@ -240,6 +240,7 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
 									.getString(
 											R.string.error_missing_country_code),
 							Toast.LENGTH_LONG).show();
+                    saveButton.setEnabled(true);
 					return;
 				}
 
@@ -300,6 +301,7 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                             if (progress != null) {
                                 progress.dismiss();
                             }
+                            saveButton.setEnabled(true);
 						}
 					});					
 				} else {
@@ -329,6 +331,7 @@ public class EmployeeAddEditFragment extends Fragment implements OnItemSelectedL
                             if (progress != null) {
                                 progress.dismiss();
                             }
+                            saveButton.setEnabled(true);
                         }
                     });
                 }

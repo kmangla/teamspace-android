@@ -7,7 +7,9 @@ package com.teamspace.android.tasklist.ui;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -347,15 +349,25 @@ public class TaskAddEditFragment extends Fragment implements
         });
     }
 
-    private void populateEmployeeSpinner(Context context, MigratedEmployee newEmp) {
+    private void populateEmployeeSpinner(final Context context, MigratedEmployee newEmp) {
         allEmployees = DatabaseCache.getInstance(context)
                 .getMigratedEmployeesBlockingCall();
 
-//        MigratedEmployee addNew = new MigratedEmployee();
-//        addNew.setEmployeeID("0000");
-//        addNew.setName("Add new employee");
-//        addNew.setPhoneWithContryCode("0000");
-//        allEmployees.add(0, addNew);
+        if (allEmployees.size() == 0) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle(context.getString(R.string.create_employee));
+            alert.setMessage(context.getString(R.string.create_employee_before_task));
+
+            alert.setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // If there are no employees, take the user to "add employee" screen.
+                    Intent i = new Intent(context, EmployeeAddEditActivity.class);
+                    context.startActivity(i);
+                }
+            });
+
+            alert.show();
+        }
 
 //        MigratedEmployee self = new MigratedEmployee();
 //        self.setEmployeeID(Utils.getSignedInUserId());
@@ -415,6 +427,8 @@ public class TaskAddEditFragment extends Fragment implements
         } else {
             Utils.trackPageView("TaskAdd");
         }
+
+        populateEmployeeSpinner(getActivity(), null);
 	}
 
 	private void refreshUIForTask() {
