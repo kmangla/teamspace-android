@@ -141,7 +141,7 @@ public class TaskAddEditFragment extends Fragment implements
         populateEmployeeSpinner(v.getContext(), null);
 		empSpinner.setOnItemSelectedListener(this);
 
-        if (allEmployees.size() > 0) {
+        if (allEmployees.size() > 0 && editMode == false) {
             taskTitleEditText.setText(allEmployees.get(0).getTaskBlob());
         }
 
@@ -160,7 +160,7 @@ public class TaskAddEditFragment extends Fragment implements
             public void onClick(final View v) {
                 MigratedEmployee emp = allEmployees.get(empSpinner
                         .getSelectedItemPosition());
-                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp, v);
+                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp, v, true);
             }
         });
 
@@ -213,7 +213,7 @@ public class TaskAddEditFragment extends Fragment implements
         }
 
         // Clear the draft if any for this employee since we are now creating the tasks for real
-        updateTaskBlobForEmployee("", emp, v);
+        updateTaskBlobForEmployee("", emp, v, false);
 
         // If somehow the task is assigned to "Add New Employee", do nothing.
         if (Utils.isStringEmpty(emp.getEmployeeID()) || emp.getEmployeeID().equalsIgnoreCase("0000")) {
@@ -333,7 +333,7 @@ public class TaskAddEditFragment extends Fragment implements
         getFragmentActivity().finish();
     }
 
-    private void updateTaskBlobForEmployee(String blobToCache, MigratedEmployee emp, final View v) {
+    private void updateTaskBlobForEmployee(String blobToCache, MigratedEmployee emp, final View v, final boolean showToast) {
         if (allEmployees == null || allEmployees.size() == 0) {
             // Notify user about the error
             Toast.makeText(
@@ -345,19 +345,21 @@ public class TaskAddEditFragment extends Fragment implements
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         emp.setTaskBlob(blobToCache);
         DataManager dataMgr = DataManager.getInstance(getActivity().getApplicationContext());
         dataMgr.updateEmployee(emp, new DataManagerCallback() {
 
             @Override
             public void onSuccess(String response) {
-                Toast.makeText(
-                        v.getContext(),
-                        v.getContext().getResources()
-                                .getString(
-                                        R.string.task_draft_saved),
-                        Toast.LENGTH_SHORT).show();
+                if (showToast) {
+                    Toast.makeText(
+                            v.getContext(),
+                            v.getContext().getResources()
+                                    .getString(
+                                            R.string.task_draft_saved),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -466,16 +468,18 @@ public class TaskAddEditFragment extends Fragment implements
 			}
 		}
 
-        dailyButton.setChecked(false);
-        weeklyButton.setChecked(false);
-        monthlyButton.setChecked(false);
-
 		// Convert seconds to frequency (daily, weekly, monthly etc.)
 		if (task.getFrequency() <= Constants.DAILY) {
             dailyButton.setChecked(true);
+            weeklyButton.setChecked(false);
+            monthlyButton.setChecked(false);
 		} else if (task.getFrequency() <= Constants.WEEKLY) {
+            dailyButton.setChecked(false);
             weeklyButton.setChecked(true);
+            monthlyButton.setChecked(false);
 		} else {
+            dailyButton.setChecked(false);
+            weeklyButton.setChecked(false);
             monthlyButton.setChecked(true);
 		}
 	}
@@ -492,7 +496,7 @@ public class TaskAddEditFragment extends Fragment implements
 //            startActivityForResult(i, ADD_EMPLOYEE);
 //        }
 
-        if (parent == empSpinner) {
+        if (parent == empSpinner && editMode == false) {
             MigratedEmployee emp = allEmployees.get(position);
             taskTitleEditText.setText(emp.getTaskBlob());
         }
