@@ -85,7 +85,7 @@
     <string name="how_to_add_emp_ans">You can add an employee by simply typing his name and phone number.
     \n OR You can even import the employee details from your phone book / contacts. </string>
     <string name="create_employee">Create Employee</string>
-    <string name="create_employee_before_task">Before creating a task, you need to first create an employee.</string>
+    <string name="create_employee_before_task">Before creating a task, you need to create an employee first.</string>
     <string name="get_started">Lets get started</string>
     <string name="get_started_task">After adding employees, you can assign tasks to your employees.
         Click Next to create a task and assign it to an employee.</string>

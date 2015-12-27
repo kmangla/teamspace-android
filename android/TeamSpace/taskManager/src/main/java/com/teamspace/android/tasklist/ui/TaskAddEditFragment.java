@@ -183,6 +183,18 @@ public class TaskAddEditFragment extends Fragment implements
 	}
 
     private void createTasksForEmployee(final View v) {
+        if (allEmployees == null || allEmployees.size() == 0) {
+            // Notify user about the error
+            Toast.makeText(
+                    v.getContext(),
+                    v.getContext()
+                            .getResources()
+                            .getString(
+                                    R.string.create_employee_before_task),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         TaskManagerApplication applicationContext = ((TaskManagerApplication) getFragmentActivity()
                 .getApplication());
         DataManager dataMgr = DataManager
@@ -322,6 +334,18 @@ public class TaskAddEditFragment extends Fragment implements
     }
 
     private void updateTaskBlobForEmployee(String blobToCache, MigratedEmployee emp, final View v) {
+        if (allEmployees == null || allEmployees.size() == 0) {
+            // Notify user about the error
+            Toast.makeText(
+                    v.getContext(),
+                    v.getContext()
+                            .getResources()
+                            .getString(
+                                    R.string.create_employee_before_task),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         emp.setTaskBlob(blobToCache);
         DataManager dataMgr = DataManager.getInstance(getActivity().getApplicationContext());
         dataMgr.updateEmployee(emp, new DataManagerCallback() {
