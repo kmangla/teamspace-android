@@ -57,6 +57,7 @@
     <string name="not_available">-Not Available-</string>
     <string name="employee_add_header_text">Enter Employee Details</string>
     <string name="or">OR</string>
+    <string name="in_progress">UI TO BE CREATED BY PRATYUS</string>
     <string name="employee_add_contact_text">Import Employee Details</string>
     <string name="current_message_status">Current Message Status: </string>
     <string name="sent">(Sent)</string>

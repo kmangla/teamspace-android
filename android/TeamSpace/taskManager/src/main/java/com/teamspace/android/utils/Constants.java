@@ -3,6 +3,8 @@ package com.teamspace.android.utils;
 public class Constants {
 	
 	public static final String EMPLOYEE_ID = "EMPLOYEE_ID";
+    public static final String TASK_CREATION = "TASK_CREATION";
+    public static final String EMP_CREATION = "EMP_CREATION";
 	public static final String TASK_ID = "TASK_ID";
     public static final String TASK_ARRAY = "TASK_ARRAY";
     public static final String USER_ID = "USER_ID";
@@ -35,6 +37,7 @@ public class Constants {
     public static final String REFRESH_EMP = "REFRESH_EMP";
     public static final String REFRESH_MSG = "REFRESH_MSG";
     public static final String FRESH_LOGIN = "FRESH_LOGIN";
+    public static final String LAUNCH_ON_TOP = "LAUNCH_ON_TOP";
     public static final String USERID = "userID";
     public static final String SERVER_CODE = "serverCode";
     public static final String SERVER_RESPONSE = "serverResponse";

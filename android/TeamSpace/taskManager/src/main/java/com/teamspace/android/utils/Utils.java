@@ -30,12 +30,14 @@ import com.teamspace.android.BuildConfig;
 import com.teamspace.android.R;
 import com.teamspace.android.common.ui.MainActivityWithTabs;
 import com.teamspace.android.common.ui.TaskManagerApplication;
+import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.fortysevendeg.swipelistview.SwipeListView;
+import com.teamspace.android.tasklist.ui.TaskAddEditActivity;
 
 public class Utils {
 
@@ -269,6 +271,10 @@ public class Utils {
             // Maybe user had manually entered his name during registration.
             // Try to find that entry.
             signedInUserName = Utils.readStringFromSharedPrefs(Constants.EMPLOYEE_NAME);
+        }
+
+        if (Utils.isStringEmpty(signedInUserName)) {
+            signedInUserName = "Self";
         }
 
         Utils.log("Name = " + signedInUserName);
@@ -537,5 +543,17 @@ public class Utils {
         sendIntent.putExtra("address", employeeNumber);
         sendIntent.putExtra("sms_body", context.getString(R.string.warn_emp) + " -" + Utils.getSignedInUserName());
         context.startActivity(sendIntent);
+    }
+
+    public static void launchOnTopIfNeeded(Context context, String launchOnTop) {
+        if (launchOnTop != null) {
+            if (launchOnTop.equalsIgnoreCase(Constants.TASK_CREATION)) {
+                Intent i = new Intent(context, TaskAddEditActivity.class);
+                context.startActivity(i);
+            } else if (launchOnTop.equalsIgnoreCase(Constants.EMP_CREATION)) {
+                Intent i = new Intent(context, EmployeeAddEditActivity.class);
+                context.startActivity(i);
+            }
+        }
     }
 }

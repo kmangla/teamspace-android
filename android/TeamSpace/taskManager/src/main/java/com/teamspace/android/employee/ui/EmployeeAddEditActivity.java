@@ -8,7 +8,11 @@ public class EmployeeAddEditActivity extends SingleFragmentActivity {
 
 	@Override
 	protected Fragment createFragment() {
-		return new EmployeeAddEditFragment();
+		if (true) {
+            return new EmployeeAddEditFragment();
+        } else {
+            return new EmployeeAddEditMultiFragment();
+        }
 	}
 
 }
