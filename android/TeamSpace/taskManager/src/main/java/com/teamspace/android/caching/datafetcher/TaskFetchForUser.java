@@ -15,9 +15,11 @@ import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.caching.DatabaseCache;
 import com.teamspace.android.interfaces.DataFetchInterface;
+import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
+import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -43,41 +45,52 @@ public class TaskFetchForUser implements DataFetchInterface {
 		url,
 		new Response.Listener<JSONArray>() {
 		    @Override
-		    public void onResponse(JSONArray response) {
+		    public void onResponse(final JSONArray response) {
 		    	// We now have the network response. No need to look in the cache anymore.
 		    	if (callback != null) {
 		    		callback.networkResponseReceived = true;
 		    	}
-				// Call the callback
-				DatabaseCache.getInstance(context).deleteAllMigratedTasksForUserBlockingCall(userID);
-				ArrayList<MigratedTask> tasks = new ArrayList<MigratedTask>();
-				for(int i = 0; i < response.length(); i++)
-				{
-					try {
-				      JSONObject object = response.getJSONObject(i);
-				      MigratedTask task = MigratedTask.parseJSON(object);
-				      tasks.add(task);
-				      DatabaseCache.getInstance(context).setMigratedTask(task);
-                      Utils.log("Task title - " + task.getTitle());
-					} catch (JSONException e) {
-						Utils.log("TaskFetchForUser fetchDataFromServer json_parsing_exception", e.getMessage());
-                        Utils.logErrorToServer(context, url,
-                                200,
-                                null,
-                                "Failed to JSON parse the tasks for this user from server's response even though server returned 200");
-					} catch (java.text.ParseException e) {
-						Utils.log("TaskFetchForUser fetchDataFromServer parsing_exception", e.getMessage());
-                        Utils.logErrorToServer(context, url,
-                                200,
-                                null,
-                                "Failed to parse the tasks for this user from server's response even though server returned 200");
-					}
-				}
-				DataManager.getInstance(context).insertData(dataStoreKey, tasks);
-				if (callback != null) {
-					callback.onDataReceivedFromServer(dataStoreKey);
-				}
-		    }
+
+                AsyncTask<String, Void, MigratedTask> asyncTask = new AsyncTask<String, Void, MigratedTask>() {
+                    @Override
+                    protected MigratedTask doInBackground(String... task1) {
+                        // Call the callback
+                        DatabaseCache.getInstance(context).deleteAllMigratedTasksForUserBlockingCall(userID);
+                        ArrayList<MigratedTask> tasks = new ArrayList<MigratedTask>();
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject object = response.getJSONObject(i);
+                                MigratedTask task = MigratedTask.parseJSON(object);
+                                tasks.add(task);
+                                DatabaseCache.getInstance(context).setMigratedTask(task);
+                                Utils.log("Task title - " + task.getTitle());
+                            } catch (JSONException e) {
+                                Utils.log("TaskFetchForUser fetchDataFromServer json_parsing_exception", e.getMessage());
+                                Utils.logErrorToServer(context, url,
+                                        200,
+                                        null,
+                                        "Failed to JSON parse the tasks for this user from server's response even though server returned 200");
+                            } catch (java.text.ParseException e) {
+                                Utils.log("TaskFetchForUser fetchDataFromServer parsing_exception", e.getMessage());
+                                Utils.logErrorToServer(context, url,
+                                        200,
+                                        null,
+                                        "Failed to parse the tasks for this user from server's response even though server returned 200");
+                            }
+                        }
+                        DataManager.getInstance(context).insertData(dataStoreKey, tasks);
+                        return new MigratedTask();
+                    }
+
+                    @Override
+                    protected void onPostExecute(MigratedTask task) {
+                        if (callback != null) {
+                            callback.onDataReceivedFromServer(dataStoreKey);
+                        }
+                    }
+                };
+                asyncTask.execute(Constants.EMPTY_STRING);
+            }
 		},		
 		new Response.ErrorListener() {
 

@@ -17,6 +17,7 @@ import com.teamspace.android.interfaces.DataFetchInterface;
 import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
+import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -42,7 +43,7 @@ public class EmployeeFetchForUser implements DataFetchInterface {
 		url, 
 		new Response.Listener<JSONArray>() { 
 		    @Override
-		    public void onResponse(JSONArray response) {
+		    public void onResponse(final JSONArray response) {
 		    	// We now have the network response. No need to look in the cache anymore.
 		    	if (callback != null) {
 		    		callback.networkResponseReceived = true;
@@ -50,35 +51,46 @@ public class EmployeeFetchForUser implements DataFetchInterface {
 		    	
 		    	Utils.log("EmployeeFetchForUser GET response for url: " + url
 						+ " got response: " + response);
-		    	
-				// Call the callback
-				DatabaseCache.getInstance(context).deleteAllMigratedEmployeesBlockingCall();
-				ArrayList<MigratedEmployee> employees = new ArrayList<MigratedEmployee>();
-				for(int i = 0; i < response.length(); i++)
-				{
-					try {
-				      JSONObject object = response.getJSONObject(i);
-				      MigratedEmployee employee = MigratedEmployee.parseJSON(object);
-				      employees.add(employee);
-				      DatabaseCache.getInstance(context).setMigratedEmployeeBlockingCall(employee);
-					} catch (JSONException e) {
-						Log.e("EmployeeFetchForUser fetchDataFromServer() json_parsing_exception", e.getMessage());
-                        Utils.logErrorToServer(context, url,
-                                200,
-                                null,
-                                "Failed to JSON parse the employees for this user from server's response even though server returned 200");
-					} catch (java.text.ParseException e) {
-						Log.e("EmployeeFetchForUser fetchDataFromServer() json_parsing_exception", e.getMessage());
-                        Utils.logErrorToServer(context, url,
-                                200,
-                                null,
-                                "Failed to parse the employees for this user from server's response even though server returned 200");
-					}
-				}
-				DataManager.getInstance(context).insertData(dataStoreKey, employees);
-				if (callback != null) {
-					callback.onDataReceivedFromServer(dataStoreKey);
-				}
+
+                AsyncTask<String, Void, MigratedEmployee> asyncTask = new AsyncTask<String, Void, MigratedEmployee>() {
+                    @Override
+                    protected MigratedEmployee doInBackground(String... employee1) {
+                        // Call the callback
+                        DatabaseCache.getInstance(context).deleteAllMigratedEmployeesBlockingCall();
+                        ArrayList<MigratedEmployee> employees = new ArrayList<MigratedEmployee>();
+                        for(int i = 0; i < response.length(); i++)
+                        {
+                            try {
+                                JSONObject object = response.getJSONObject(i);
+                                MigratedEmployee employee = MigratedEmployee.parseJSON(object);
+                                employees.add(employee);
+                                DatabaseCache.getInstance(context).setMigratedEmployeeBlockingCall(employee);
+                            } catch (JSONException e) {
+                                Log.e("EmployeeFetchForUser fetchDataFromServer() json_parsing_exception", e.getMessage());
+                                Utils.logErrorToServer(context, url,
+                                        200,
+                                        null,
+                                        "Failed to JSON parse the employees for this user from server's response even though server returned 200");
+                            } catch (java.text.ParseException e) {
+                                Log.e("EmployeeFetchForUser fetchDataFromServer() json_parsing_exception", e.getMessage());
+                                Utils.logErrorToServer(context, url,
+                                        200,
+                                        null,
+                                        "Failed to parse the employees for this user from server's response even though server returned 200");
+                            }
+                        }
+                        DataManager.getInstance(context).insertData(dataStoreKey, employees);
+                        return new MigratedEmployee();
+                    }
+
+                    @Override
+                    protected void onPostExecute(MigratedEmployee employee) {
+                        if (callback != null) {
+                            callback.onDataReceivedFromServer(dataStoreKey);
+                        }
+                    }
+                };
+                asyncTask.execute(Constants.EMPTY_STRING);
 		    }
 		},		
 		new Response.ErrorListener() {
