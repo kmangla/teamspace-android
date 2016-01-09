@@ -14,6 +14,7 @@ import com.teamspace.android.R;
 import com.teamspace.android.models.Message;
 import com.teamspace.android.models.MessageList;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
+import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -57,9 +58,15 @@ public class GcmIntentService extends IntentService {
                     Utils.log(" username: " + msg.user.getName());
                     if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
                         Utils.sendSMS(this, msg.user.getPhoneWithCountryCode(), msg.text);
+                    } else if ("taskCreation".equalsIgnoreCase(msg.ntype)) {
+                        // Post notification of received message.
+                        sendNotification(msg.user.getName() + ": " + msg.text, Constants.TASK_CREATION);
+                    } else if ("employeeCreation".equalsIgnoreCase(msg.ntype)) {
+                        // Post notification of received message.
+                        sendNotification(msg.user.getName() + ": " + msg.text, Constants.EMP_CREATION);
                     } else {
                         // Post notification of received message.
-                        sendNotification(msg.user.getName() + ": " + msg.text);
+                        sendNotification(msg.user.getName() + ": " + msg.text, null);
                     }
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
@@ -78,12 +85,15 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
+    private void sendNotification(String msg, String launchOnTop) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, AllTasksListViewActivity.class), 0);
+        Intent pushIntent = new Intent(this, AllTasksListViewActivity.class);
+        if (launchOnTop != null) {
+            pushIntent.putExtra(Constants.DEEPLINK, launchOnTop);
+        }
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, pushIntent, 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

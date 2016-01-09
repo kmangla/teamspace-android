@@ -52,7 +52,7 @@ public class MigratedTask {
     private static String MARK_UPDATED_TEXT = "markUpdatedText";
 	private static String CREATED_AT = "createdAt";
 	private static String LAST_REMINDER = "lastReminder";
-	private static String LAST_UPDATE = "lastUpdate";
+	private static String UPDATED_AT = "updatedAt";
 	private static String LAST_SEEN = "lastSeen";
 	private static String UPDATE_COUNT = "updateCount";
     private static String LAST_MESSAGE = "last_message";
@@ -215,7 +215,7 @@ public class MigratedTask {
 		obj.put(FREQUENCY, this.getFrequency());
 		obj.put(CREATED_AT, ISO8601DateParser.toString(new Date(this.getCreatedOn())));
 		obj.put(LAST_REMINDER, ISO8601DateParser.toString(new Date(this.getLastReminder())));
-		obj.put(LAST_UPDATE, ISO8601DateParser.toString(new Date(this.getLastUpdate())));
+		obj.put(UPDATED_AT, ISO8601DateParser.toString(new Date(this.getLastUpdate())));
 		obj.put(LAST_SEEN, ISO8601DateParser.toString(new Date(this.getLastSeen())));
 		obj.put(UPDATE_COUNT, this.getUpdateCount() + "");
         obj.put(LAST_MESSAGE, this.getLastMessage() + "");
@@ -310,7 +310,7 @@ public class MigratedTask {
 			task.lastReminder = 0; 
 		}
 		try {
-			task.lastUpdate = ((Date)ISO8601DateParser.parse(object.getString(LAST_UPDATE))) .getTime();
+			task.lastUpdate = ((Date)ISO8601DateParser.parse(object.getString(UPDATED_AT))) .getTime();
 		} catch (JSONException e) {
 			task.lastUpdate = 0;
 		}

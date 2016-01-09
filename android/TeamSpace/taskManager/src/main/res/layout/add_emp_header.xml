@@ -18,11 +18,23 @@
         android:id="@+id/page_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/app_icon"
         android:background="@color/header_background"
-        android:text="@string/add_edit_emp"
+        android:text="@string/select_employees"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/page_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/page_title"
+        android:layout_toRightOf="@id/app_icon"
+        android:background="@color/header_background"
+        android:text="@string/select_employees_detail"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="10dp"
+        android:textSize="12sp" />
 
 </RelativeLayout>

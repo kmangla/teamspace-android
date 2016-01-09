@@ -3,6 +3,7 @@ package com.teamspace.android.utils;
 public class Constants {
 	
 	public static final String EMPLOYEE_ID = "EMPLOYEE_ID";
+    public static final String DEEPLINK = "DEEPLINK";
     public static final String TASK_CREATION = "TASK_CREATION";
     public static final String EMP_CREATION = "EMP_CREATION";
 	public static final String TASK_ID = "TASK_ID";

@@ -6,9 +6,11 @@ import java.util.Comparator;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.QuickContactBadge;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -62,11 +66,25 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     private ImageButton addButton;
     private Button addTaskButton;
     SwipeListView swipelistview;
+    private ProgressBar progressBar;
     private int currentSortPreference = 0;
     private Handler uiHandler;
     public static final int NOTIFICATION_ID = 1;
+    private int taskRefreshCount = 0;
     private boolean mDelayRefresh;
     private boolean isFreshLogin; // Used for onboarding flow if there are 0 employees
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null && intent.getAction().equalsIgnoreCase(Constants.TASK_CREATION)) {
+                if (mAdapter != null) {
+                    mAdapter.refreshTaskList(context);
+                    Utils.log("REFRESHING TASK LIST DUE TO BROADCAST");
+                }
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -199,6 +217,8 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         });
         selfButton.setVisibility(View.GONE);
 
+        progressBar = (ProgressBar) headerView.findViewById(R.id.task_progress);
+
         // If user has selected any color preferences, respect that.
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String backgroundColorStr = sharedPref.getString(
@@ -212,7 +232,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         int textColor = Utils.getColor(getActivity(), textColorStr);
 
         /* Setup the adapter */
-        mAdapter = new MyListAdapter(getActivity(), backgroundColor, textColor, swipelistview, isFreshLogin);
+        mAdapter = new MyListAdapter(getActivity(), backgroundColor, textColor, swipelistview, isFreshLogin, progressBar);
         swipelistview.setAdapter(mAdapter);
 
         // Add sort spinner as the header of the list view.
@@ -349,20 +369,26 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         private SwipeListView mSwipeListView;
         private boolean isFreshLogin;
         private boolean showTaskOnboardingOnResume;
+        private int taskRefreshCount = 0;
+        private ProgressBar mProgressBar;
 
         public MyListAdapter(final Context context, int backgroundColor,
-                             int textColor, SwipeListView swipeListView, boolean isFreshLogin) {
+                             int textColor, SwipeListView swipeListView, boolean isFreshLogin, ProgressBar progressBar) {
             super(context, 0);
             mContext = context;
             mBackgroundColor = backgroundColor;
             mTextColor = textColor;
             mSwipeListView = swipeListView;
             this.isFreshLogin = isFreshLogin;
+            mProgressBar = progressBar;
 
             refreshTaskList(context);
         }
 
         private void refreshTaskList(final Context context) {
+            taskRefreshCount++;
+            mProgressBar.setVisibility(View.VISIBLE);
+
             DataManager.getInstance(context).fetchTasksForUser(Utils.getSignedInUserId(),
                     new DataManagerCallback() {
 
@@ -374,6 +400,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                         @Override
                         public void onDataReceivedFromServer(String dataStoreKey) {
                             refreshUIForData(context, dataStoreKey, true);
+                            if (taskRefreshCount > 0) {
+                                taskRefreshCount--;
+                            }
+                            if (taskRefreshCount == 0) {
+                                mProgressBar.setVisibility(View.GONE);
+                            }
                         }
 
                         @Override
@@ -385,6 +417,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                                         context,
                                         message,
                                         Toast.LENGTH_SHORT).show();
+                            }
+                            if (taskRefreshCount > 0) {
+                                taskRefreshCount--;
+                            }
+                            if (taskRefreshCount == 0) {
+                                mProgressBar.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -417,8 +455,8 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             Utils.refreshListWithoutLosingScrollPosition(mSwipeListView, this);
 
             // If there are no tasks, see if the user needs onboarding
-            if (fromServer && data.size() == 0) {
-                launchOnboardingFlowIfNeeded();
+            if (isFreshLogin && fromServer && data.size() == 0) {
+//                launchOnboardingFlowIfNeeded();
             }
         }
 
@@ -517,7 +555,13 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                     } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
                         return -1;
                     } else {
-                        return lhs.getTitle().compareTo(rhs.getTitle()); // title
+                        if (lhs.getCreatedOn() < rhs.getCreatedOn()) { // created time
+                            return 1;
+                        } else if (lhs.getCreatedOn() > rhs.getCreatedOn()) {
+                            return -1;
+                        } else {
+                            return lhs.getTitle().compareTo(rhs.getTitle()); // title
+                        }
                     }
                 case 1:
                     if (lhs.getUpdateCount() < rhs.getUpdateCount()) {
@@ -948,35 +992,30 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     public void addItem() {
         oldItemCount = mAdapter.getCount();
         Intent i = new Intent(getActivity(), TaskAddEditActivity.class);
-        startActivityForResult(i, ADD_TASK);
+//        Intent i = new Intent(getActivity(), TaskAddViewPagerActivity.class);
+//        startActivityForResult(i, ADD_TASK);
+        startActivity(i);
+    }
+
+    public void onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onPause();
     }
 
     // You need to do the Play Services APK check here too.
     @Override
     public void onResume() {
         super.onResume();
+
         checkPlayServices();
 
-        // Refresh UI only if someone asked us to do this.
-        Object flag = DataManager.getInstance(getActivity()).retrieveData(Constants.REFRESH_ALL_TASKS);
-        DataManager.getInstance(getActivity()).removeData(Constants.REFRESH_ALL_TASKS);
-        boolean refreshAllTasksList = (flag != null) ? ((boolean) flag) : false;
-        if (refreshAllTasksList) {
-            if (mDelayRefresh) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshUI();
-                    }
-                }, 2000);
-            } else {
-                refreshUI();
-            }
-
-            mDelayRefresh = false;
-        }
+        // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.TASK_CREATION));
+        refreshUI();
         Utils.trackPageView("AllTasks");
+
     }
 
     /**

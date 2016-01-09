@@ -210,7 +210,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
         Object flag = DataManager.getInstance(getActivity()).retrieveData(Constants.REFRESH_EMP);
         DataManager.getInstance(getActivity()).removeData(Constants.REFRESH_EMP);
         boolean refreshEmpList = (flag != null) ? ((boolean) flag) : false;
-        if (refreshEmpList) {
+        if (true || refreshEmpList) {
             refreshUI();
         }
     }

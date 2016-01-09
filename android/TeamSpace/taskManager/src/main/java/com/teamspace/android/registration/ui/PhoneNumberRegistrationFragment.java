@@ -18,6 +18,7 @@ import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.common.ui.DebugActivity;
+import com.teamspace.android.common.ui.LauncherActivity;
 import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
 import com.teamspace.android.utils.Constants;
@@ -234,8 +235,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
             // Stop listening to SMS since it has been too long since we requested OTP.
             DataManager.getInstance(getActivity()).validateOTPFromSMS = false;
 
-            Intent i = new Intent(getActivity(), AllTasksListViewActivity.class);
-            i.putExtra(Constants.FRESH_LOGIN, true);
+            Intent i = new Intent(getActivity(), LauncherActivity.class);
             startActivity(i);
 
             getActivity().finish();

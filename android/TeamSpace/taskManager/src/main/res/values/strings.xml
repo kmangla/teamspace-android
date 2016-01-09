@@ -4,6 +4,8 @@
     <string name="app_name">Team Space</string>
     <string name="sample_text">Sample Text</string>
     <string name="add_new_task">"Create Task"</string>
+    <string name="loading">"Launching"</string>
+    <string name="loading_text">"Loading..."</string>
     <string name="add_new_emp">"Add a new Employee"</string>
     <string name="hint_message">Add a comment</string>
     <string name="messages">Messages</string>
@@ -73,6 +75,8 @@
     <string name="employees">Employees</string>
     <string name="add_task">Create Task For:</string>
     <string name="add_edit_emp">New Employee</string>
+    <string name="select_employees">Select Your Employees</string>
+    <string name="select_employees_detail">Please select your employees and press "Done". You can then assign tasks to the selected employees.</string>
     <string name="task_frequency">Status Updates Needed</string>
     <string name="assigned_to">Assigned To</string>
     <string name="edit">Edit</string>
@@ -139,6 +143,34 @@
     <string name="employee_creation_sms_1">You will receive SMS messages from </string>
     <string name="employee_creation_sms_2">Please reply to them regularly with the status updates for the tasks assigned to you. Regards, </string>
     <string name="task_draft_saved">Draft saved for later</string>
+
+    <string name="activity_contacts_list">Contacts List</string>
+    <string name="activity_contact_detail">Contact Detail</string>
+    <string name="contacts_list_search_results_title">Contacts List Search for \"%s\"</string>
+    <string name="app_description">This is a sample app, demonstrating use of the Android system Contacts Provider.</string>
+    <string name="imageview_description">Contact Thumbnail</string>
+    <string name="address_button_description">View Address</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_add_contact">Add Contact</string>
+    <string name="menu_edit_contact">Edit Contact</string>
+    <string name="no_contacts">No Contacts Found</string>
+    <string name="no_contact_selected">No Contact Selected</string>
+    <string name="search_hint">Find contacts</string>
+
+    <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
+         alphabet using ListView fast scroll. -->
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!-- When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
+         when using a number of different fields, such as name, e-mail address, address, phone
+         number, etc. When a match occurs that is not the name, there is currently no way to tell
+         which other field was matched. This string is displayed in the secondary display text in
+         ContactsListFragment when a search query match occurs that is not the display name.
+         -->
+    <string name="search_match_other">Matches Other Field</string>
+
+    <string name="no_address">No addresses found</string>
+    <string name="no_intent_found">No application found to handle this action</string>
 
     <!-- ERROR MESSAGES  -->
     <string name="error_task_draft_failed">Sorry, could not save the draft due to network error.</string>

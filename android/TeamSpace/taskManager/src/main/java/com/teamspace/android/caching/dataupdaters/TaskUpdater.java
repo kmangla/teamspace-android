@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.teamspace.android.caching.DataManager;
@@ -14,6 +16,7 @@ import com.teamspace.android.caching.DatabaseCache;
 import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
+import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -48,13 +51,16 @@ public class TaskUpdater {
                                     200,
                                     null,
                                     "Failed to create task because server's response could not be JSON parsed");
+                            Utils.log("Failed to create task because server's response could not be JSON parsed");
                         }
 
 						DatabaseCache.getInstance(context).setMigratedTask(task);
 						if (mCallback != null) {
 							mCallback.onSuccess(response);
 						}
-				    }
+                        Intent intent = new Intent(Constants.TASK_CREATION);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                    }
 				},		
 				new Response.ErrorListener() {
 
@@ -90,6 +96,8 @@ public class TaskUpdater {
                         if (mCallback != null) {
                             mCallback.onSuccess(response);
                         }
+                        Intent intent = new Intent(Constants.TASK_CREATION);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 				    }
 				},		
 				new Response.ErrorListener() {

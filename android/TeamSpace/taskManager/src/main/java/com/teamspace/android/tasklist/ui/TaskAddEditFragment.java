@@ -161,6 +161,7 @@ public class TaskAddEditFragment extends Fragment implements
                 MigratedEmployee emp = allEmployees.get(empSpinner
                         .getSelectedItemPosition());
                 updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp, v, true);
+                getFragmentActivity().finish();
             }
         });
 
@@ -365,13 +366,15 @@ public class TaskAddEditFragment extends Fragment implements
 
             @Override
             public void onFailure(String response) {
-                // Notify user about the error
-                Toast.makeText(
-                        v.getContext(),
-                        v.getContext().getResources()
-                                .getString(
-                                        R.string.error_task_draft_failed),
-                        Toast.LENGTH_SHORT).show();
+                if (showToast) {
+                    // Notify user about the error
+                    Toast.makeText(
+                            v.getContext(),
+                            v.getContext().getResources()
+                                    .getString(
+                                            R.string.error_task_draft_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

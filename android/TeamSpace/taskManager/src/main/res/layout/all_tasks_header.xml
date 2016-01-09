@@ -30,6 +30,18 @@
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
+        <ProgressBar
+            android:id="@+id/task_progress"
+            style="?android:attr/progressBarStyleSmallTitle"
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/page_title"
+            android:layout_centerVertical="true"
+            android:indeterminate="true"
+            android:max="100"
+            android:progress="1" />
+
         <Spinner
             android:id="@+id/sort_spinner"
             android:layout_width="wrap_content"
@@ -106,11 +118,13 @@
         android:id="@+id/add_task_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/header_container"
         android:layout_margin="10dp"
         android:background="@color/button_color"
         android:text="@string/add_new_task"
-        android:layout_below="@id/header_container"
         android:textSize="22dp"
         android:textColor="@android:color/white" />
+
+
 
 </RelativeLayout>
