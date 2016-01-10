@@ -130,6 +130,10 @@ public class LauncherActivity extends FragmentActivity {
             }
         }
 
+        if (employeeState == EMPLOYEE.UNKNOWN || taskState == TASK.UNKNOWN) {
+            return STATE.LOOP;
+        }
+
         if (employeeState == EMPLOYEE.NOT_CREATED) {
             return STATE.CREATE_EMPLOYEE_AND_TASK;
         }
@@ -138,11 +142,8 @@ public class LauncherActivity extends FragmentActivity {
             return STATE.CREATE_TASK;
         }
 
-        if (taskState == TASK.CREATED_MORE_THAN_THRESHOLD) {
-            return STATE.VIEW_TASK;
-        }
+        return STATE.VIEW_TASK;
 
-        return STATE.LOOP;
     }
 
     private void fetchTasksAndEmployees() {

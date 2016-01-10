@@ -90,7 +90,7 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        mAdapter.itemSelected(view, i);
     }
 
     @Override
@@ -230,6 +230,12 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
 
             viewHolder.text1.setText(empName);
             viewHolder.text2.setText(empNumber);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemSelected(view, position);
+                }
+            });
             viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -328,6 +334,17 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
                         }
                      }
                 });
+            }
+        }
+
+        public void itemSelected(View view, int position) {
+            ContactInfo employee = getItem(position);
+            EmployeeViewHolder viewHolder = (EmployeeViewHolder) view.getTag();
+            viewHolder.checkBox.toggle();
+            if (viewHolder.checkBox.isChecked()) {
+                selectedEmployees.add(employee);
+            } else {
+                selectedEmployees.remove(employee);
             }
         }
 
