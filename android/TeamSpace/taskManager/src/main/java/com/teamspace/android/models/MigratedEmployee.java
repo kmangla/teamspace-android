@@ -156,8 +156,9 @@ public class MigratedEmployee {
         }
         
         try {
-			employee.userID = object.getString("manager");
-			employee.companyID = object.getString("manager");
+            MigratedEmployee manager = MigratedEmployee.parseJSON(object.getJSONObject("manager"));
+			employee.userID = manager.getEmployeeID();
+			employee.companyID = manager.getEmployeeID();
 		} catch (JSONException e) {
 			employee.userID = Utils.getSignedInUserId();
 			employee.companyID = Utils.getSignedInUserId();
