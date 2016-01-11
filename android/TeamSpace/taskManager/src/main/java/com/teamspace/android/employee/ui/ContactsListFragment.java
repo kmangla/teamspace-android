@@ -32,6 +32,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
@@ -60,6 +62,12 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
     // Defines a tag for identifying log entries
     private static final String TAG = "ContactsListFragment";
     TextView emptyView;
+    TextView pageTitle;
+    TextView pageSubtitle;
+    EditText searchText;
+    Button searchButton;
+    Button cancelSearch;
+    private boolean searchShowing;
 
     /**
      * Fragments require an empty constructor.
@@ -74,6 +82,25 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
         emptyView = (TextView) view.findViewById(android.R.id.empty);
         emptyView.setText(getString(R.string.loading_text));
+        pageTitle = (TextView) view.findViewById(R.id.page_title);
+        pageSubtitle = (TextView) view.findViewById(R.id.page_subtitle);
+        searchText = (EditText) view.findViewById(R.id.search_text);
+        searchButton = (Button) view.findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchContacts();
+            }
+        });
+
+        cancelSearch = (Button) view.findViewById(R.id.cancel_button);
+        cancelSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideSearchUI();
+            }
+        });
+
         ListView listview = (ListView) view.findViewById(android.R.id.list);
         mAdapter = new MyListAdapter(getActivity(), listview, emptyView);
         setListAdapter(mAdapter);
@@ -86,6 +113,44 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
         });
 
         return view;
+    }
+
+    private void hideSearchUI() {
+        searchShowing = false;
+        searchText.setText(Constants.EMPTY_STRING);
+        searchText.setVisibility(View.GONE);
+        cancelSearch.setVisibility(View.GONE);
+        pageTitle.setVisibility(View.VISIBLE);
+        pageSubtitle.setVisibility(View.VISIBLE);
+
+        mAdapter.filterItems(Constants.EMPTY_STRING);
+    }
+
+    private void showSearchUI() {
+        searchShowing = true;
+        searchText.setVisibility(View.VISIBLE);
+        cancelSearch.setVisibility(View.VISIBLE);
+        pageTitle.setVisibility(View.GONE);
+        pageSubtitle.setVisibility(View.GONE);
+    }
+
+    private void searchContacts() {
+        // If search view is not showing, show it
+        if (!searchShowing) {
+            showSearchUI();
+            return;
+        }
+
+        // If search edit box was already showing, try to search using the string.
+
+        // Error handling
+        String searchStr = searchText.getText().toString();
+        if (searchStr == null || searchStr.length() == 0) {
+            return;
+        }
+
+        // Search
+        mAdapter.filterItems(searchStr);
     }
 
     @Override
@@ -104,6 +169,7 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
         private final ListView mListView;
         private HashSet<ContactInfo> selectedEmployees;
         private TextView mEmptyView;
+        ArrayList<ContactInfo> allContacts;
 
         public MyListAdapter(final Context context, ListView listView, TextView emptyView) {
             super(context, 0);
@@ -170,6 +236,7 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
 
                 @Override
                 protected void onPostExecute(ArrayList<ContactInfo> employees) {
+                    allContacts = employees;
                     refreshUIForData(context, employees);
                 }
             };
@@ -246,6 +313,12 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
                     }
                 }
             });
+
+            if (selectedEmployees.contains(employee)) {
+                viewHolder.checkBox.setChecked(true);
+            } else {
+                viewHolder.checkBox.setChecked(false);
+            }
 
             // If we found a bitmap in the cache for this employee (by phone number),
             // we do not show initials. We directly show the bitmap image. Otherwise
@@ -346,6 +419,28 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
             } else {
                 selectedEmployees.remove(employee);
             }
+        }
+
+        public void filterItems(String searchString) {
+            if (allContacts == null) {
+                return;
+            }
+
+            // Reset filter
+            if (searchString == null || searchString.length() == 0) {
+                refreshUIForData(mContext, allContacts);
+                return;
+            }
+
+            // Filter list
+            ArrayList<ContactInfo> filteredEmp = new ArrayList<>();
+            for (int i = 0; i < allContacts.size(); i++) {
+                ContactInfo tempInfo = allContacts.get(i);
+                if (tempInfo.name.toUpperCase().contains(searchString.toUpperCase())) {
+                    filteredEmp.add(tempInfo);
+                }
+            }
+            refreshUIForData(mContext, filteredEmp);
         }
 
         private class EmployeeViewHolder {

@@ -31,10 +31,42 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/page_title"
         android:layout_toRightOf="@id/app_icon"
+        android:layout_marginRight="50dp"
         android:background="@color/header_background"
         android:text="@string/select_employees_detail"
         android:textColor="@android:color/white"
         android:layout_marginBottom="10dp"
         android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/app_icon"
+        android:layout_marginRight="100dp"
+        android:background="@color/header_background"
+        android:hint="@string/search_emp"
+        android:textColor="@android:color/white"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:layout_toLeftOf="@+id/search_button"
+        android:background="@drawable/ic_action_cancel"
+        android:layout_centerVertical="true"/>
+
+    <Button
+        android:id="@id/search_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_action_search"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>
