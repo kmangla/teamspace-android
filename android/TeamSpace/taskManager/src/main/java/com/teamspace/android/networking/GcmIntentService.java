@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.teamspace.android.R;
+import com.teamspace.android.common.ui.LauncherActivity;
 import com.teamspace.android.models.Message;
 import com.teamspace.android.models.MessageList;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
@@ -89,7 +90,7 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent pushIntent = new Intent(this, AllTasksListViewActivity.class);
+        Intent pushIntent = new Intent(this, LauncherActivity.class);
         if (launchOnTop != null) {
             pushIntent.putExtra(Constants.DEEPLINK, launchOnTop);
         }

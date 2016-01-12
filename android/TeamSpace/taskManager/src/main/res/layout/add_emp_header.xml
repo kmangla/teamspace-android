@@ -54,8 +54,8 @@
 
     <Button
         android:id="@+id/cancel_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:visibility="gone"
         android:layout_toLeftOf="@+id/search_button"
         android:background="@drawable/ic_action_cancel"
@@ -63,8 +63,8 @@
 
     <Button
         android:id="@id/search_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@drawable/ic_action_search"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
