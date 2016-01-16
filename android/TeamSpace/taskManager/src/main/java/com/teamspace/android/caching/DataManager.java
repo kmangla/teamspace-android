@@ -12,9 +12,11 @@ import com.teamspace.android.caching.datafetcher.TaskFetchForEmployee;
 import com.teamspace.android.caching.datafetcher.TaskFetchForUser;
 import com.teamspace.android.caching.dataupdaters.EmployeeUpdater;
 import com.teamspace.android.caching.dataupdaters.MessageUpdater;
+import com.teamspace.android.caching.dataupdaters.MetricsUpdater;
 import com.teamspace.android.caching.dataupdaters.RegistrationUpdater;
 import com.teamspace.android.caching.dataupdaters.TaskUpdater;
 import com.teamspace.android.interfaces.DataFetchInterface;
+import com.teamspace.android.models.MetricsObject;
 import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.MigratedMessage;
 import com.teamspace.android.models.MigratedTask;
@@ -161,5 +163,10 @@ public class DataManager {
         validateOTPFromSMS = false;
         RegistrationFetcher fetcher = new RegistrationFetcher(mContext);
         fetcher.getOrCreateUser(otp, callback);
+    }
+
+    public void fireMetric(MetricsObject metric) {
+        MetricsUpdater updater = new MetricsUpdater(mContext);
+        updater.fire(metric);
     }
 }

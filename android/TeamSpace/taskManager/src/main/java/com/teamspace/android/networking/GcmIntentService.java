@@ -94,6 +94,7 @@ public class GcmIntentService extends IntentService {
         if (launchOnTop != null) {
             pushIntent.putExtra(Constants.DEEPLINK, launchOnTop);
         }
+        pushIntent.putExtra(Constants.IS_FROM_PUSH, true);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, pushIntent, 0);
 
         NotificationCompat.Builder mBuilder =

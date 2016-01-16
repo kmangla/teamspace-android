@@ -11,6 +11,7 @@ import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
+import com.teamspace.android.models.MetricsObject;
 import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.registration.ui.PhoneNumberRegistrationActivity;
@@ -62,6 +63,16 @@ public class LauncherActivity extends FragmentActivity {
         checkStateAndLoopIfNeeded(getIntent());
     }
 
+    private void fireLaunchMetrics(String pageName) {
+        // Fire metric if from push
+        if (getIntent().getExtras() != null &&
+                getIntent().getExtras().getBoolean(Constants.IS_FROM_PUSH)) {
+            DataManager.getInstance(this).fireMetric(new MetricsObject(pageName, "open_from_push"));
+        } else {
+            DataManager.getInstance(this).fireMetric(new MetricsObject(pageName, "open"));
+        }
+    }
+
     private void checkStateAndLoopIfNeeded(final Intent intent) {
         loopTime = System.currentTimeMillis();
         Handler handler = new Handler();
@@ -72,11 +83,13 @@ public class LauncherActivity extends FragmentActivity {
 
                 switch (state) {
                     case LOGIN:
+                        fireLaunchMetrics("LoginPage");
                         Intent i = new Intent(context, PhoneNumberRegistrationActivity.class);
                         startActivity(i);
                         finish();
                         break;
                     case CREATE_EMPLOYEE_AND_TASK:
+                        fireLaunchMetrics("EmployeeCreationPage");
                         Intent []j = new Intent[3];
                         j[0] = new Intent(context, AllTasksListViewActivity.class);
                         j[1] = new Intent(context, TaskAddEditActivity.class);
@@ -85,6 +98,7 @@ public class LauncherActivity extends FragmentActivity {
                         finish();
                         break;
                     case CREATE_TASK:
+                        fireLaunchMetrics("TaskCreationPage");
                         Intent []k = new Intent[2];
                         k[0] = new Intent(context, AllTasksListViewActivity.class);
                         k[1] = new Intent(context, TaskAddEditActivity.class);
@@ -92,11 +106,13 @@ public class LauncherActivity extends FragmentActivity {
                         finish();
                         break;
                     case VIEW_TASK:
+                        fireLaunchMetrics("TaskListPage");
                         Intent l = new Intent(context, AllTasksListViewActivity.class);
                         startActivity(l);
                         finish();
                         break;
                     case CREATE_EMP:
+                        fireLaunchMetrics("EmployeeCreationPage");
                         Intent []m = new Intent[3];
                         m[0] = new Intent(context, AllTasksListViewActivity.class);
                         m[2] = new Intent(context, EmployeeAddEditActivity.class);
