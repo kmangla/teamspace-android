@@ -23,8 +23,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +71,15 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
     Button searchButton;
     Button cancelSearch;
     private boolean searchShowing;
+    Handler handler = new Handler();
+    Runnable myRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (searchShowing) {
+                searchContacts();
+            }
+        }
+    };
 
     /**
      * Fragments require an empty constructor.
@@ -85,6 +97,26 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
         pageTitle = (TextView) view.findViewById(R.id.page_title);
         pageSubtitle = (TextView) view.findViewById(R.id.page_subtitle);
         searchText = (EditText) view.findViewById(R.id.search_text);
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (handler != null) {
+                    handler.removeCallbacks(myRunnable);
+                }
+
+                handler.postDelayed(myRunnable, 500);
+            }
+        });
         searchButton = (Button) view.findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,9 +149,15 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
 
     private void hideSearchUI() {
         searchShowing = false;
+
+        if (handler != null) {
+            handler.removeCallbacks(myRunnable);
+        }
+
         searchText.setText(Constants.EMPTY_STRING);
         searchText.setVisibility(View.GONE);
         cancelSearch.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
         pageTitle.setVisibility(View.VISIBLE);
         pageSubtitle.setVisibility(View.VISIBLE);
 
@@ -130,6 +168,7 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
         searchShowing = true;
         searchText.setVisibility(View.VISIBLE);
         cancelSearch.setVisibility(View.VISIBLE);
+        searchButton.setVisibility(View.GONE);
         pageTitle.setVisibility(View.GONE);
         pageSubtitle.setVisibility(View.GONE);
     }

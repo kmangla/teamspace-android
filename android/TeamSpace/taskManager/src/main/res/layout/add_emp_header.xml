@@ -57,7 +57,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:visibility="gone"
-        android:layout_toLeftOf="@+id/search_button"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
         android:background="@drawable/ic_action_cancel"
         android:layout_centerVertical="true"/>
 
@@ -65,6 +66,7 @@
         android:id="@id/search_button"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_marginRight="10dp"
         android:background="@drawable/ic_action_search"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
