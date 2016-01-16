@@ -17,7 +17,7 @@ public class MetricsObject {
     private String pageName;
     private String metricName;
 
-    public MetricsObject(String metricName, String pageName) {
+    public MetricsObject(String pageName, String metricName) {
         this.metricName = metricName;
         this.pageName = pageName;
     }
