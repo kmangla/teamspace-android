@@ -123,12 +123,9 @@ public class MigratedEmployee {
 		HashMap<String, String> obj = new HashMap<String, String>();
 		obj.put(NAME, this.getName());
 		obj.put(PHONE, this.getPhoneWithCountryCode());
-		obj.put(COMPANY_ID, this.getCompanyID());
-		obj.put(USER_ID, this.getUserID());
 		if (this.getEmployeeID() != null) {
 			obj.put(EMPLOYEE_ID, this.getEmployeeID());
 		}
-		obj.put(DESIGNATION, this.getDesignation());
 		obj.put(Constants.KEY, Utils.getSignedInUserKey());
         if (this.getTaskBlob() != null) {
             obj.put(TASK_BLOB, this.getTaskBlob());
