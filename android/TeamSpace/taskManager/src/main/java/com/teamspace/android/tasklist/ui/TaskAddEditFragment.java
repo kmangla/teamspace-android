@@ -353,33 +353,10 @@ public class TaskAddEditFragment extends Fragment implements
 
         emp.setTaskBlob(blobToCache);
         DataManager dataMgr = DataManager.getInstance(getActivity().getApplicationContext());
-        dataMgr.updateEmployee(emp, new DataManagerCallback() {
+        dataMgr.updateEmployee(emp, null);
 
-            @Override
-            public void onSuccess(String response) {
-                if (showToast) {
-                    Toast.makeText(
-                            v.getContext(),
-                            v.getContext().getResources()
-                                    .getString(
-                                            R.string.task_draft_saved),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(String response) {
-                if (showToast) {
-                    // Notify user about the error
-                    Toast.makeText(
-                            v.getContext(),
-                            v.getContext().getResources()
-                                    .getString(
-                                            R.string.error_task_draft_failed),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        // Also save this locally in case there is no network
+        Utils.writeStringToSharedPrefs(Constants.EMPLOYEE_DRAFT + emp.getEmployeeID(), blobToCache);
     }
 
     private void populateEmployeeSpinner(final Context context, MigratedEmployee newEmp) {
@@ -518,10 +495,7 @@ public class TaskAddEditFragment extends Fragment implements
 
         if (parent == empSpinner && editMode == false && position > 0) {
             MigratedEmployee emp = allEmployees.get(position);
-            String blob = emp.getTaskBlob();
-            if (Utils.isStringNotEmpty(blob)) {
-                taskTitleEditText.setText(blob);
-            }
+            taskTitleEditText.setText(emp.getTaskBlob());
         }
 	}
 

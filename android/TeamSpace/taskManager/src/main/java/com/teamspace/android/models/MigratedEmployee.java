@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
+import com.teamspace.android.caching.DataManager;
+import com.teamspace.android.common.ui.TaskManagerApplication;
 import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 
@@ -44,6 +46,17 @@ public class MigratedEmployee {
 		this.name = name;
 	}
     public String getTaskBlob() {
+        if (Utils.isStringNotEmpty(taskBlob)) {
+            return taskBlob;
+        }
+
+        taskBlob = Utils.readStringFromSharedPrefs(Constants.EMPLOYEE_DRAFT + employeeID);
+
+        if (Utils.isStringNotEmpty(taskBlob)) {
+            DataManager dataMgr = DataManager.getInstance(TaskManagerApplication.getAppContext());
+            dataMgr.updateEmployee(this, null);
+        }
+
         return taskBlob;
     }
     public void setTaskBlob(String blob) {
