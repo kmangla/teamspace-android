@@ -51,6 +51,7 @@ public class TaskAddEditFragment extends Fragment implements
     RadioButton weeklyButton;
     CheckBox createMultiple;
     TextView createMultipleText;
+    TextView overlay;
 	Spinner empSpinner;
 
 	Button saveButton;
@@ -131,6 +132,7 @@ public class TaskAddEditFragment extends Fragment implements
         weeklyButton = (RadioButton) v.findViewById(R.id.weekly);
         monthlyButton = (RadioButton) v.findViewById(R.id.monthly);
         dailyButton.setChecked(true);
+        overlay = (TextView) v.findViewById(R.id.overlay);
 
         createMultiple = (CheckBox) v.findViewById(R.id.create_multiple);
         createMultipleText = (TextView) v.findViewById(R.id.create_multiple_text);
@@ -138,12 +140,7 @@ public class TaskAddEditFragment extends Fragment implements
 
 		// Add spinner for selecting employee
 		empSpinner = (Spinner) v.findViewById(R.id.employee_spinner);
-        populateEmployeeSpinner(v.getContext(), null);
 		empSpinner.setOnItemSelectedListener(this);
-
-        if (allEmployees.size() > 0 && editMode == false) {
-            taskTitleEditText.setText(allEmployees.get(0).getTaskBlob());
-        }
 
 		// Create an ArrayAdapter using the frequency array
 		ArrayAdapter<CharSequence> freqAdapter = ArrayAdapter
@@ -171,6 +168,12 @@ public class TaskAddEditFragment extends Fragment implements
             createMultiple.setChecked(false);
             saveButton.setText(R.string.save_now);
             saveDraft.setVisibility(View.GONE);
+            overlay.setVisibility(View.GONE);
+        } else {
+            taskTitleEditText.setEnabled(false);
+            saveButton.setEnabled(false);
+            saveDraft.setEnabled(false);
+            overlay.setVisibility(View.VISIBLE);
         }
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
@@ -399,11 +402,13 @@ public class TaskAddEditFragment extends Fragment implements
             alert.show();
         }
 
-//        MigratedEmployee self = new MigratedEmployee();
-//        self.setEmployeeID(Utils.getSignedInUserId());
-//        self.setName(Utils.getSignedInUserName());
-//        self.setPhoneWithContryCode(Utils.getSignedInUserPhoneNumber());
-//        allEmployees.add(0, self);
+        if (!editMode) {
+            MigratedEmployee none = new MigratedEmployee();
+            none.setEmployeeID("0000");
+            none.setName(getString(R.string.choose_emp));
+            none.setPhoneWithContryCode("+10000000000");
+            allEmployees.add(0, none);
+        }
 
         if (newEmp != null) {
             allEmployees.add(0, newEmp);
@@ -495,14 +500,28 @@ public class TaskAddEditFragment extends Fragment implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-//        if (parent == empSpinner && position == 1) {
-//            Intent i = new Intent(view.getContext(), EmployeeAddEditActivity.class);
-//            startActivityForResult(i, ADD_EMPLOYEE);
-//        }
 
-        if (parent == empSpinner && editMode == false) {
+        if (parent == empSpinner && !editMode) {
+            if (position > 0) {
+                taskTitleEditText.setEnabled(true);
+                saveButton.setEnabled(true);
+                saveDraft.setEnabled(true);
+                overlay.setVisibility(View.GONE);
+            } else {
+                taskTitleEditText.setEnabled(false);
+                saveButton.setEnabled(false);
+                saveDraft.setEnabled(false);
+                overlay.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
+
+        if (parent == empSpinner && editMode == false && position > 0) {
             MigratedEmployee emp = allEmployees.get(position);
-            taskTitleEditText.setText(emp.getTaskBlob());
+            String blob = emp.getTaskBlob();
+            if (Utils.isStringNotEmpty(blob)) {
+                taskTitleEditText.setText(blob);
+            }
         }
 	}
 
@@ -512,32 +531,4 @@ public class TaskAddEditFragment extends Fragment implements
 
 	}
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ADD_EMPLOYEE:
-                Utils.log("onActivityResult " + requestCode);
-                Bundle extras = null;
-                if (data != null) {
-                    extras = data.getExtras();
-                }
-                if (extras != null) {
-                    // Create a fake employee row and add it so that the UI looks
-                    // responsive to the user.
-                    String employeeName = extras.getString(Constants.EMPLOYEE_NAME);
-                    String employeePhone = extras.getString(Constants.EMPLOYEE_PHONE);
-                    MigratedEmployee newEmp = new MigratedEmployee();
-                    newEmp.setName(employeeName);
-                    newEmp.setPhoneWithContryCode(employeePhone);
-                    newEmp.setTaskCount("0");
-                    newEmp.setLastUpdated(Utils.getCurrentDate());
-
-                    populateEmployeeSpinner(getActivity(), newEmp);
-                }
-
-                break;
-            default:
-                break;
-        }
-    }
 }

@@ -10,6 +10,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"></include>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/overlay"
+        android:text="@string/choose_emp_text"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:textSize="24dp"
+        />
+
     <EditText
         android:id="@+id/task_title"
         android:layout_below="@id/header"

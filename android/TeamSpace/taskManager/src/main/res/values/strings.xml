@@ -355,6 +355,8 @@
     <string name="default_tab">Default Tab</string>
     <string name="choose_default_tab">Choose Default Tab</string>
     <string name="tabs_default_value">All Tasks</string>
+    <string name="choose_emp">Choose an Employee</string>
+    <string name="choose_emp_text">Please choose an Employee from the List above before creating the task</string>
     <string-array name="tabs">
         <item>All Tasks</item>
 		<item>Employees</item>
