@@ -46,18 +46,7 @@ public class MigratedEmployee {
 		this.name = name;
 	}
     public String getTaskBlob() {
-        if (Utils.isStringNotEmpty(taskBlob)) {
-            return taskBlob;
-        }
-
-        taskBlob = Utils.readStringFromSharedPrefs(Constants.EMPLOYEE_DRAFT + employeeID);
-
-        if (Utils.isStringNotEmpty(taskBlob)) {
-            DataManager dataMgr = DataManager.getInstance(TaskManagerApplication.getAppContext());
-            dataMgr.updateEmployee(this, null);
-        }
-
-        return taskBlob;
+        return Utils.readStringFromSharedPrefs(Constants.EMPLOYEE_DRAFT + employeeID);
     }
     public void setTaskBlob(String blob) {
         this.taskBlob = blob;

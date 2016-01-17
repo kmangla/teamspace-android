@@ -67,8 +67,9 @@ public class TaskAddEditFragment extends Fragment implements
 	private boolean hideKeyboard;
 	private boolean editMode;
     private static final int ADD_EMPLOYEE = 0;
+    private int prevPosition = 0;
 
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -157,7 +158,7 @@ public class TaskAddEditFragment extends Fragment implements
             public void onClick(final View v) {
                 MigratedEmployee emp = allEmployees.get(empSpinner
                         .getSelectedItemPosition());
-                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp, v, true);
+                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp);
                 getFragmentActivity().finish();
             }
         });
@@ -204,7 +205,7 @@ public class TaskAddEditFragment extends Fragment implements
         DataManager dataMgr = DataManager
                 .getInstance(applicationContext);
 
-        MigratedEmployee emp = allEmployees.get(empSpinner
+        final MigratedEmployee emp = allEmployees.get(empSpinner
                 .getSelectedItemPosition());
         if (Utils.isStringEmpty(emp.getEmployeeID()) &&
                 Utils.isStringNotEmpty(emp.getPhoneWithCountryCode()) &&
@@ -217,7 +218,8 @@ public class TaskAddEditFragment extends Fragment implements
         }
 
         // Clear the draft if any for this employee since we are now creating the tasks for real
-        updateTaskBlobForEmployee("", emp, v, false);
+        final String taskBlobBackup = taskTitleEditText.getText().toString();
+        updateTaskBlobForEmployee("", emp);
 
         // If somehow the task is assigned to "Add New Employee", do nothing.
         if (Utils.isStringEmpty(emp.getEmployeeID()) || emp.getEmployeeID().equalsIgnoreCase("0000")) {
@@ -313,6 +315,9 @@ public class TaskAddEditFragment extends Fragment implements
                                         .getString(
                                                 R.string.error_task_create_failed),
                                 Toast.LENGTH_SHORT).show();
+
+                        // If we were not able to create the tasks, make sure the draft is not lost
+                        Utils.writeStringToSharedPrefs(Constants.EMPLOYEE_DRAFT + emp.getEmployeeID(), taskBlobBackup);
                     }
                 });
             }
@@ -338,12 +343,12 @@ public class TaskAddEditFragment extends Fragment implements
         getFragmentActivity().finish();
     }
 
-    private void updateTaskBlobForEmployee(String blobToCache, MigratedEmployee emp, final View v, final boolean showToast) {
+    private void updateTaskBlobForEmployee(String blobToCache, MigratedEmployee emp) {
         if (allEmployees == null || allEmployees.size() == 0) {
             // Notify user about the error
             Toast.makeText(
-                    v.getContext(),
-                    v.getContext()
+                    getActivity(),
+                    getActivity()
                             .getResources()
                             .getString(
                                     R.string.create_employee_before_task),
@@ -420,6 +425,19 @@ public class TaskAddEditFragment extends Fragment implements
         empSpinner.setSelection(0);
     }
 
+    @Override
+    public void onPause() {
+        if (!editMode) {
+            int position = empSpinner.getSelectedItemPosition();
+            if (position > 0) {
+                MigratedEmployee emp = allEmployees.get(position);
+                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), emp);
+            }
+        }
+        super.onPause();
+    }
+
+    @Override
     public void onResume() {
 		super.onResume();
 
@@ -494,8 +512,17 @@ public class TaskAddEditFragment extends Fragment implements
         }
 
         if (parent == empSpinner && editMode == false && position > 0) {
+            // Cache the string for prevEmp
+            if (prevPosition > 0) {
+                MigratedEmployee prevEmp = allEmployees.get(prevPosition);
+                updateTaskBlobForEmployee(taskTitleEditText.getText().toString(), prevEmp);
+            }
+
+            // Update the string for newly selected Emp
             MigratedEmployee emp = allEmployees.get(position);
             taskTitleEditText.setText(emp.getTaskBlob());
+
+            prevPosition = position;
         }
 	}
 
