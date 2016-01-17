@@ -49,11 +49,6 @@ public class EmployeeUpdater {
                             if (mCallback != null) {
                                 mCallback.onSuccess(response);
                             }
-                            String message = mContext.getResources().getString(R.string.employee_creation_sms_1) + " +" +
-                                    mEmployee.getPairedNumber() + ". " +
-                                    mContext.getResources().getString(R.string.employee_creation_sms_2) + " " +
-                                    Utils.getSignedInUserName();
-                            Utils.sendSMS(mContext, mEmployee.getPhoneWithCountryCode(), message);
                         } catch (ParseException e) {
                             // Notify user about the error
                             Toast.makeText(
