@@ -550,18 +550,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 //                            return lhs.getTitle().compareTo(rhs.getTitle()); // title
 //                        }
 //                    }
-                    if (lhs.getLastUpdate() < rhs.getLastUpdate()) { // update time
+                    if (lhs.getCreatedOn() < rhs.getCreatedOn()) { // created time
                         return 1;
-                    } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
+                    } else if (lhs.getCreatedOn() > rhs.getCreatedOn()) {
                         return -1;
                     } else {
-                        if (lhs.getCreatedOn() < rhs.getCreatedOn()) { // created time
-                            return 1;
-                        } else if (lhs.getCreatedOn() > rhs.getCreatedOn()) {
-                            return -1;
-                        } else {
-                            return lhs.getTitle().compareTo(rhs.getTitle()); // title
-                        }
+                        return lhs.getTitle().compareTo(rhs.getTitle()); // title
                     }
                 case 1:
                     if (lhs.getUpdateCount() < rhs.getUpdateCount()) {

@@ -421,9 +421,9 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
 //                            return lhs.getTitle().compareTo(rhs.getTitle());
 //                        }
 //                    }
-                    if (lhs.getLastUpdate() < rhs.getLastUpdate()) { // update time
+                    if (lhs.getCreatedOn() < rhs.getCreatedOn()) { // created time
                         return 1;
-                    } else if (lhs.getLastUpdate() > rhs.getLastUpdate()) {
+                    } else if (lhs.getCreatedOn() > rhs.getCreatedOn()) {
                         return -1;
                     } else {
                         return lhs.getTitle().compareTo(rhs.getTitle()); // title
