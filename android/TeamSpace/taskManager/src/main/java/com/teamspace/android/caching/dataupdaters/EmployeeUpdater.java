@@ -1,6 +1,7 @@
 package com.teamspace.android.caching.dataupdaters;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Context;
@@ -48,6 +49,17 @@ public class EmployeeUpdater {
                             DatabaseCache.getInstance(mContext).setMigratedEmployeeBlockingCall(mEmployee);
                             if (mCallback != null) {
                                 mCallback.onSuccess(response);
+                            }
+                            ArrayList<MigratedEmployee> allEmps =
+                                    DatabaseCache.getInstance(mContext).getMigratedEmployeesBlockingCall();
+                            // If this is the first employee creation, add self as an employee too
+                            if (allEmps.size() == 1) {
+                                MigratedEmployee self = new MigratedEmployee();
+                                self.setEmployeeID(Utils.getSignedInUserId());
+                                self.setName(Utils.getSignedInUserName());
+                                self.setPhoneWithContryCode(Utils.getSignedInUserPhoneNumber());
+                                EmployeeUpdater updater = new EmployeeUpdater(mContext, self, null);
+                                updater.create();
                             }
                         } catch (ParseException e) {
                             // Notify user about the error
