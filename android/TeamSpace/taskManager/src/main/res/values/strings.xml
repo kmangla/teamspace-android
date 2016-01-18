@@ -69,14 +69,18 @@
     <string name="employee_number_hint"></string>
     <string name="task_frequency_prompt">Choose a frequency</string>
     <string name="task_title">Title</string>
-    <string name="task_subtitle">Create new task for every new line typed above</string>
+    <string name="task_subtitle">Create separate task for every new line typed above</string>
     <string name="registration_welcome">Welcome to \nTeam Space</string>
     <string name="task_details">Task Details</string>
     <string name="employees">Employees</string>
-    <string name="add_task">Create Task For:</string>
+    <string name="add_task">Task for </string>
     <string name="add_edit_emp">New Employee</string>
     <string name="select_employees">Select Your Employees</string>
+    <string name="step_1_of_2">Step 1 of 2: Choose Employee</string>
+    <string name="step_2_of_2">Step 2 of 2: Fill Task Details</string>
     <string name="select_employees_detail">Please select your employees and press "Done". You can then assign tasks to the selected employees.</string>
+    <string name="select_task_detail">Please enter the details for the task below.</string>
+    <string name="select_employee">Please select the employee for whom you want to create the task.</string>
     <string name="task_frequency">Status Updates Needed</string>
     <string name="assigned_to">Assigned To</string>
     <string name="edit">Edit</string>
@@ -90,7 +94,7 @@
     <string name="how_to_add_emp_ans">You can add an employee by simply typing his name and phone number.
     \n OR You can even import the employee details from your phone book / contacts. </string>
     <string name="create_employee">Create Employee</string>
-    <string name="create_employee_before_task">Before creating a task, you need to create an employee first.</string>
+    <string name="create_employee_before_task">Before creating a task, you need to select an employee first.</string>
     <string name="get_started">Lets get started</string>
     <string name="get_started_task">After adding employees, you can assign tasks to your employees.
         Click Next to create a task and assign it to an employee.</string>
@@ -155,6 +159,7 @@
     <string name="menu_add_contact">Add Contact</string>
     <string name="menu_edit_contact">Edit Contact</string>
     <string name="no_contacts">No Contacts Found</string>
+    <string name="no_employees">No Employees Found</string>
     <string name="no_contact_selected">No Contact Selected</string>
     <string name="search_hint">Find contacts</string>
 

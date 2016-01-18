@@ -1,5 +1,6 @@
 package com.teamspace.android.tasklist.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,8 +11,12 @@ import android.support.v4.app.FragmentManager;
 
 import com.teamspace.android.R;
 import com.teamspace.android.employee.ui.ContactsListFragment;
+import com.teamspace.android.employee.ui.EmployeeListViewFragment;
+import com.teamspace.android.employee.ui.EmployeeSelectFragment;
+import com.teamspace.android.models.MigratedEmployee;
+import com.teamspace.android.utils.Constants;
 
-public class TaskAddViewPagerActivity extends FragmentActivity {
+public class TaskAddViewPagerActivity extends FragmentActivity implements ViewPagerListener {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -27,11 +32,12 @@ public class TaskAddViewPagerActivity extends FragmentActivity {
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private PagerAdapter mPagerAdapter;
+    private MigratedEmployee mSelectedEmployee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_screen_slide);
+        setContentView(R.layout.activity_screen_slide);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -51,6 +57,16 @@ public class TaskAddViewPagerActivity extends FragmentActivity {
         }
     }
 
+    @Override
+    public void employeeSelected(MigratedEmployee employee) {
+        mSelectedEmployee = employee;
+        mPager.setCurrentItem(1);
+    }
+
+    public MigratedEmployee getSelectedEmployee() {
+        return mSelectedEmployee;
+    }
+
     /**
      * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
      * sequence.
@@ -63,7 +79,7 @@ public class TaskAddViewPagerActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new ContactsListFragment();
+                return new EmployeeSelectFragment();
             } else {
                 return new TaskAddEditFragment();
             }

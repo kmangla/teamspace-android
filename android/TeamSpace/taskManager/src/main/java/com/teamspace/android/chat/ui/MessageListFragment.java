@@ -150,6 +150,7 @@ public class MessageListFragment extends Fragment {
 				i.putExtra(Constants.TASK_ID, task.getTaskID());
 				i.putExtra(Constants.TASK_TITLE, task.getTitle());
 				i.putExtra(Constants.EMPLOYEE_NAME, task.getEmployeeName());
+                i.putExtra(Constants.FILTERED_EMP_ID, task.getEmployeeID());
 				i.putExtra(Constants.HIDE_KEYBOARD, true);
 				startActivityForResult(i, EDIT_TASK);
 			}

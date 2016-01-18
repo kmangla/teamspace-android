@@ -985,7 +985,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
     public void addItem() {
         oldItemCount = mAdapter.getCount();
-        Intent i = new Intent(getActivity(), TaskAddEditActivity.class);
+        Intent i = new Intent(getActivity(), TaskAddViewPagerActivity.class);
 //        Intent i = new Intent(getActivity(), TaskAddViewPagerActivity.class);
 //        startActivityForResult(i, ADD_TASK);
         startActivity(i);

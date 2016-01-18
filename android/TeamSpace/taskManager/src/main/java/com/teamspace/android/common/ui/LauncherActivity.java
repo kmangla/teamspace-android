@@ -17,6 +17,7 @@ import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.registration.ui.PhoneNumberRegistrationActivity;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
 import com.teamspace.android.tasklist.ui.TaskAddEditActivity;
+import com.teamspace.android.tasklist.ui.TaskAddViewPagerActivity;
 import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 
@@ -92,7 +93,7 @@ public class LauncherActivity extends FragmentActivity {
                         fireLaunchMetrics("EmployeeCreationPage");
                         Intent []j = new Intent[3];
                         j[0] = new Intent(context, AllTasksListViewActivity.class);
-                        j[1] = new Intent(context, TaskAddEditActivity.class);
+                        j[1] = new Intent(context, TaskAddViewPagerActivity.class);
                         j[2] = new Intent(context, EmployeeAddEditActivity.class);
                         startActivities(j);
                         finish();
@@ -101,7 +102,7 @@ public class LauncherActivity extends FragmentActivity {
                         fireLaunchMetrics("TaskCreationPage");
                         Intent []k = new Intent[2];
                         k[0] = new Intent(context, AllTasksListViewActivity.class);
-                        k[1] = new Intent(context, TaskAddEditActivity.class);
+                        k[1] = new Intent(context, TaskAddViewPagerActivity.class);
                         startActivities(k);
                         finish();
                         break;

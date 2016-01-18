@@ -548,18 +548,6 @@ public class Utils {
         context.startActivity(sendIntent);
     }
 
-    public static void launchOnTopIfNeeded(Context context, String launchOnTop) {
-        if (launchOnTop != null) {
-            if (launchOnTop.equalsIgnoreCase(Constants.TASK_CREATION)) {
-                Intent i = new Intent(context, TaskAddEditActivity.class);
-                context.startActivity(i);
-            } else if (launchOnTop.equalsIgnoreCase(Constants.EMP_CREATION)) {
-                Intent i = new Intent(context, EmployeeAddEditActivity.class);
-                context.startActivity(i);
-            }
-        }
-    }
-
     /**
      * Enables strict mode. This should only be called when debugging the application and is useful
      * for finding some potential bugs or best practice violations.
