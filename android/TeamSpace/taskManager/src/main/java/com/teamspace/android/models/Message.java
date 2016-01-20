@@ -1,5 +1,6 @@
 package com.teamspace.android.models;
 
+import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 
 import org.json.JSONArray;
@@ -19,8 +20,12 @@ public class Message {
         try {
             msg.text = msgObject.getString("text");
             msg.ntype = msgObject.getString("ntype");
-            msg.taskID = msgObject.getString("taskID");
 
+            try {
+                msg.taskID = msgObject.getString("taskID");
+            } catch (Exception e) {
+                msg.taskID = Constants.EMPTY_STRING;
+            }
 
             try {
                 JSONObject obj = msgObject.getJSONObject("user");
@@ -32,6 +37,9 @@ public class Message {
                     msg.user = MigratedEmployee.parseJSON(obj);
                 } catch (Exception e1) {
                     Utils.log("Exception while parsing user in push payload in Message class: " + e.toString());
+                    msg.user = new MigratedEmployee();
+                    msg.user.setName(Utils.getSignedInUserName());
+                    msg.user.setUserID(Utils.getSignedInUserId());
                 }
             }
         } catch (Exception e) {

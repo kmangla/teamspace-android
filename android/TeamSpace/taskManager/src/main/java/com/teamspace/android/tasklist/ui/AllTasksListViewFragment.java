@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -212,10 +213,14 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         selfButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchSelfTasksActivity();
+                triggerTestPush();
             }
         });
-        selfButton.setVisibility(View.GONE);
+        if (false && Build.FINGERPRINT.startsWith("generic")) {
+            selfButton.setVisibility(View.VISIBLE);
+        } else {
+            selfButton.setVisibility(View.GONE);
+        }
 
         progressBar = (ProgressBar) headerView.findViewById(R.id.task_progress);
 
@@ -318,6 +323,10 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     private void launchEmployeeActivity() {
         Intent i = new Intent(getActivity(), EmployeeListViewActivity.class);
         startActivity(i);
+    }
+
+    private void triggerTestPush() {
+        DataManager.getInstance(getActivity()).requestTestPush(null);
     }
 
     private void launchSelfTasksActivity() {
