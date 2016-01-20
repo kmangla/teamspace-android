@@ -7,15 +7,18 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +67,18 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
     String employeeName = "";
     String employeePhone = "";
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null && intent.getAction().equalsIgnoreCase(Constants.TASK_CREATION)) {
+                if (mAdapter != null) {
+                    mAdapter.refreshTaskList(context);
+                    Utils.log("REFRESHING TASK LIST DUE TO BROADCAST");
+                }
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,9 +121,19 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
         setRetainInstance(true);
     }
 
+    public void onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onPause();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+
+        // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.TASK_CREATION));
 
         if (Utils.isStringNotEmpty(mEmployeeId) && mEmployeeId.equalsIgnoreCase(Utils.getSignedInUserId())) {
             Utils.trackPageView("MyTasks");
@@ -874,33 +899,33 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
                 mAdapter.notifyDataSetChanged();
                 break;
             case ADD_TASK:
-                Utils.log("onActivityResult " + requestCode);
-                if (data != null) {
-                    extras = data.getExtras();
-                }
-                if (extras != null) {
-                    // Create a fake task row and add it so that the UI looks
-                    // responsive to the user.
-                    String title = extras.getString(Constants.TASK_TITLE);
-                    String employeeId = extras.getString(Constants.EMPLOYEE_ID);
-                    String name = extras.getString(Constants.EMPLOYEE_NAME);
-                    String number = extras.getString(Constants.EMPLOYEE_PHONE);
-                    MigratedTask newTask = new MigratedTask();
-                    newTask.setTitle(title);
-                    newTask.setEmployeeID(employeeId);
-                    newTask.setEmployeeName(name);
-                    newTask.setEmployeeNumber(number);
-                    newTask.setLastUpdate(System.currentTimeMillis());
-                    mAdapter.add(newTask);
-                    mAdapter.sortAdapterList(currentSortPreference);
-                }
-
-                if (mAdapter.getCount() > oldItemCount) {
-                    mAdapter.flashNewlyAddedRows = true;
-                    mAdapter.flashRequestTime = System.currentTimeMillis();
-                }
-
-                Utils.refreshListWithoutLosingScrollPosition(swipelistview, mAdapter);
+//                Utils.log("onActivityResult " + requestCode);
+//                if (data != null) {
+//                    extras = data.getExtras();
+//                }
+//                if (extras != null) {
+//                    // Create a fake task row and add it so that the UI looks
+//                    // responsive to the user.
+//                    String title = extras.getString(Constants.TASK_TITLE);
+//                    String employeeId = extras.getString(Constants.EMPLOYEE_ID);
+//                    String name = extras.getString(Constants.EMPLOYEE_NAME);
+//                    String number = extras.getString(Constants.EMPLOYEE_PHONE);
+//                    MigratedTask newTask = new MigratedTask();
+//                    newTask.setTitle(title);
+//                    newTask.setEmployeeID(employeeId);
+//                    newTask.setEmployeeName(name);
+//                    newTask.setEmployeeNumber(number);
+//                    newTask.setLastUpdate(System.currentTimeMillis());
+//                    mAdapter.add(newTask);
+//                    mAdapter.sortAdapterList(currentSortPreference);
+//                }
+//
+//                if (mAdapter.getCount() > oldItemCount) {
+//                    mAdapter.flashNewlyAddedRows = true;
+//                    mAdapter.flashRequestTime = System.currentTimeMillis();
+//                }
+//
+//                Utils.refreshListWithoutLosingScrollPosition(swipelistview, mAdapter);
                 break;
             default:
                 break;

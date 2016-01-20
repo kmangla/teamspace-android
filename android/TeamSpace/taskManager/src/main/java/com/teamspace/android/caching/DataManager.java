@@ -85,6 +85,11 @@ public class DataManager {
 		DataFetchInterface dataFetcher = new TaskFetchForUser(mContext, userID);
 		fetchData(dataFetcher, callback);
 	}
+
+    public void requestTestPush(DataManagerCallback callback) {
+        RegistrationUpdater updater = new RegistrationUpdater(mContext, callback);
+        updater.requestTestPush();
+    }
 	
 	public void fetchMessagesForTask(String taskId, DataManagerCallback callback, boolean skipNetworkRefresh) {
 		DataFetchInterface dataFetcher = new MessageFetchForTask(mContext, taskId);

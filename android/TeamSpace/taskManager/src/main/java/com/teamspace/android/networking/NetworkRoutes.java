@@ -8,6 +8,7 @@ public class NetworkRoutes {
 	public static final String ROUTE_EMPLOYEES = "/employees";
 	public static final String ROUTE_EMPLOYEE = "/employee";
     public static final String ROUTE_OTP = "/generateOTP";
+    public static final String ROUTE_PUSH = "/notification";
 	public static final String ROUTE_MESSAGES = "/messages";
 	public static final String ROUTE_MESSAGE = "/message";
     public static final String ROUTE_METRICS = "/metrics";

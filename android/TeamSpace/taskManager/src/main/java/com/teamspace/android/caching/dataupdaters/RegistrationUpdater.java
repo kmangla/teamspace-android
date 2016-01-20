@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.models.MigratedEmployee;
+import com.teamspace.android.networking.GCMUtils;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
 import com.teamspace.android.utils.Utils;
@@ -62,4 +63,41 @@ public class RegistrationUpdater {
 				    }  
 				});
 	}
+
+    public void requestTestPush() {
+        final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_PUSH;
+        final HashMap<String, String> params = new HashMap<String, String>();
+        params.put("text", "testing");
+        params.put("ntype", "taskCreation");
+        params.put("senderID", GCMUtils.getRegistrationId(mContext));
+
+        NetworkingLayer.getInstance(mContext).makePostRequest(
+                url,
+                params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Utils.log("requestTestPush() POST response for url: " + url + " params: " + params
+                                + " got response: " + response);
+                        if (mCallback != null) {
+                            mCallback.onSuccess(response);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.log("requestTestPush() POST failed for url " + url + " params: " + params);
+                        error.printStackTrace();
+                        if (mCallback != null) {
+                            mCallback.onFailure(error.getLocalizedMessage());
+                        }
+                        Utils.logErrorToServer(mContext, url,
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
+                                "Failed to request test push because server returned error");
+                    }
+                });
+    }
 }

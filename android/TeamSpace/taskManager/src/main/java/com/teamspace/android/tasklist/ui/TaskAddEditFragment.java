@@ -338,6 +338,7 @@ public class TaskAddEditFragment extends Fragment {
         // Refresh the main task list to display this new task
         DataManager.getInstance(getActivity()).insertData(Constants.REFRESH_ALL_TASKS, true);
 
+        taskTitleEditText.setText("");
         getFragmentActivity().setResult(Activity.RESULT_OK, newIntent);
         getFragmentActivity().finish();
     }
