@@ -22,6 +22,9 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"        
         android:layout_toLeftOf="@id/send_button"
+        android:inputType="textCapSentences"
+        android:singleLine="true"
+        android:imeActionLabel="Done"
         android:hint="@string/hint_message"
         android:textColor="@android:color/black"
         android:textSize="16sp" />

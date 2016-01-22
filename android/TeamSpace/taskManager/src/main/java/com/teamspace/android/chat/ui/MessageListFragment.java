@@ -14,10 +14,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -157,34 +159,49 @@ public class MessageListFragment extends Fragment {
 		});
 		
 		message = (EditText) footerView.findViewById(R.id.message_text);
+        message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null &&
+                        (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
+                        (actionId == EditorInfo.IME_ACTION_DONE))
+                {
+                    sendMessage(v);
+                }
+                return false;
+            }
+        });
         sendButton = (Button) footerView.findViewById(R.id.send_button);
         sendButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
-				String messageStr = message.getText().toString();
-				MigratedMessage newMessage = new MigratedMessage();
-				newMessage.setTaskID(taskId);
-				newMessage.setTime(System.currentTimeMillis());
-				newMessage.setEmployeeID(Utils.getSignedInUserId());
-				newMessage.setText(messageStr);
-				DataManager.getInstance(v.getContext()).createMessage(newMessage, null);
-				
-				// Update the UI
-				mAdapter.add(newMessage);
-				
-				message.clearFocus();
-				message.setText(Constants.EMPTY_STRING);
-				InputMethodManager imm = (InputMethodManager) getActivity()
-						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+				sendMessage(v);
 			}
 		});
 
 		return v;
 	}
 
-	private void updateHeaderForTask(MigratedTask newTask) {
+    private void sendMessage(View v) {
+        String messageStr = message.getText().toString();
+        MigratedMessage newMessage = new MigratedMessage();
+        newMessage.setTaskID(taskId);
+        newMessage.setTime(System.currentTimeMillis());
+        newMessage.setEmployeeID(Utils.getSignedInUserId());
+        newMessage.setText(messageStr);
+        DataManager.getInstance(v.getContext()).createMessage(newMessage, null);
+
+        // Update the UI
+        mAdapter.add(newMessage);
+
+        message.clearFocus();
+        message.setText(Constants.EMPTY_STRING);
+        InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+    }
+
+    private void updateHeaderForTask(MigratedTask newTask) {
 		// Update cached items
 		taskId = newTask.getTaskID();
 		taskTitle = newTask.getTitle();
