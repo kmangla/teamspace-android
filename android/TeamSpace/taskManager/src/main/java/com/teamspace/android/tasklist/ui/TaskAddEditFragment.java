@@ -125,6 +125,9 @@ public class TaskAddEditFragment extends Fragment {
                 selectedEmployee = ((ViewPagerListener) getActivity()).getSelectedEmployee();
                 if (selectedEmployee != null) {
                     pageSubtitle.setText(getString(R.string.add_task) + " " + selectedEmployee.getName());
+                    if (!editMode) {
+                        taskTitleEditText.setText(selectedEmployee.getTaskBlob());
+                    }
                 }
             }
         }
