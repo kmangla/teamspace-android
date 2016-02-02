@@ -164,6 +164,10 @@ public class LauncherActivity extends FragmentActivity {
     }
 
     private void fetchTasksAndEmployees() {
+        if (Utils.isStringEmpty(Utils.getSignedInUserId())) {
+            return;
+        }
+        
         employeeState = EMPLOYEE.UNKNOWN;
         taskState = TASK.UNKNOWN;
 
