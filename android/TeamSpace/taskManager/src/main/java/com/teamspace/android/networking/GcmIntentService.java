@@ -106,6 +106,8 @@ public class GcmIntentService extends IntentService {
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setAutoCancel(true)
+                        .setCategory(Notification.CATEGORY_MESSAGE)
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
