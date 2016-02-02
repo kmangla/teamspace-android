@@ -61,10 +61,10 @@ public class GcmIntentService extends IntentService {
                         Utils.sendSMS(this, msg.user.getPhoneWithCountryCode(), msg.text);
                     } else if ("taskCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
-                        sendNotification(msg.user.getName() + ": " + msg.text, Constants.TASK_CREATION);
+                        sendNotification(msg.text, Constants.TASK_CREATION);
                     } else if ("employeeCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
-                        sendNotification(msg.user.getName() + ": " + msg.text, Constants.EMP_CREATION);
+                        sendNotification(msg.text, Constants.EMP_CREATION);
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
