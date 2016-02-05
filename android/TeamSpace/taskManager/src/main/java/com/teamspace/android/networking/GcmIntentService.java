@@ -62,15 +62,23 @@ public class GcmIntentService extends IntentService {
                     } else if ("taskCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.TASK_CREATION);
+                        Utils.addAppIconBadge(this);
+                        Utils.addAppIconBadgeSamsung(this);
                     } else if ("employeeCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.EMP_CREATION);
+                        Utils.addAppIconBadge(this);
+                        Utils.addAppIconBadgeSamsung(this);
                     } else if ("taskList".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, null);
+                        Utils.addAppIconBadge(this);
+                        Utils.addAppIconBadgeSamsung(this);
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
+                        Utils.addAppIconBadge(this);
+                        Utils.addAppIconBadgeSamsung(this);
                     }
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());

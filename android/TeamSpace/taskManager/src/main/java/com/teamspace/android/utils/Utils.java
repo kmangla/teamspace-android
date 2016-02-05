@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +42,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.teamspace.android.tasklist.ui.TaskAddEditActivity;
+
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class Utils {
 
@@ -546,6 +549,62 @@ public class Utils {
         sendIntent.putExtra("address", employeeNumber);
         sendIntent.putExtra("sms_body", context.getString(R.string.warn_emp) + " -" + Utils.getSignedInUserName());
         context.startActivity(sendIntent);
+    }
+
+    public static boolean isSamsungDevice(Context context) {
+        // This is the content uri for the BadgeProvider
+        Uri uri = Uri.parse("content://com.sec.badge/apps");
+
+        Cursor c = context.getContentResolver().query(uri, null, null, null, null);
+
+        // This indicates the provider doesn't exist and you probably aren't running
+        // on a Samsung phone running TWLauncher. This has to be outside of try/finally block
+        if (c == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void addAppIconBadgeSamsung(Context context) {
+        if (!isSamsungDevice(context)) {
+            return;
+        }
+
+        ContentValues cv = new ContentValues();
+        cv.put("package", context.getPackageName());
+        // Name of your activity declared in the manifest as android.intent.action.MAIN.
+        // Must be fully qualified name as shown below
+        cv.put("class", "com.teamspace.android.common.ui.LauncherActivity");
+        cv.put("badgecount", 1); // integer count you want to display
+
+        // Execute insert
+        context.getContentResolver().insert(Uri.parse("content://com.sec.badge/apps"), cv);
+    }
+
+    public static void addAppIconBadge(Context context) {
+        int badgeCount = 1;
+        ShortcutBadger.applyCount(context, badgeCount); //for 1.1.4
+    }
+
+    public static void clearAppIconBadge(Context context) {
+        ShortcutBadger.removeCount(context); //for 1.1.4
+    }
+
+    public static void clearAppIconBadgeSamsung(Context context) {
+        if (!isSamsungDevice(context)) {
+            return;
+        }
+
+        ContentValues cv = new ContentValues();
+        cv.put("badgecount", 0);
+        context.getContentResolver().update(
+                Uri.parse("content://com.sec.badge/apps"),
+                cv, "package=?",
+                new String[] {
+                        context.getPackageName()
+                }
+        );
     }
 
     /**
