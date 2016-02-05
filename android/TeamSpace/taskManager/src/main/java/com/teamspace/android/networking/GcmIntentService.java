@@ -65,6 +65,9 @@ public class GcmIntentService extends IntentService {
                     } else if ("employeeCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.EMP_CREATION);
+                    } else if ("taskList".equalsIgnoreCase(msg.ntype)) {
+                        // Post notification of received message.
+                        sendNotification(msg.text, null);
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
