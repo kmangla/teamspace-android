@@ -63,7 +63,6 @@ public class LauncherActivity extends FragmentActivity {
         fetchTasksAndEmployees();
         checkStateAndLoopIfNeeded(getIntent());
         Utils.clearAppIconBadge(this);
-        Utils.clearAppIconBadgeSamsung(this);
     }
 
     private void fireLaunchMetrics(String pageName) {
