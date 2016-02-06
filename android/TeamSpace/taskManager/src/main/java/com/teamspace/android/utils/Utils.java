@@ -32,9 +32,13 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.teamspace.android.BuildConfig;
 import com.teamspace.android.R;
+import com.teamspace.android.caching.DataManager;
+import com.teamspace.android.caching.DataManagerCallback;
 import com.teamspace.android.common.ui.MainActivityWithTabs;
 import com.teamspace.android.common.ui.TaskManagerApplication;
 import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
+import com.teamspace.android.models.BadgeData;
+import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
@@ -566,7 +570,7 @@ public class Utils {
         return true;
     }
 
-    public static void addAppIconBadgeSamsung(Context context) {
+    private static void addAppIconBadgeSamsung(Context context, int count) {
         if (!isSamsungDevice(context)) {
             return;
         }
@@ -576,22 +580,37 @@ public class Utils {
         // Name of your activity declared in the manifest as android.intent.action.MAIN.
         // Must be fully qualified name as shown below
         cv.put("class", "com.teamspace.android.common.ui.LauncherActivity");
-        cv.put("badgecount", 1); // integer count you want to display
+        cv.put("badgecount", count); // integer count you want to display
 
         // Execute insert
         context.getContentResolver().insert(Uri.parse("content://com.sec.badge/apps"), cv);
     }
 
-    public static void addAppIconBadge(Context context) {
-        int badgeCount = 1;
-        ShortcutBadger.applyCount(context, badgeCount); //for 1.1.4
+    public static void addAppIconBadge(final Context context) {
+        DataManager dataMgr = DataManager.getInstance(context);
+        dataMgr.getBadgeCount(new DataManagerCallback() {
+            public void onDataReceivedFromServer(String dataStoreKey) {
+                if (dataStoreKey == null) {
+                    return;
+                }
+                BadgeData data = (BadgeData)
+                        DataManager.getInstance(context).retrieveData(dataStoreKey);
+                if (data == null || data.getBadgeCount() == 0) {
+                    return;
+                }
+
+                ShortcutBadger.applyCount(context, data.getBadgeCount()); //for 1.1.4
+                addAppIconBadgeSamsung(context, data.getBadgeCount());
+            }
+        });
     }
 
     public static void clearAppIconBadge(Context context) {
         ShortcutBadger.removeCount(context); //for 1.1.4
+        clearAppIconBadgeSamsung(context);
     }
 
-    public static void clearAppIconBadgeSamsung(Context context) {
+    private static void clearAppIconBadgeSamsung(Context context) {
         if (!isSamsungDevice(context)) {
             return;
         }

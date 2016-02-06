@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
+import com.teamspace.android.models.BadgeData;
 import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
@@ -101,6 +102,72 @@ public class RegistrationFetcher {
                                 error.networkResponse != null ? error.networkResponse.statusCode : -1,
                                 error.networkResponse != null ? error.networkResponse.toString() : null,
                                 "Failed to verify OTP because server returned error");
+                    }
+                });
+
+    }
+
+    public void getBadgeCount(final DataManagerCallback callback) {
+        final String dataStoreKey = "userId_from_server_" + System.nanoTime();
+        // Update the cache with the fresh data
+        final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_BADGE;
+
+        NetworkingLayer.getInstance(context).makeGetJSONArrayRequest(
+                url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Utils.log("RegistrationFetcher getBadgeCount() GET response for url: " + url
+                                + " got response: " + response);
+
+                        BadgeData badgeData = null;
+                        // Call the callback
+                        try {
+                            JSONObject object = response.getJSONObject(0);
+                            badgeData = BadgeData.parseJSON(object);
+                        } catch (JSONException e) {
+                            Log.e("RegistrationFetcher getBadgeCount() json_parsing_exception", e.getMessage());
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    response.toString(),
+                                    "Failed to JSON parse badge count from server's response even though server returned 200");
+                        } catch (java.text.ParseException e) {
+                            Log.e("RegistrationFetcher getBadgeCount() json_parsing_exception", e.getMessage());
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    response.toString(),
+                                    "Failed to parse badge count from server's response even though server returned 200");
+                        }
+
+                        if (badgeData != null) {
+                            DataManager.getInstance(context).insertData(dataStoreKey, badgeData);
+
+                            if (callback != null) {
+                                callback.onDataReceivedFromServer(dataStoreKey);
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.onFailure(Constants.EMPTY_STRING);
+                            }
+                            Utils.logErrorToServer(context, url,
+                                    200,
+                                    null,
+                                    "Failed to find badge data in server's response even though server returned 200");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.log("RegistrationFetcher getBadgeCount() network call failed for url " + url);
+                        error.printStackTrace();
+                        if (callback != null) {
+                            callback.onFailure(error.getLocalizedMessage());
+                        }
+                        Utils.logErrorToServer(context, url,
+                                error.networkResponse != null ? error.networkResponse.statusCode : -1,
+                                error.networkResponse != null ? error.networkResponse.toString() : null,
+                                "Failed to fetch badge data because server returned error");
                     }
                 });
 

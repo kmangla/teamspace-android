@@ -13,6 +13,7 @@ public class NetworkRoutes {
 	public static final String ROUTE_MESSAGE = "/message";
     public static final String ROUTE_METRICS = "/metrics";
     public static final String ROUTE_VERIFY_OTP = "/verifyOTP";
+    public static final String ROUTE_BADGE = "/badge";
     public static final String ROUTE_TOKEN = "/token";
     public static final String ROUTE_ERROR = "/error";
 

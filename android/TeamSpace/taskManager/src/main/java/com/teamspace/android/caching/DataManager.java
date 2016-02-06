@@ -163,6 +163,10 @@ public class DataManager {
         updater.generateOTP();
     }
 
+    public void getBadgeCount(final DataManagerCallback callback) {
+        RegistrationFetcher fetcher = new RegistrationFetcher(mContext);
+        fetcher.getBadgeCount(callback);
+    }
     public void verifyOTP(String otp, final DataManagerCallback callback) {
         // We will no longer listen to SMS since we have already tried to validate using some OTP
         validateOTPFromSMS = false;
