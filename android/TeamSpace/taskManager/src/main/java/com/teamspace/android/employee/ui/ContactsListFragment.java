@@ -238,10 +238,13 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
                         tempInfo.name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                         tempInfo.phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                        // Filter out any non-numeric chars from the phone number
-                        if (tempInfo.phoneNumber != null) {
-                            tempInfo.phoneNumber = tempInfo.phoneNumber.replaceAll("[^\\d.]", "");
+                        // If framework did not return valid contact, move on to next contact
+                        if (Utils.isStringEmpty(tempInfo.phoneNumber) || Utils.isStringEmpty(tempInfo.name)) {
+                            continue;
                         }
+
+                        // Filter out any non-numeric chars from the phone number
+                        tempInfo.phoneNumber = tempInfo.phoneNumber.replaceAll("[^\\d.]", "");
 
                         // Just extract last 10 digits
                         if (tempInfo.phoneNumber.length() > 10) {
@@ -251,7 +254,8 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
                         // Append country code
                         tempInfo.phoneNumber = Utils.getSignedInUserCountryCode() + tempInfo.phoneNumber;
 
-                        if (tempInfo.name != null && tempInfo.phoneNumber != null && !empNameSet.contains(tempInfo.name)) {
+                        // If the contact is not already added as employee, add it now
+                        if (!empNameSet.contains(tempInfo.name)) {
                             contactList.add(tempInfo);
                             com.teamspace.android.utils.Utils.log("phoneNumber = " + tempInfo.phoneNumber + " country: " + countryCode);
                         }

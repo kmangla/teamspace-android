@@ -307,7 +307,9 @@ public class Utils {
 
         MigratedEmployee self = DatabaseCache.getInstance(TaskManagerApplication.getAppContext()).
                 getMigratedEmployeeBlockingCall(getSignedInUserId());
-        signedInUserCountryCode = self.getCountryCode();
+        if (self != null) {
+            signedInUserCountryCode = self.getCountryCode();
+        }
 
         if (isStringEmpty(signedInUserCountryCode)) {
             signedInUserCountryCode = "+91";
