@@ -27,7 +27,7 @@ public class MigratedEmployee {
 	private String lastUpdated;
     private String pairedNumber;
     private String taskBlob;
-
+    private String countryCode;
 	
 	private static String NAME = "name";
 	private static String PHONE = "phone";
@@ -38,8 +38,9 @@ public class MigratedEmployee {
     private static String TASK_BLOB = "taskBlob";
 	private static String TASK_COUNT = "taskCount";
 	private static String LAST_UPDATED = "lastUpdated";
-	
-	public String getName() {
+    private static String COUNTRY_CODE = "countryCode";
+
+    public String getName() {
 		return name;
 	}
 	public void setName(String name) {
@@ -148,6 +149,7 @@ public class MigratedEmployee {
         employee.lastUpdated = object.optString("updatedAt", createdAt).substring(0, 10);
 
         try {
+            employee.countryCode = object.getString(COUNTRY_CODE);
             employee.pairedNumber = object.getString("pairedNumber");
             employee.taskBlob = object.getString("taskBlob");
         } catch (JSONException e) {
@@ -166,4 +168,7 @@ public class MigratedEmployee {
 		return employee;
 	}
 
+    public String getCountryCode() {
+        return countryCode;
+    }
 }

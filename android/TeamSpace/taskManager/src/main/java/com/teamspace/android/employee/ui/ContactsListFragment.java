@@ -223,7 +223,7 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
             AsyncTask<String, Void, ArrayList<ContactInfo>> asyncTask = new AsyncTask<String, Void, ArrayList<ContactInfo>>() {
                 @Override
                 protected ArrayList<ContactInfo> doInBackground(String... employee) {
-                    String countryCode = Utils.getCountryZipCode();
+                    String countryCode = Utils.getSignedInUserCountryCode();
 
                     HashSet<String> empNameSet = new HashSet<>();
                     ArrayList<MigratedEmployee> empList = DatabaseCache.getInstance(context).getMigratedEmployeesBlockingCall();
@@ -243,19 +243,13 @@ public class ContactsListFragment extends ListFragment implements AdapterView.On
                             tempInfo.phoneNumber = tempInfo.phoneNumber.replaceAll("[^\\d.]", "");
                         }
 
-                        // Hack to try and append country code to the phone number
-                        if (tempInfo.phoneNumber != null &&
-                                tempInfo.phoneNumber.length() < 11 &&
-                                !tempInfo.phoneNumber.startsWith("+" + countryCode) &&
-                                !tempInfo.phoneNumber.startsWith(countryCode))
-                        {
-                            tempInfo.phoneNumber = "+" + countryCode + tempInfo.phoneNumber;
+                        // Just extract last 10 digits
+                        if (tempInfo.phoneNumber.length() > 10) {
+                            tempInfo.phoneNumber = tempInfo.phoneNumber.substring(tempInfo.phoneNumber.length() - 10);
                         }
 
-                        // Make sure it starts with "+"
-                        if (tempInfo.phoneNumber != null && tempInfo.phoneNumber.length() > 10 && !tempInfo.phoneNumber.startsWith("+")) {
-                            tempInfo.phoneNumber = "+" + tempInfo.phoneNumber;
-                        }
+                        // Append country code
+                        tempInfo.phoneNumber = Utils.getSignedInUserCountryCode() + tempInfo.phoneNumber;
 
                         if (tempInfo.name != null && tempInfo.phoneNumber != null && !empNameSet.contains(tempInfo.name)) {
                             contactList.add(tempInfo);

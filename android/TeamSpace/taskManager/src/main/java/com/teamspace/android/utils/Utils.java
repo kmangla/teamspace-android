@@ -34,10 +34,12 @@ import com.teamspace.android.BuildConfig;
 import com.teamspace.android.R;
 import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.caching.DataManagerCallback;
+import com.teamspace.android.caching.DatabaseCache;
 import com.teamspace.android.common.ui.MainActivityWithTabs;
 import com.teamspace.android.common.ui.TaskManagerApplication;
 import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
 import com.teamspace.android.models.BadgeData;
+import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.networking.NetworkRoutes;
 import com.teamspace.android.networking.NetworkingLayer;
@@ -57,6 +59,7 @@ public class Utils {
     private static String signedInUserKey;
     private static String signedInUserPhoneNumber;
     private static String signedInUserName;
+    private static String signedInUserCountryCode;
 
     public static int getColor(Context context, String colorName) {
         if ("Light Orange".equalsIgnoreCase(colorName)) {
@@ -291,6 +294,31 @@ public class Utils {
         return signedInUserName;
     }
 
+    public static String getSignedInUserCountryCode() {
+        if (isStringNotEmpty(signedInUserCountryCode)) {
+            return signedInUserCountryCode;
+        }
+
+        signedInUserCountryCode = readStringFromSharedPrefs(Constants.COUNTRY_CODE);
+
+        if (isStringNotEmpty(signedInUserCountryCode)) {
+            return signedInUserCountryCode;
+        }
+
+        MigratedEmployee self = DatabaseCache.getInstance(TaskManagerApplication.getAppContext()).
+                getMigratedEmployeeBlockingCall(getSignedInUserId());
+        signedInUserCountryCode = self.getCountryCode();
+
+        if (isStringEmpty(signedInUserCountryCode)) {
+            signedInUserCountryCode = "+91";
+        }
+
+        // Cache it on disk
+        writeStringToSharedPrefs(Constants.COUNTRY_CODE, signedInUserCountryCode);
+
+        return signedInUserCountryCode;
+    }
+
     public static String getSignedInUserPhoneNumber() {
         if (isStringNotEmpty(signedInUserPhoneNumber)) {
             return signedInUserPhoneNumber;
@@ -309,18 +337,22 @@ public class Utils {
         }
 
         // Success case
-        String countryCode = getCountryZipCode();
+        String countryCode = getSignedInUserCountryCode();
 
         // If phone number includes country code, make sure it starts with +
-        if (signedInUserPhoneNumber.length() > 10 && signedInUserPhoneNumber.indexOf("+") < 0) {
+        if (signedInUserPhoneNumber.length() > 10 &&
+                signedInUserPhoneNumber.indexOf("+") < 0 &&
+                signedInUserPhoneNumber.startsWith(countryCode))
+        {
             signedInUserPhoneNumber = "+" + signedInUserPhoneNumber;
         } else if (signedInUserPhoneNumber.length() <= 10) {
-            signedInUserPhoneNumber = "+" + countryCode + signedInUserPhoneNumber;
+            signedInUserPhoneNumber = countryCode + signedInUserPhoneNumber;
         }
+
         return signedInUserPhoneNumber;
     }
 
-    public static String getCountryZipCode() {
+    public static String getCountryZipCodeDeprecated() {
         String CountryID="";
         String CountryZipCode="";
 
@@ -340,7 +372,11 @@ public class Utils {
 
     public static String getSignedInUserKey() {
 //        if (true) {
-//            return "5548fbd7cd008003003f04ab";
+//            return "5548fbd7cd008003003f04ab"; // khbai
+//        }
+
+//        if (true) {
+//            return "5709e3799b7ceb03001869db"; // gan
 //        }
 
         if (isStringNotEmpty(signedInUserKey)) {
@@ -362,7 +398,11 @@ public class Utils {
 
     public static String getSignedInUserId() {
 //        if (true) {
-//            return "5548fbd7cd008003003f04ab";
+//            return "5548fbd7cd008003003f04ab"; // kbhai
+//        }
+
+//        if (true) {
+//            return "5709e3799b7ceb03001869db"; // gan
 //        }
 
         if (isStringNotEmpty(signedInUserId)) {

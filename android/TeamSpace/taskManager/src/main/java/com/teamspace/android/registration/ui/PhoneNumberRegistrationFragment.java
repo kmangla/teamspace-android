@@ -87,7 +87,7 @@ public class PhoneNumberRegistrationFragment extends Fragment {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
         alert.setTitle("Enter Phone Number");
-        alert.setMessage("Example: +919890111111");
+        alert.setMessage("Example: +919890123456");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(getActivity());

@@ -15,6 +15,7 @@ public class Constants {
     public static final String USER_KEY = "USER_KEY";
 	public static final String TASK_TITLE = "TASK_TITLE";
 	public static final String EMPLOYEE_NAME = "EMPLOYEE_NAME";
+    public static final String COUNTRY_CODE = "COUNTRY_CODE";
     public static final String FILTERED_EMP_ID = "FILTERED_EMP_ID";
 	public static final String EMPLOYEE_PHONE = "EMPLOYEE_PHONE";
 	public static final String HIDE_KEYBOARD = "HIDE_KEYBOARD";
