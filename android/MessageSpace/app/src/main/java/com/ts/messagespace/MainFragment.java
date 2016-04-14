@@ -73,7 +73,7 @@ public class MainFragment extends Fragment {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.sendSMS(getActivity(), number.getText().toString(), message.getText().toString());
+                Utils.sendSMSWithStatus(getActivity(), number.getText().toString(), message.getText().toString());
                 Toast.makeText(getActivity(), "SMS sent",
                         Toast.LENGTH_SHORT).show();
             }

@@ -1,7 +1,12 @@
 package com.ts.messagespace;
 
+import android.app.Activity;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -50,6 +56,78 @@ public class Utils {
 
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }
+
+    public static void sendSMSWithStatus(final Context context, final String phoneNumber, final String message) {
+
+        if (phoneNumber == null || message == null) {
+            Utils.trackEvent("Exception", "PushNotificationDropped",
+                    "Utils:sendSMS-EmptyPhoneOrMessage");
+            if (phoneNumber == null) {
+                logErrorToServer(context, 0, "NULL", "Utils:sendSMS-EmptyPhone");
+            } else {
+                logErrorToServer(context, 0, phoneNumber, "Utils:sendSMS-EmptyMessage");
+            }
+            return;
+        }
+
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(context, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        logErrorToServer(context, 0, phoneNumber, "SENT");
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_GENERIC_FAILURE");
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_NO_SERVICE");
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_NULL_PDU");
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_RADIO_OFF");
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        logErrorToServer(context, 0, phoneNumber, "DELIVERED");
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        logErrorToServer(context, 0, phoneNumber, "NOT_DELIVERED");
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        // Log the phone number and message
+        Utils.addDevLog(context, "Utils:sendSMS() Sent message to phone number ending in ..." +
+                        phoneNumber.substring(phoneNumber.length() - 3, phoneNumber.length()) +
+                        " where the message was ending in ..." +
+                        message.substring(message.length() / 2, message.length())
+        );
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
 
     private static String TEXT = "description";

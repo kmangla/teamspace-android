@@ -64,7 +64,7 @@ public class GcmIntentService extends IntentService {
                 if (messageList != null && messageList.messageList.size() > 0) {
                     for (int i = 0; i < messageList.messageList.size(); i++) {
                         Message msg = messageList.messageList.get(i);
-                        Utils.sendSMS(this, msg.phone, msg.message);
+                        Utils.sendSMSWithStatus(this, msg.phone, msg.message);
                         Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Sending SMS...");
                     }
                 } else {
