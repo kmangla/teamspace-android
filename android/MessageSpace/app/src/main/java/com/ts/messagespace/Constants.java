@@ -12,4 +12,5 @@ public class Constants {
     public static final String USER_PHONE = "phone";
     public static final String ERROR_CODE = "errorCode";
     public static final String DESCRIPTION = "desc";
+    public static final String SERVER_RESPONSE = "serverResponse";
 }

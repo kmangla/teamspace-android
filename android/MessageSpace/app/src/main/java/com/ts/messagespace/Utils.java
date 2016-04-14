@@ -40,9 +40,9 @@ public class Utils {
             Utils.trackEvent("Exception", "PushNotificationDropped",
                     "Utils:sendSMS-EmptyPhoneOrMessage");
             if (phoneNumber == null) {
-                logErrorToServer(context, 0, "NULL", "Utils:sendSMS-EmptyPhone");
+                logErrorToServer(context, 0, "NULL", "UNKNOWN", "Utils:sendSMS-EmptyPhone");
             } else {
-                logErrorToServer(context, 0, phoneNumber, "Utils:sendSMS-EmptyMessage");
+                logErrorToServer(context, 0, phoneNumber, "UNKNOWN", "Utils:sendSMS-EmptyMessage");
             }
             return;
         }
@@ -64,9 +64,9 @@ public class Utils {
             Utils.trackEvent("Exception", "PushNotificationDropped",
                     "Utils:sendSMS-EmptyPhoneOrMessage");
             if (phoneNumber == null) {
-                logErrorToServer(context, 0, "NULL", "Utils:sendSMS-EmptyPhone");
+                logErrorToServer(context, 0, "NULL", "UNKNOWN", "Utils:sendSMS-EmptyPhone");
             } else {
-                logErrorToServer(context, 0, phoneNumber, "Utils:sendSMS-EmptyMessage");
+                logErrorToServer(context, 0, phoneNumber, "UNKNOWN", "Utils:sendSMS-EmptyMessage");
             }
             return;
         }
@@ -86,19 +86,19 @@ public class Utils {
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        logErrorToServer(context, 0, phoneNumber, "SENT");
+                        logErrorToServer(context, 0, phoneNumber, message, "SENT");
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_GENERIC_FAILURE");
+                        logErrorToServer(context, 0, phoneNumber, message, "RESULT_ERROR_GENERIC_FAILURE");
                         break;
                     case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_NO_SERVICE");
+                        logErrorToServer(context, 0, phoneNumber, message, "RESULT_ERROR_NO_SERVICE");
                         break;
                     case SmsManager.RESULT_ERROR_NULL_PDU:
-                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_NULL_PDU");
+                        logErrorToServer(context, 0, phoneNumber, message, "RESULT_ERROR_NULL_PDU");
                         break;
                     case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        logErrorToServer(context, 0, phoneNumber, "RESULT_ERROR_RADIO_OFF");
+                        logErrorToServer(context, 0, phoneNumber, message, "RESULT_ERROR_RADIO_OFF");
                         break;
                 }
             }
@@ -110,10 +110,10 @@ public class Utils {
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        logErrorToServer(context, 0, phoneNumber, "DELIVERED");
+                        logErrorToServer(context, 0, phoneNumber, message, "DELIVERED");
                         break;
                     case Activity.RESULT_CANCELED:
-                        logErrorToServer(context, 0, phoneNumber, "NOT_DELIVERED");
+                        logErrorToServer(context, 0, phoneNumber, message, "NOT_DELIVERED");
                         break;
                 }
             }
@@ -432,7 +432,7 @@ public class Utils {
     }
 
     public static void logErrorToServer(Context context, int responseCode,
-                                        String phoneNumber, String description) {
+                                        String phoneNumber, String message, String description) {
         if (description == null || phoneNumber == null) {
             return;
         }
@@ -446,6 +446,10 @@ public class Utils {
         params.put(Constants.ERROR_CODE, Integer.toString(responseCode));
         if (description != null) {
             params.put(Constants.DESCRIPTION, description);
+        }
+
+        if (message != null) {
+            params.put(Constants.SERVER_RESPONSE, message);
         }
 
         NetworkingLayer.getInstance(context).makePostRequest(
