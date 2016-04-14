@@ -58,6 +58,7 @@ public class GcmIntentService extends IntentService {
                             "GcmIntentService:onHandleIntent-IncorrectPayload");
                     Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received " +
                             "but Json parsing exception occurred while parsing the payload");
+                    Utils.logErrorToServer(this, 0, "UNKNOWN", "GcmIntentService:onHandleIntent-IncorrectPayload");
                 }
 
                 if (messageList != null && messageList.messageList.size() > 0) {
@@ -69,14 +70,17 @@ public class GcmIntentService extends IntentService {
                 } else {
                     Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received " +
                             "but message array is empty (could be json parsing exception)");
+                    Utils.logErrorToServer(this, 0, "UNKNOWN", "GcmIntentService:onHandleIntent-EmptyPayload");
                 }
             } else {
                 Utils.trackEvent("Exception", "PushNotificationDropped",
                         "GcmIntentService:onHandleIntent-IncorrectMessageType");
                 Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received but message type was not gcm.");
+                Utils.logErrorToServer(this, 0, "UNKNOWN", "GcmIntentService:onHandleIntent-IncorrectMessageType");
             }
         } else {
             Utils.addDevLog(this, "GcmIntentService:onHandleIntent() Error: Push received but extras was empty");
+            Utils.logErrorToServer(this, 0, "UNKNOWN", "GcmIntentService:onHandleIntent-EmptyPush");
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);

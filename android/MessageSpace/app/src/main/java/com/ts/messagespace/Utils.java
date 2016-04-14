@@ -33,6 +33,11 @@ public class Utils {
         if (phoneNumber == null || message == null) {
             Utils.trackEvent("Exception", "PushNotificationDropped",
                     "Utils:sendSMS-EmptyPhoneOrMessage");
+            if (phoneNumber == null) {
+                logErrorToServer(context, 0, "NULL", "Utils:sendSMS-EmptyPhone");
+            } else {
+                logErrorToServer(context, 0, phoneNumber, "Utils:sendSMS-EmptyMessage");
+            }
             return;
         }
 
@@ -346,6 +351,45 @@ public class Utils {
 
         Utils.log("tracker = " + t.hashCode() + " category = " + category +
                 " action = " + action + " label = " + label);
+    }
+
+    public static void logErrorToServer(Context context, int responseCode,
+                                        String phoneNumber, String description) {
+        if (description == null || phoneNumber == null) {
+            return;
+        }
+
+        // /error?phone=<phoneNumber>&errorCode=<responseCode>&desc=<description>
+        final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_ERROR;
+        final HashMap<String, String> params  = new HashMap<String, String>();
+        params.put(Constants.APPID, "com.ts.messagespace");
+        params.put(Constants.USER_PHONE, phoneNumber);
+
+        params.put(Constants.ERROR_CODE, Integer.toString(responseCode));
+        if (description != null) {
+            params.put(Constants.DESCRIPTION, description);
+        }
+
+        NetworkingLayer.getInstance(context).makePostRequest(
+                url,
+                params,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Utils.log("logErrorToServer() POST response for url: " + url + " params: " + params
+                                + " got response: " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.log("logErrorToServer() POST failed for url " + url + " params: " + params
+                                + " with error " + error);
+                        error.printStackTrace();
+                    }
+                });
+
     }
 
     public static void addDevLog(Context context, String logMessage) {
