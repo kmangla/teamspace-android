@@ -99,6 +99,15 @@
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/star"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/star_off"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="2dp"
+                android:gravity="center"/>
         </RelativeLayout>
 
         <LinearLayout

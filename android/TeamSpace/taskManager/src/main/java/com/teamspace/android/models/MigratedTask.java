@@ -32,6 +32,16 @@ public class MigratedTask {
 	private long updateCount;
     private long forceReminder;
     private long markUpdated;
+
+    public long getFav() {
+        return fav;
+    }
+
+    public void setFav(long fav) {
+        this.fav = fav;
+    }
+
+    private long fav;
     private String markUpdatedText;
 
     private long priority;
@@ -61,6 +71,7 @@ public class MigratedTask {
 	private static String ASSIGNED_TO = "assignedTo";
     private static String LAST_MSG = "lastMessage";
     private static String PRIORITY = "priority";
+    private static String FAV = "fav";
 
 
     public boolean isCreationPending() {
@@ -237,6 +248,7 @@ public class MigratedTask {
 		obj.put(Constants.KEY, Utils.getSignedInUserKey());
         obj.put(FORCE_REMINDER, String.valueOf(this.getForceReminder()));
         obj.put(MARK_UPDATED, String.valueOf(this.getMarkUpdated()));
+        obj.put(FAV, String.valueOf(this.getFav()));
         if (this.getMarkUpdatedText() != null){
             obj.put(MARK_UPDATED_TEXT, this.getMarkUpdatedText());
         }
@@ -257,6 +269,12 @@ public class MigratedTask {
 		} catch (JSONException e) {
 			task.updateCount = 0; 
 		}
+
+        try {
+            task.fav = object.getLong(FAV);
+        } catch (JSONException e) {
+            task.fav = 0;
+        }
 
 		try {
 			task.assignedBy = object.getString(ASSIGNED_BY);

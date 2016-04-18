@@ -346,6 +346,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         Button markCompleted;
         Button markUpdated;
         Button sendReminder;
+        ImageButton fav;
         public QuickContactBadge pic;
         public View frontView;
         public View backView;
@@ -365,6 +366,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             markCompleted = (Button) view.findViewById(R.id.swipe_button2);
             markUpdated = (Button) view.findViewById(R.id.swipe_button3);
             sendReminder = (Button) view.findViewById(R.id.swipe_button4);
+            fav = (ImageButton) view.findViewById(R.id.star);
         }
     }
 
@@ -559,6 +561,15 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 //                            return lhs.getTitle().compareTo(rhs.getTitle()); // title
 //                        }
 //                    }
+
+                    // First try to sort based on Star
+                    if (lhs.getFav() < rhs.getFav()) { // starred or not
+                        return 1;
+                    } else if (lhs.getFav() > rhs.getFav()) {
+                        return -1;
+                    }
+
+                    // Try to sort based on creation time
                     if (lhs.getCreatedOn() < rhs.getCreatedOn()) { // created time
                         return 1;
                     } else if (lhs.getCreatedOn() > rhs.getCreatedOn()) {
@@ -722,6 +733,19 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
                 viewHolder.notification.setText("" + updateCount);
             }
 
+            if (task.getFav() == 0) {
+                viewHolder.fav.setBackgroundResource(R.drawable.star_off);
+            } else {
+                viewHolder.fav.setBackgroundResource(R.drawable.star_on);
+            }
+
+            viewHolder.fav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    starTask(viewHolder.fav, task);
+                }
+            });
+
             viewHolder.delete.setText(view.getContext().getString(R.string.delete));
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
 
@@ -810,6 +834,36 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             }
 
             return view;
+        }
+
+        private void starTask(ImageButton fav, MigratedTask task) {
+            if (task.getFav() == 0) {
+                fav.setBackgroundResource(R.drawable.star_on);
+                task.setFav(1);
+            } else {
+                fav.setBackgroundResource(R.drawable.star_off);
+                task.setFav(0);
+            }
+
+            final Context context = fav.getContext();
+            DataManager dataMgr = DataManager.getInstance(context);
+            dataMgr.updateTask(task, new DataManagerCallback() {
+
+                @Override
+                public void onSuccess(String response) {
+                }
+
+                @Override
+                public void onFailure(String response) {
+                    // Notify user about the error
+                    Toast.makeText(
+                            context,
+                            context.getResources().getString(
+                                    R.string.error_task_update_failed),
+                            Toast.LENGTH_SHORT).show();
+                    refreshTaskList(context);
+                }
+            });
         }
 
         protected void deleteTask(final Context context, String taskId, int position) {
