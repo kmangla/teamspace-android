@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.teamspace.android.R;
+import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.common.ui.LauncherActivity;
 import com.teamspace.android.models.Message;
 import com.teamspace.android.models.MessageList;
+import com.teamspace.android.models.MetricsObject;
 import com.teamspace.android.tasklist.ui.AllTasksListViewActivity;
 import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
@@ -60,28 +62,44 @@ public class GcmIntentService extends IntentService {
                     Utils.addAppIconBadge(this);
                     if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
                         Utils.sendSMS(this, msg.user.getPhoneWithCountryCode(), msg.text);
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-silentMessage",
+                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
                     } else if ("taskCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.TASK_CREATION);
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskCreation",
+                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
                     } else if ("employeeCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.EMP_CREATION);
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-employeeCreation",
+                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
                     } else if ("taskList".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, null);
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskList",
+                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push",
+                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
                     }
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
                     Utils.trackEvent("Exception", "PushNotificationDropped",
                             "TS-GcmIntentService:onHandleIntent-IncorrectPayload");
+                    Utils.logErrorToServer(this, "PushPayloadParsing", -1, "Exception" + e.getLocalizedMessage(),
+                            Utils.getSignedInUserPhoneNumber());
                 }
             } else {
                 Utils.trackEvent("Exception", "PushNotificationDropped",
                         "TS-GcmIntentService:onHandleIntent-IncorrectMessageType");
+                Utils.logErrorToServer(this, "PushPayloadParsing", -1, "IncorrectType:" + messageType,
+                        Utils.getSignedInUserPhoneNumber());
             }
+        } else {
+            Utils.logErrorToServer(this, "PushPayloadParsing", -1, "NoPayload", Utils.getSignedInUserPhoneNumber());
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
