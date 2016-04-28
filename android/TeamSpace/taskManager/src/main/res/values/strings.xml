@@ -194,7 +194,7 @@
     <string name="error_employee_failed_parse">Sorry, could not create the employee due to parsing exception.</string>
     <string name="error_employee_failed_json">Sorry, could not create the employee due to json exception.</string>
 
-    <string name="task_sorting_up">Moved *Starred* task to the top of the list</string>
+    <string name="task_sorting_up">Moved *Starred* task towards the top of the list</string>
     <string name="task_sorting">Sorting the task list</string>
 
     <string-array name="country_array">
