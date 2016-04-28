@@ -5,9 +5,13 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -566,8 +570,72 @@ public class Utils {
         Utils.log("tracker = " + t.hashCode() + " category = " + category + " action = " + action);
     }
 
+    public static void sendSMSWithStatus(final Context context, final String phoneNumber, final String message) {
+
+        if (phoneNumber == null || message == null) {
+            if (phoneNumber == null) {
+                logErrorToServer(context, "Utils:sendSMSWithStatus", -1, "NoPhone", "Phone number was null");
+            } else {
+                logErrorToServer(context, "Utils:sendSMSWithStatus", -1, "NoMessage", "Message was null");
+            }
+            return;
+        }
+
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(context, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "SENT");
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "RESULT_ERROR_GENERIC_FAILURE");
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "RESULT_ERROR_NO_SERVICE");
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "RESULT_ERROR_NULL_PDU");
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "RESULT_ERROR_RADIO_OFF");
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "DELIVERED");
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        logErrorToServer(context, "Utils:sendSMSWithStatus", 0, phoneNumber, "NOT_DELIVERED");
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+    }
+
     public static void sendSMS(Context context, String phoneNumber, String message) {
         if (phoneNumber == null || message == null) {
+            logErrorToServer(context, "Utils:sendSMS", -1, "NoPhoneOrMessage", "Phone number or message was null");
             return;
         }
 

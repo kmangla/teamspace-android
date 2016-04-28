@@ -61,7 +61,7 @@ public class GcmIntentService extends IntentService {
                     Utils.log(" username: " + msg.user.getName());
                     Utils.addAppIconBadge(this);
                     if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
-                        Utils.sendSMS(this, msg.user.getPhoneWithCountryCode(), msg.text);
+                        Utils.sendSMSWithStatus(this, msg.user.getPhoneWithCountryCode(), msg.text);
                         DataManager.getInstance(this).fireMetric(new MetricsObject("Push-silentMessage",
                                 msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
                     } else if ("taskCreation".equalsIgnoreCase(msg.ntype)) {
