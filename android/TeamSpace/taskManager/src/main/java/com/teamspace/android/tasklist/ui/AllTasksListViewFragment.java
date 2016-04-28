@@ -836,7 +836,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             return view;
         }
 
-        private void starTask(ImageButton fav, MigratedTask task) {
+        private void starTask(ImageButton fav, final MigratedTask task) {
             if (task.getFav() == 0) {
                 fav.setBackgroundResource(R.drawable.star_on);
                 task.setFav(1);
@@ -851,6 +851,20 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
                 @Override
                 public void onSuccess(String response) {
+                    // Notify user about sorting
+                    if (task.getFav() == 0) {
+                        Toast.makeText(
+                                context,
+                                context.getResources().getString(
+                                        R.string.task_sorting),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(
+                                context,
+                                context.getResources().getString(
+                                        R.string.task_sorting_up),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override
