@@ -35,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamspace.android.BuildConfig;
 import com.teamspace.android.R;
 import com.teamspace.android.caching.BitmapCache;
 import com.teamspace.android.caching.DataManager;
@@ -74,12 +75,22 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     private int taskRefreshCount = 0;
     private boolean mDelayRefresh;
     private boolean isFreshLogin; // Used for onboarding flow if there are 0 employees
+    private boolean isShowing;
+    private boolean refreshPending;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null && intent.getAction().equalsIgnoreCase(Constants.TASK_CREATION)) {
+                Utils.log("TASK_CREATION Broadcast received in AllTasksListViewFragment");
+
+                if (!isShowing) {
+                    refreshPending = true;
+                    return;
+                }
+
                 if (mAdapter != null) {
+                    refreshPending = false;
                     mAdapter.refreshTaskList(context);
                     Utils.log("REFRESHING TASK LIST DUE TO BROADCAST");
                 }
@@ -95,6 +106,10 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         if (getActivity().getIntent().getExtras() != null) {
             isFreshLogin = getActivity().getIntent().getExtras().getBoolean(Constants.FRESH_LOGIN);
         }
+
+        // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.TASK_CREATION));
 
         swipelistview = (SwipeListView) rootView.findViewById(R.id.swipe_list_view);
         View headerView = (View) rootView.findViewById(R.id.all_tasks_header);
@@ -1068,9 +1083,14 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         startActivity(i);
     }
 
-    public void onPause() {
-        // Unregister since the activity is not visible
+    public void onDestroy() {
+        // Unregister since the activity is going away
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
+    public void onPause() {
+        isShowing = false;
         super.onPause();
     }
 
@@ -1078,13 +1098,12 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     @Override
     public void onResume() {
         super.onResume();
-
+        isShowing = true;
         checkPlayServices();
-
-        // Register mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter(Constants.TASK_CREATION));
-        refreshUI();
+        if (refreshPending) {
+            refreshPending = false;
+            refreshUI();
+        }
         Utils.trackPageView("AllTasks");
 
     }
@@ -1095,6 +1114,10 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
      * the Google Play Store or enable it in the device's system settings.
      */
     public boolean checkPlayServices() {
+        if (BuildConfig.DEBUG) {
+            return true;
+        }
+
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
@@ -1209,6 +1232,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
     }
 
     public void refreshUI() {
+        refreshPending = false;
         mAdapter.refreshTaskList(getActivity());
     }
 
