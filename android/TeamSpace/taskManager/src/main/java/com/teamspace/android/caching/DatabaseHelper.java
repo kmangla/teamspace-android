@@ -27,7 +27,7 @@ import org.json.JSONObject;
 class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String FILENAME = "tasks.sqlite";
-	private static final int VERSION = 31;
+	private static final int VERSION = 32;
 
 	public DatabaseHelper(Context c) {
 		super(c, FILENAME, null, VERSION);
