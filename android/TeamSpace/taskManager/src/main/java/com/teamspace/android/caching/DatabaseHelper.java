@@ -57,7 +57,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("create table new_tasks (task_id varchar(100), "
 				+ "description varchar(1000), title varchar(140), status varchar(100), user_id varchar(100),"
 				+ "company_id varchar(100), employee_id varchar(100), employee_name varchar(100), employee_number varchar(100), frequency bigint,"
-				+ "created_on bigint, last_reminder bigint, update_count bigint, last_message varchar(5000), last_update bigint, priority bigint, last_seen bigint)");
+				+ "created_on bigint, last_reminder bigint, update_count bigint, last_message varchar(5000), last_update bigint, priority bigint, fav bigint, last_seen bigint)");
 		
 		db.execSQL("create table new_employees (name varchar(100), "
 				+ "phone varchar(100), company_id varchar(100), user_id varchar(100),"
@@ -126,6 +126,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
         if (versionOld <= 30 && versionNew >= 31) {
             db.execSQL("alter table new_employees add column task_blob varchar(5000)");
+        }
+        if (versionOld <= 31 && versionNew >= 32) {
+            db.execSQL("alter table new_tasks add column fav bigint");
         }
 	}
 		
@@ -702,6 +705,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("last_update", task.getLastUpdate());
 		cv.put("last_seen", task.getLastSeen());
         cv.put("priority", task.getPriority());
+        cv.put("fav", task.getFav());
 		cv.put("update_count", task.getUpdateCount());
 
         Gson gson = new Gson();
@@ -730,6 +734,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put("last_update", task.getLastUpdate());
 		cv.put("last_seen", task.getLastSeen());
         cv.put("priority", task.getPriority());
+        cv.put("fav", task.getFav());
 
         Gson gson = new Gson();
         String json = gson.toJson(task.getLastMessage());
@@ -1074,6 +1079,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
 				.getColumnIndex("last_seen")));
         migratedTask.setPriority(cursor.getLong(cursor
                 .getColumnIndex("priority")));
+        migratedTask.setFav(cursor.getLong(cursor
+                .getColumnIndex("fav")));
 
         try {
             String str = cursor.getString(cursor.getColumnIndex("last_message"));
