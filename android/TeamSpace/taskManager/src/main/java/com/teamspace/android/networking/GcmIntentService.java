@@ -36,6 +36,8 @@ public class GcmIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
+        boolean fetchBadge = false;
+
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
@@ -59,7 +61,6 @@ public class GcmIntentService extends IntentService {
                     Message msg = Message.parseJSON(object);
                     Utils.log("text: " + msg.text + " ntype: " + msg.ntype + " taskId: " + msg.taskID);
                     Utils.log(" username: " + msg.user.getName());
-                    Utils.addAppIconBadge(this);
                     if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
                         Utils.sendSMSWithStatus(this, msg.user.getPhoneWithCountryCode(), msg.text);
                         DataManager.getInstance(this).fireMetric(new MetricsObject("Push-silentMessage", msg.text));
@@ -80,6 +81,7 @@ public class GcmIntentService extends IntentService {
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
                         DataManager.getInstance(this).fireMetric(new MetricsObject("Push", msg.text));
                     }
+                    fetchBadge = true;
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
                     Utils.trackEvent("Exception", "PushNotificationDropped",
@@ -98,6 +100,9 @@ public class GcmIntentService extends IntentService {
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+        if (fetchBadge) {
+            Utils.addAppIconBadge(this);
+        }
     }
 
     // Put the message into a notification and post it.

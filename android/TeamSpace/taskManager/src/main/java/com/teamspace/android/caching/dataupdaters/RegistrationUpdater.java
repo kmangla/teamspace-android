@@ -65,6 +65,11 @@ public class RegistrationUpdater {
 	}
 
     public void requestTestPush() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         final String url = NetworkRoutes.getRouteBase() + NetworkRoutes.ROUTE_PUSH;
         final HashMap<String, String> params = new HashMap<String, String>();
         params.put("text", "testing");
