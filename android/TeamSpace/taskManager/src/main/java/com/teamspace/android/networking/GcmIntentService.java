@@ -62,28 +62,23 @@ public class GcmIntentService extends IntentService {
                     Utils.addAppIconBadge(this);
                     if ("silentMessage".equalsIgnoreCase(msg.ntype)) {
                         Utils.sendSMSWithStatus(this, msg.user.getPhoneWithCountryCode(), msg.text);
-                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-silentMessage",
-                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-silentMessage", msg.text));
                     } else if ("taskCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.TASK_CREATION);
-                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskCreation",
-                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskCreation", msg.text));
                     } else if ("employeeCreation".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, Constants.EMP_CREATION);
-                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-employeeCreation",
-                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-employeeCreation", msg.text));
                     } else if ("taskList".equalsIgnoreCase(msg.ntype)) {
                         // Post notification of received message.
                         sendNotification(msg.text, null);
-                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskList",
-                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskList", msg.text));
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
-                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push",
-                                msg.text.substring(0, Math.min(3, msg.text.length() - 1)) + "..."));
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push", msg.text));
                     }
                 } catch (Exception e) {
                     Utils.log("Exception while parsing push payload in GcmIntentService" + e.toString());
