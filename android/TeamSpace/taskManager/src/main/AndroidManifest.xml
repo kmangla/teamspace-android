@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teamspace.android"
-    android:versionCode="64"
-    android:versionName="0.937">
+    android:versionCode="65"
+    android:versionName="0.938">
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -89,6 +89,7 @@
         <activity
             android:name="com.teamspace.android.registration.ui.PhoneNumberRegistrationActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <receiver android:name="com.teamspace.android.networking.GcmRegistrationReceiver"></receiver>
     </application>
 
 </manifest>

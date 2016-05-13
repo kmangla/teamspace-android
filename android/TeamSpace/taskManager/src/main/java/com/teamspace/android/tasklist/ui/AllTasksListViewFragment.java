@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,6 +54,7 @@ import com.teamspace.android.models.MigratedTask;
 import com.teamspace.android.models.QuickContactHelperTask;
 import com.teamspace.android.models.QuickContactHelperTask.ContactBadge;
 import com.teamspace.android.networking.GCMUtils;
+import com.teamspace.android.networking.GcmRegistrationReceiver;
 import com.teamspace.android.utils.Constants;
 import com.teamspace.android.utils.Utils;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -1142,6 +1145,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         // Check device for Play Services APK. If check succeeds, proceed with
         //  GCM registration.
         if (checkPlayServices()) {
+            setRecurringGCMRegistration();
             String regId = GCMUtils.getInstance().getRegistrationId(getActivity());
 
             if (Utils.isStringEmpty(regId)) {
@@ -1152,6 +1156,14 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         } else {
             Utils.log("No valid Google Play Services APK found.");
         }
+    }
+
+    private void setRecurringGCMRegistration() {
+        // Retrieve a PendingIntent that will perform a broadcast
+        Intent alarmIntent = new Intent(getActivity(), GcmRegistrationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
+        AlarmManager manager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     private void sendRegistrationIdToBackend(final String regId) {
