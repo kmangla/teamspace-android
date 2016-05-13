@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.widget.Toast;
 
+import com.teamspace.android.caching.DataManager;
 import com.teamspace.android.utils.Utils;
 
 /**
@@ -16,6 +17,6 @@ public class GcmRegistrationReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 //        Toast.makeText(context, "I'm running", Toast.LENGTH_SHORT).show();
-        GCMUtils.getInstance().registerInBackground();
+        GCMUtils.getInstance().registerInBackground(context);
     }
 }

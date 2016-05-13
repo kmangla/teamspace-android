@@ -1149,7 +1149,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             String regId = GCMUtils.getInstance().getRegistrationId(getActivity());
 
             if (Utils.isStringEmpty(regId)) {
-                GCMUtils.getInstance().registerInBackground();
+                GCMUtils.getInstance().registerInBackground(getActivity());
             } else {
                 sendRegistrationIdToBackend(regId);
             }

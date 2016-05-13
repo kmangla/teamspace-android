@@ -57,36 +57,12 @@ public class GCMUtils {
      * Stores the registration ID and app versionCode in the application's
      * shared preferences.
      */
-    public void registerInBackground() {
+    public void registerInBackground(final Context context) {
         new AsyncTask<String, String, String>() {
             @Override
             protected String doInBackground(String... params) {
                 String msg = "";
-                try {
-                    if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(mContext);
-                    }
-                    regid = gcm.register(SENDER_ID);
-                    msg = "Device registered, registration ID=" + regid;
-
-                    // You should send the registration ID to your server over HTTP,
-                    // so it can use GCM/HTTP or CCS to send messages to your app.
-                    // The request to your server should be authenticated if your app
-                    // is using accounts.
-                    sendRegistrationIdToBackendBlockingCall(mContext, regid);
-
-                    // For this demo: we don't need to send it because the device
-                    // will send upstream messages to a server that echo back the
-                    // message using the 'from' address in the message.
-
-                    // Persist the regID - no need to register again.
-                    storeRegistrationId(mContext, regid);
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                    // If there is an error, don't just keep trying to register.
-                    // Require the user to click a button again, or perform
-                    // exponential back-off.
-                }
+                registerPushToken(context);
                 return msg;
             }
 
@@ -96,6 +72,35 @@ public class GCMUtils {
 
         }.execute(null, null, null);
 
+    }
+
+    public void registerPushToken(Context context) {
+        try {
+            if (gcm == null) {
+                gcm = GoogleCloudMessaging.getInstance(context);
+            }
+            regid = gcm.register(SENDER_ID);
+
+            // You should send the registration ID to your server over HTTP,
+            // so it can use GCM/HTTP or CCS to send messages to your app.
+            // The request to your server should be authenticated if your app
+            // is using accounts.
+            sendRegistrationIdToBackendBlockingCall(context, regid);
+
+            // For this demo: we don't need to send it because the device
+            // will send upstream messages to a server that echo back the
+            // message using the 'from' address in the message.
+
+            // Persist the regID - no need to register again.
+            storeRegistrationId(context, regid);
+        } catch (IOException ex) {
+            // If there is an error, don't just keep trying to register.
+            // Require the user to click a button again, or perform
+            // exponential back-off.
+            Utils.log(ex.toString());
+            Utils.log(ex.getStackTrace().toString());
+
+        }
     }
 
     private static String REGID = "regID";
