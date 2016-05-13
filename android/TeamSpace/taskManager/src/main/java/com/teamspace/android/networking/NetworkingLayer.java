@@ -40,25 +40,6 @@ public class NetworkingLayer {
 	private NetworkingLayer(Context context) {
 		mContext = context.getApplicationContext();
 		mRequestQueue = Volley.newRequestQueue(mContext.getApplicationContext());
-
-        final TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        PhoneStateListener phoneStateListener = new PhoneStateListener() {
-            @Override
-            public void onServiceStateChanged(ServiceState serviceState) {
-                super.onServiceStateChanged(serviceState);
-                if (telephonyManager.isNetworkRoaming()) {
-                    mIsRoaming = true;
-                } else {
-                    mIsRoaming = false;
-                }
-                // You can also check roaming state using this
-                if (serviceState.getRoaming()) {
-                    // In Roaming
-                } else {
-                    // Not in Roaming
-                }
-            }
-        };
 	}
 	
 	public static NetworkingLayer getInstance(Context context) {
