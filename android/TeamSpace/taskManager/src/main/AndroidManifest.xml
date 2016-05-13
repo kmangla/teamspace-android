@@ -90,6 +90,7 @@
             android:name="com.teamspace.android.registration.ui.PhoneNumberRegistrationActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
         <receiver android:name="com.teamspace.android.networking.GcmRegistrationReceiver"></receiver>
+        <receiver android:name="com.teamspace.android.networking.PushActionReceiver"></receiver>
     </application>
 
 </manifest>

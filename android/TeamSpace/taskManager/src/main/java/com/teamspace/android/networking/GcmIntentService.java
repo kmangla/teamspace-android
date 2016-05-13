@@ -132,6 +132,10 @@ public class GcmIntentService extends IntentService {
                         .setPriority(Notification.PRIORITY_HIGH)
                         .setContentText(msg);
 
+        Intent intent = new Intent(this, PushActionReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent, 0);
+        mBuilder.setDeleteIntent(pendingIntent);
+
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
