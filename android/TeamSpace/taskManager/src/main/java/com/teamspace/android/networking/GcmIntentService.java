@@ -76,6 +76,10 @@ public class GcmIntentService extends IntentService {
                         // Post notification of received message.
                         sendNotification(msg.text, null);
                         DataManager.getInstance(this).fireMetric(new MetricsObject("Push-taskList", msg.text));
+                    } else if ("noOwner".equalsIgnoreCase(msg.ntype)) {
+                        // Post notification of received message.
+                        sendNotification(msg.text, null);
+                        DataManager.getInstance(this).fireMetric(new MetricsObject("Push-NoOwner", msg.text));
                     } else {
                         // Post notification of received message.
                         sendNotification(msg.user.getName() + ": " + msg.text, null);
