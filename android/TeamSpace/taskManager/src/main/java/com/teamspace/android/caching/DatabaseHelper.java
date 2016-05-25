@@ -819,7 +819,35 @@ class DatabaseHelper extends SQLiteOpenHelper {
 		cursor.close();
 		return tasks;
 	}
-	
+
+    public ArrayList<MigratedTask> getAllMigratedTasksForUser(String userID) {
+        SQLiteDatabase database = getReadableDatabase();
+
+        ArrayList<MigratedTask> tasks = new ArrayList<MigratedTask>();
+
+        Cursor cursor = database.query("new_tasks", null, "user_id = ?",
+                new String[] {userID}, null, null, null);
+        cursor.moveToFirst();
+        HashSet<String> taskId = new HashSet<>();
+        while (!cursor.isAfterLast()) {
+            MigratedTask task = getMigratedTaskFromCursor(cursor);
+            // Ignore duplicates
+            if (!taskId.contains(task.getTaskID())) {
+                tasks.add(task);
+                taskId.add(task.getTaskID());
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return tasks;
+    }
+
+    public void deleteOpenMigratedTasksForUser(String userID) {
+        SQLiteDatabase database = getReadableDatabase();
+
+        database.delete("new_tasks", "user_id = ? AND status = ?", new String[] { userID, "open"});
+    }
+
 	public void deleteAllMigratedTasksForUser(String userID) {
 		SQLiteDatabase database = getReadableDatabase();
 

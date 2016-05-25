@@ -2,14 +2,13 @@ package com.teamspace.android.caching;
 
 import android.content.Context;
 import android.support.v4.util.LruCache;
-import android.widget.Toast;
 
-import com.teamspace.android.R;
 import com.teamspace.android.caching.datafetcher.EmployeeFetchForUser;
 import com.teamspace.android.caching.datafetcher.MessageFetchForTask;
 import com.teamspace.android.caching.datafetcher.RegistrationFetcher;
+import com.teamspace.android.caching.datafetcher.TaskFetchAllForUser;
 import com.teamspace.android.caching.datafetcher.TaskFetchForEmployee;
-import com.teamspace.android.caching.datafetcher.TaskFetchForUser;
+import com.teamspace.android.caching.datafetcher.TaskFetchOpenForUser;
 import com.teamspace.android.caching.dataupdaters.EmployeeUpdater;
 import com.teamspace.android.caching.dataupdaters.MessageUpdater;
 import com.teamspace.android.caching.dataupdaters.MetricsUpdater;
@@ -81,10 +80,15 @@ public class DataManager {
 		fetchData(dataFetcher, callback);
 	}	
 	
-	public void fetchTasksForUser(String userID, DataManagerCallback callback) {
-		DataFetchInterface dataFetcher = new TaskFetchForUser(mContext, userID);
+	public void fetchOpenTasksForUser(String userID, DataManagerCallback callback) {
+		DataFetchInterface dataFetcher = new TaskFetchOpenForUser(mContext, userID);
 		fetchData(dataFetcher, callback);
 	}
+
+    public void fetchAllTasksForUser(String userID, DataManagerCallback callback) {
+        DataFetchInterface dataFetcher = new TaskFetchAllForUser(mContext, userID);
+        fetchData(dataFetcher, callback);
+    }
 
     public void requestTestPush(DataManagerCallback callback) {
         RegistrationUpdater updater = new RegistrationUpdater(mContext, callback);

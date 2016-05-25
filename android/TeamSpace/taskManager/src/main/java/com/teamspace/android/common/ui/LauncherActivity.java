@@ -173,7 +173,7 @@ public class LauncherActivity extends FragmentActivity {
         taskState = TASK.UNKNOWN;
 
         // Load tasks from cache or network to figure out if the user has created any tasks
-        DataManager.getInstance(this).fetchTasksForUser(Utils.getSignedInUserId(),
+        DataManager.getInstance(this).fetchOpenTasksForUser(Utils.getSignedInUserId(),
             new DataManagerCallback() {
                 @Override
                 public void onDataReceivedFromCache(String dataStoreKey) {

@@ -152,7 +152,7 @@ public class TaskUpdater {
 				    	
 				    	// We had already deleted the task from cache. We
 						// now need to fix our cache
-						DataManager.getInstance(context).fetchTasksForUser(
+						DataManager.getInstance(context).fetchOpenTasksForUser(
 								Utils.getSignedInUserId(), null);
 						
 						if (mCallback != null) {

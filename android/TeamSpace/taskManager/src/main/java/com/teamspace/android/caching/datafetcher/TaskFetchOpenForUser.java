@@ -24,12 +24,12 @@ import com.teamspace.android.utils.Utils;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-public class TaskFetchForUser implements DataFetchInterface {
+public class TaskFetchOpenForUser implements DataFetchInterface {
 
 	private String userID;
 	private Context context;
 	
-	public TaskFetchForUser(Context context, String userID) {
+	public TaskFetchOpenForUser(Context context, String userID) {
 		this.userID = userID;
 		this.context = context;
 	}
@@ -55,7 +55,7 @@ public class TaskFetchForUser implements DataFetchInterface {
                     @Override
                     protected MigratedTask doInBackground(String... task1) {
                         // Call the callback
-                        DatabaseCache.getInstance(context).deleteAllMigratedTasksForUserBlockingCall(userID);
+                        DatabaseCache.getInstance(context).deleteOpenMigratedTasksForUserBlockingCall(userID);
                         ArrayList<MigratedTask> tasks = new ArrayList<MigratedTask>();
                         for (int i = 0; i < response.length(); i++) {
                             try {

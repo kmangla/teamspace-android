@@ -276,9 +276,17 @@ public class DatabaseCache {
 		return dbHelper.getMigratedTasksForUser(userID);
 	}
 
+    public ArrayList<MigratedTask> getAllMigratedTasksForUserBlockingCall(String userID) {
+        return dbHelper.getAllMigratedTasksForUser(userID);
+    }
+
 	public void deleteAllMigratedTasksForUserBlockingCall(String userID) { 
 		dbHelper.deleteAllMigratedTasksForUser(userID);
 	}
+
+    public void deleteOpenMigratedTasksForUserBlockingCall(String userID) {
+        dbHelper.deleteOpenMigratedTasksForUser(userID);
+    }
 
 	public ArrayList<MigratedEmployee> getMigratedEmployeesBlockingCall() {
 		return dbHelper.getMigratedEmployees();
