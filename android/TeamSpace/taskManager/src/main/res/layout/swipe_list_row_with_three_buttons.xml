@@ -60,8 +60,21 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white" >
 
+        <TextView
+            android:id="@+id/header_text"
+            android:background="@color/list_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp"
+            android:textColor="#222222"
+            android:text="Closed Tasks"
+            android:padding="10dp"/>
+
         <RelativeLayout
             android:id="@+id/image_or_initials"
+            android:layout_below="@id/header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
@@ -117,6 +130,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
+            android:layout_below="@id/header_text"
             android:layout_toLeftOf="@+id/more_button"
             android:layout_toRightOf="@id/image_or_initials"
             android:orientation="vertical" >

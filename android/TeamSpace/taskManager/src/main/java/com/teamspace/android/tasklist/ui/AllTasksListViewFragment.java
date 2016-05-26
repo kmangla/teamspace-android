@@ -359,6 +359,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         public TextView update;
         public TextView notification;
         public TextView initials;
+        public TextView headerText;
         public Button moreButton;
         Button delete;
         Button markCompleted;
@@ -377,6 +378,7 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             notification = (TextView) view.findViewById(R.id.notification);
             pic = (QuickContactBadge) view.findViewById(R.id.image_view);
             initials = (TextView) view.findViewById(R.id.initials);
+            headerText = (TextView) view.findViewById(R.id.header_text);
             moreButton = (Button) view.findViewById(R.id.more_button);
             frontView = (View) view.findViewById(R.id.front);
             backView = (View) view.findViewById(R.id.back);
@@ -477,31 +479,8 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
             // Clear the old data from adapter and insert new data.
             clear();
-
-            // Insert the "Closed Tasks" header between open and closed tasks
-            ArrayList<MigratedTask> processedData = new ArrayList<MigratedTask>();
             for (int i = 0; i < data.size(); i++) {
                 MigratedTask task = data.get(i);
-
-                // If there is no open task, add the header in 0th position
-                if (i == 0 && "closed".equalsIgnoreCase(task.getStatus())) {
-                    MigratedTask header = new MigratedTask();
-                    header.setTaskID("HEADER");
-                    header.setTitle("Closed Tasks");
-                    processedData.add(header);
-                } else if (i > 0 && "closed".equalsIgnoreCase(task.getStatus()) && "open".equalsIgnoreCase(data.get(i - 1).getStatus())) {
-                    // if previous task was open and this is closed, insert the header
-                    MigratedTask header = new MigratedTask();
-                    header.setTaskID("HEADER");
-                    header.setTitle("Closed Tasks");
-                    processedData.add(header);
-                }
-
-                processedData.add(task);
-            }
-
-            for (int i = 0; i < processedData.size(); i++) {
-                MigratedTask task = processedData.get(i);
                 add(task);
             }
             Utils.refreshListWithoutLosingScrollPosition(mSwipeListView, this);
@@ -678,21 +657,6 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
         }
 
         @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            final MigratedTask task = getItem(position);
-            if ("HEADER".equalsIgnoreCase(task.getTaskID())) {
-                return 0;
-            }
-
-            return 1;
-        }
-
-        @Override
         public View getView(final int position, final View convertView, final ViewGroup parent) {
             View view = convertView;
 
@@ -701,25 +665,26 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
 
             // If there is no view to reuse, create a new one and setup its viewholder
             if (view == null) {
-                if ("HEADER".equalsIgnoreCase(task.getTaskID())) {
-                    view = LayoutInflater.from(mContext).inflate(R.layout.header_row, parent, false);
-                } else {
-                    view = LayoutInflater.from(mContext).inflate(R.layout.swipe_list_row_with_three_buttons, parent, false);
-                    TaskViewHolder vh = new TaskViewHolder(view);
-                    view.setTag(vh);
-                }
-            }
-
-            // Short circuit if this is a header row
-            if ("HEADER".equalsIgnoreCase(task.getTaskID())) {
-                TextView headerText = (TextView) view.findViewById(R.id.header_text);
-                headerText.setText(task.getTitle());
-                return view;
+                view = LayoutInflater.from(mContext).inflate(R.layout.swipe_list_row_with_three_buttons, parent, false);
+                TaskViewHolder vh = new TaskViewHolder(view);
+                view.setTag(vh);
             }
 
             final TaskViewHolder viewHolder = (TaskViewHolder) view.getTag();
             if (viewHolder == null || !(viewHolder instanceof TaskViewHolder)) {
                 return view;
+            }
+
+            viewHolder.headerText.setVisibility(View.GONE);
+
+            // Determine if we want to show "Closed tasks" header
+            if ("closed".equalsIgnoreCase(task.getStatus()) && position == 0) {
+                viewHolder.headerText.setVisibility(View.VISIBLE);
+            } else if ("closed".equalsIgnoreCase(task.getStatus()) &&
+                    position > 0 &&
+                    "open".equalsIgnoreCase(getItem(position - 1).getStatus()))
+            {
+                viewHolder.headerText.setVisibility(View.VISIBLE);
             }
 
             if (viewHolder.populateImageTask != null) {
