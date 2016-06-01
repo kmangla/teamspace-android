@@ -337,6 +337,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
         public TextView update;
         public TextView notification;
         public TextView initials;
+        public TextView headerText;
         public Button moreButton;
         Button delete;
         Button markCompleted;
@@ -355,6 +356,7 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             pic = (QuickContactBadge) view.findViewById(R.id.image_view);
             initials = (TextView) view.findViewById(R.id.initials);
             moreButton = (Button) view.findViewById(R.id.more_button);
+            headerText = (TextView) view.findViewById(R.id.header_text);
             frontView = (View) view.findViewById(R.id.front);
             backView = (View) view.findViewById(R.id.back);
             delete = (Button) view.findViewById(R.id.swipe_button1);
@@ -512,6 +514,8 @@ public class TasksForEmployeeListViewFragment extends Fragment implements OnItem
             if (viewHolder == null || !(viewHolder instanceof TaskViewHolder)) {
                 return view;
             }
+
+            viewHolder.headerText.setVisibility(View.GONE);
 
             if (viewHolder.populateImageTask != null) {
                 viewHolder.populateImageTask.cancel(true);

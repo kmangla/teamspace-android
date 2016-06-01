@@ -221,6 +221,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
     	public TextView lastReply;
         public TextView notification;
     	public TextView initials;
+        public TextView headerText;
     	public Button moreButton;
     	public QuickContactBadge pic;
     	Button delete;
@@ -240,6 +241,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
 	        pic = (QuickContactBadge) view.findViewById(R.id.image_view);
 	        initials = (TextView) view.findViewById(R.id.initials);
 	        moreButton = (Button) view.findViewById(R.id.more_button);
+            headerText = (TextView) view.findViewById(R.id.header_text);
 	        frontView = (View) view.findViewById(R.id.front);
 	        backView = (View) view.findViewById(R.id.back);
 	        delete = (Button) view.findViewById(R.id.swipe_button1);
@@ -359,6 +361,8 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
             if (viewHolder == null || !(viewHolder instanceof EmployeeViewHolder)) {
             	return view;
             }
+
+            viewHolder.headerText.setVisibility(View.GONE);
             
             if (viewHolder.populateImageTask != null) {
             	viewHolder.populateImageTask.cancel(true);

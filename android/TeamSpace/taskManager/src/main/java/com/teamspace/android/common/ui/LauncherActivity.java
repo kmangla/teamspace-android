@@ -148,6 +148,13 @@ public class LauncherActivity extends FragmentActivity {
             }
         }
 
+        // Hack to short circuit the logic for landing user on task / employee creation flow
+        // kbhai requested for this in TS whatsapp chat on 5/30/2016
+        if (true) {
+            return STATE.VIEW_TASK;
+        }
+
+
         if (employeeState == EMPLOYEE.UNKNOWN || taskState == TASK.UNKNOWN) {
             return STATE.LOOP;
         }
