@@ -1,5 +1,8 @@
 package com.teamspace.android.utils;
 
+import com.teamspace.android.caching.DataManager;
+import com.teamspace.android.models.MetricsObject;
+
 public class Constants {
 	
 	public static final String EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -48,4 +51,18 @@ public class Constants {
     public static final String DESCRIPTION = "desc";
     public static final String USER_PHONE = "phone";
     public static final String EMPLOYEE_DRAFT = "EMPLOYEE_DRAFT_";
+
+    // Page Views
+    public static final String TASK_LIST_PV = "TaskListPage";
+    public static final String TASK_EDIT_PV = "TaskEditPage";
+    public static final String EMP_TASK_LIST_PV = "EmpTaskListPage";
+    public static final String REG_PV = "RegistrationPage";
+    public static final String EMP_LIST_PV = "EmpListPage";
+    public static final String EMP_CREATION_SELECT_PV = "EmpCreationSelectPage";
+    public static final String EMP_EDIT_PV = "EmpEditPage";
+    public static final String EMP_ADD_PV = "EmpAddPage";
+    public static final String MSG_PV = "MsgPage";
+    public static final String EMP_CREATION_PV = "EmployeeCreationPage";
+    public static final String TASK_CREATION_PV = "TaskCreationPage";
+    public static final String LOGIN_PV = "Login";
 }

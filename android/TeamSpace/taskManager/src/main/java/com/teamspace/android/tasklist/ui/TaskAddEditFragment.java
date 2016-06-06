@@ -391,9 +391,9 @@ public class TaskAddEditFragment extends Fragment {
 		}
 
         if (editMode) {
-            Utils.trackPageView("TaskEdit");
+            Utils.trackPageView(Constants.TASK_EDIT_PV);
         } else {
-            Utils.trackPageView("TaskAdd");
+            Utils.trackPageView(Constants.TASK_CREATION_PV);
         }
 	}
 

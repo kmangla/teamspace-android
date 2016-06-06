@@ -146,6 +146,12 @@ public class EmployeeSelectFragment extends ListFragment implements AdapterView.
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Utils.trackPageView(Constants.EMP_CREATION_SELECT_PV);
+    }
+
     private void hideSearchUI() {
         searchShowing = false;
 

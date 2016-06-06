@@ -48,6 +48,7 @@ import com.teamspace.android.common.ui.SettingsPreferenceFragment;
 import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
 import com.teamspace.android.employee.ui.EmployeeListViewActivity;
 import com.teamspace.android.interfaces.ActionBarResponderInterface;
+import com.teamspace.android.models.MetricsObject;
 import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.MigratedMessage;
 import com.teamspace.android.models.MigratedTask;
@@ -1134,8 +1135,8 @@ public class AllTasksListViewFragment extends Fragment implements OnItemSelected
             refreshPending = false;
             refreshUI();
         }
-        Utils.trackPageView("AllTasks");
 
+        Utils.trackPageView(Constants.TASK_LIST_PV);
     }
 
     /**

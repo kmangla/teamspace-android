@@ -205,7 +205,7 @@ public class EmployeeListViewFragment extends Fragment implements OnItemSelected
     @Override
     public void onResume() {
         super.onResume();
-        Utils.trackPageView("AllEmployees");
+        Utils.trackPageView(Constants.EMP_LIST_PV);
         // Refresh UI only if someone asked us to do this.
         Object flag = DataManager.getInstance(getActivity()).retrieveData(Constants.REFRESH_EMP);
         DataManager.getInstance(getActivity()).removeData(Constants.REFRESH_EMP);

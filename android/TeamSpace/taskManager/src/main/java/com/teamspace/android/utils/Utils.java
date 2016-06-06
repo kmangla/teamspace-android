@@ -43,6 +43,7 @@ import com.teamspace.android.common.ui.MainActivityWithTabs;
 import com.teamspace.android.common.ui.TaskManagerApplication;
 import com.teamspace.android.employee.ui.EmployeeAddEditActivity;
 import com.teamspace.android.models.BadgeData;
+import com.teamspace.android.models.MetricsObject;
 import com.teamspace.android.models.MigratedEmployee;
 import com.teamspace.android.models.UserAuthData;
 import com.teamspace.android.networking.NetworkRoutes;
@@ -553,6 +554,8 @@ public class Utils {
         // Send a screen view.
         t.send(new HitBuilders.ScreenViewBuilder().build());
         Utils.log("tracker = " + t.hashCode() + " page = " + pageName);
+
+        DataManager.getInstance(TaskManagerApplication.getAppContext()).fireMetric(new MetricsObject(pageName, "page_viewed"));
     }
 
     public static void trackEvent(String category, String action, String label) {

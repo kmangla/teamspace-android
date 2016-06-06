@@ -85,13 +85,13 @@ public class LauncherActivity extends FragmentActivity {
 
                 switch (state) {
                     case LOGIN:
-                        fireLaunchMetrics("LoginPage");
+                        fireLaunchMetrics(Constants.LOGIN_PV);
                         Intent i = new Intent(context, PhoneNumberRegistrationActivity.class);
                         startActivity(i);
                         finish();
                         break;
                     case CREATE_EMPLOYEE_AND_TASK:
-                        fireLaunchMetrics("EmployeeCreationPage");
+                        fireLaunchMetrics(Constants.EMP_CREATION_PV);
                         Intent []j = new Intent[3];
                         j[0] = new Intent(context, AllTasksListViewActivity.class);
                         j[1] = new Intent(context, TaskAddViewPagerActivity.class);
@@ -100,7 +100,7 @@ public class LauncherActivity extends FragmentActivity {
                         finish();
                         break;
                     case CREATE_TASK:
-                        fireLaunchMetrics("TaskCreationPage");
+                        fireLaunchMetrics(Constants.TASK_CREATION_PV);
                         Intent []k = new Intent[2];
                         k[0] = new Intent(context, AllTasksListViewActivity.class);
                         k[1] = new Intent(context, TaskAddViewPagerActivity.class);
@@ -108,13 +108,13 @@ public class LauncherActivity extends FragmentActivity {
                         finish();
                         break;
                     case VIEW_TASK:
-                        fireLaunchMetrics("TaskListPage");
+                        fireLaunchMetrics(Constants.TASK_LIST_PV);
                         Intent l = new Intent(context, AllTasksListViewActivity.class);
                         startActivity(l);
                         finish();
                         break;
                     case CREATE_EMP:
-                        fireLaunchMetrics("EmployeeCreationPage");
+                        fireLaunchMetrics(Constants.EMP_CREATION_PV);
                         Intent []m = new Intent[3];
                         m[0] = new Intent(context, AllTasksListViewActivity.class);
                         m[2] = new Intent(context, EmployeeAddEditActivity.class);

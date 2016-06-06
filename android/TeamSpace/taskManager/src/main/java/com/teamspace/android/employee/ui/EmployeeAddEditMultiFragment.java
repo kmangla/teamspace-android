@@ -105,9 +105,9 @@ public class EmployeeAddEditMultiFragment extends Fragment implements OnItemSele
     public void onResume() {
         super.onResume();
         if (editMode) {
-            Utils.trackPageView("EmployeeEdit");
+            Utils.trackPageView(Constants.EMP_EDIT_PV);
         } else {
-            Utils.trackPageView("EmployeeAdd");
+            Utils.trackPageView(Constants.EMP_ADD_PV);
         }
     }
 
