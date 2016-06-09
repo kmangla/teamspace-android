@@ -24,6 +24,27 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/remind_now" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/remind_now_text"
+            android:layout_height="wrap_content"
+            android:text="@string/task_reminder"
+            android:textColor="@color/header_background"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

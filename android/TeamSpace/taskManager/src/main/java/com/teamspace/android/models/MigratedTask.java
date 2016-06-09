@@ -19,6 +19,7 @@ public class MigratedTask {
 	private String status;
 	private String title;
 	private String userID;
+    private boolean sendReminderNow;
 	private String employeeID;
 	private String employeeName;
 	private String employeeNumber;
@@ -72,6 +73,7 @@ public class MigratedTask {
     private static String LAST_MSG = "lastMessage";
     private static String PRIORITY = "priority";
     private static String FAV = "fav";
+    private static String SEND_REMINDER_NOW = "sendReminderNow";
 
 
     public boolean isCreationPending() {
@@ -132,12 +134,18 @@ public class MigratedTask {
 	public void setUpdateCount(long count) {
 		this.updateCount = count;
 	}
-	public String getUserID() {
-		return userID;
+	public boolean getRemindNow() {
+		return sendReminderNow;
 	}
-	public void setUserID(String userID) {
-		this.userID = userID;
+	public void setRemindNow(boolean remindNow) {
+		this.sendReminderNow = remindNow;
 	}
+    public String getUserID() {
+        return userID;
+    }
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
     public long getPriority() {
         return priority;
     }
@@ -249,6 +257,7 @@ public class MigratedTask {
         obj.put(FORCE_REMINDER, String.valueOf(this.getForceReminder()));
         obj.put(MARK_UPDATED, String.valueOf(this.getMarkUpdated()));
         obj.put(FAV, String.valueOf(this.getFav()));
+        obj.put(SEND_REMINDER_NOW, String.valueOf(this.getRemindNow()));
         if (this.getMarkUpdatedText() != null){
             obj.put(MARK_UPDATED_TEXT, this.getMarkUpdatedText());
         }

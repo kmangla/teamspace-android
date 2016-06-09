@@ -7,7 +7,9 @@ package com.teamspace.android.tasklist.ui;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -45,6 +48,7 @@ public class TaskAddEditFragment extends Fragment {
     RadioButton monthlyButton;
     RadioButton weeklyButton;
     CheckBox createMultiple;
+    CheckBox remindNow;
     TextView createMultipleText;
 
 	Button saveButton;
@@ -157,6 +161,18 @@ public class TaskAddEditFragment extends Fragment {
         createMultipleText = (TextView) v.findViewById(R.id.create_multiple_text);
         createMultiple.setChecked(true);
 
+        remindNow = (CheckBox) v.findViewById(R.id.remind_now);
+        remindNow.setChecked(false);
+        remindNow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        warnAboutRemindNow(buttonView);
+                    }
+                }
+            }
+        );
+
 		saveButton = (Button) v.findViewById(R.id.save_button);
         saveDraft = (Button) v.findViewById(R.id.draft_button);
 
@@ -177,6 +193,7 @@ public class TaskAddEditFragment extends Fragment {
             createMultiple.setVisibility(View.GONE);
             createMultipleText.setVisibility(View.GONE);
             createMultiple.setChecked(false);
+            remindNow.setVisibility(View.GONE);
             saveButton.setText(R.string.save_now);
             saveDraft.setVisibility(View.GONE);
         }
@@ -190,6 +207,44 @@ public class TaskAddEditFragment extends Fragment {
 
 		return v;
 	}
+
+    private void warnAboutRemindNow(final View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        String title = view.getContext()
+                .getResources()
+                .getString(
+                        R.string.warning);
+        String message = view.getContext()
+                .getResources()
+                .getString(
+                        R.string.remind_now_warning);
+        String positiveButtonText = view.getContext()
+                .getResources()
+                .getString(
+                        R.string.create_urgent);
+        String cancelButtonText = view.getContext()
+                .getResources()
+                .getString(
+                        R.string.cancel);
+
+        alert.setTitle(title);
+        alert.setMessage(message);
+
+        alert.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                createMultiple.setChecked(false);
+            }
+        });
+
+        alert.setNegativeButton(cancelButtonText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                remindNow.setChecked(false);
+            }
+        });
+
+        alert.show();
+    }
 
     private void createTasksForEmployee(final View v) {
         if (selectedEmployee == null) {
@@ -298,6 +353,7 @@ public class TaskAddEditFragment extends Fragment {
                 task.setTaskID(Constants.EMPTY_STRING);
                 task.setStatus(Constants.OPEN);
                 task.setUpdateCount(-1);
+                task.setRemindNow(remindNow.isChecked());
                 task.setLastUpdate(System.currentTimeMillis());
                 data.add(task);
                 dataMgr.createTask(task, new DataManagerCallback() {
